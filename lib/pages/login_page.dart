@@ -145,9 +145,6 @@ class _LoginPageState extends State<LoginPage> {
 
     return form;
 
-
-
-    return
   }
   void _submit() {
     final form = formKey.currentState;
