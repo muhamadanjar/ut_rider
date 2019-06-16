@@ -1,0 +1,98 @@
+{
+  "project_info": {
+    "project_number": "342127570504",
+    "firebase_url": "https://jjapp-157607.firebaseio.com",
+    "project_id": "jjapp-157607",
+    "storage_bucket": "jjapp-157607.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:342127570504:android:eed224acc8d7f05f",
+        "android_client_info": {
+          "package_name": "com.android.ionic3chatapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "342127570504-prg3lnr8i0fcckclbdq708goqqtmpac0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyASDJfCr9HzY5UsdReKjFpfJY-p4MMrsLg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "342127570504-prg3lnr8i0fcckclbdq708goqqtmpac0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:342127570504:android:8f1babd0944798a2",
+        "android_client_info": {
+          "package_name": "com.transutama.ut_order"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "342127570504-prg3lnr8i0fcckclbdq708goqqtmpac0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyASDJfCr9HzY5UsdReKjFpfJY-p4MMrsLg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "342127570504-prg3lnr8i0fcckclbdq708goqqtmpac0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:342127570504:android:775d0e3acc0ad873",
+        "android_client_info": {
+          "package_name": "com.utamatrans.ut_driver_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "342127570504-prg3lnr8i0fcckclbdq708goqqtmpac0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyASDJfCr9HzY5UsdReKjFpfJY-p4MMrsLg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "342127570504-prg3lnr8i0fcckclbdq708goqqtmpac0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
