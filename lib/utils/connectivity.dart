@@ -4,8 +4,7 @@ import 'package:connectivity/connectivity.dart';
 
 class ConnectivityService {
   ///Connection status controller....
-  StreamController<ConnectionStatus> connectivityController =
-  StreamController<ConnectionStatus>();
+  StreamController<ConnectionStatus> connectivityController = StreamController<ConnectionStatus>();
 
   ///Fetch the Connection Status...
   ConnectivityService() {

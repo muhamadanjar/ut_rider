@@ -20,4 +20,7 @@ class RoutePaths {
   static const String Payment = 'payment';
   static const String OrderComplete = 'order-complete-page';
   static const String MyTrip = 'my-trip';
+  static const String TopUp = 'topup';
+  static const String Promo = 'promo';
 }
+

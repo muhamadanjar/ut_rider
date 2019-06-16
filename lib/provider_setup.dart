@@ -22,7 +22,6 @@ List<SingleChildCloneableWidget> dependentServices = [
 
 List<SingleChildCloneableWidget> uiConsumableProviders = [
   StreamProvider<User>(
-    builder: (context) =>
-    Provider.of<AuthenticationService>(context, listen: false).user,
+    builder: (context) => Provider.of<AuthenticationService>(context, listen: false).user,
   ),
 ];

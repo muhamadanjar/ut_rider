@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:ut_order/pages/login_page.dart';
 import 'routes.dart';
 import 'package:provider/provider.dart';
 import 'provider_setup.dart';
+import 'utils/constans.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -18,9 +18,9 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             primarySwatch: Colors.blue,
           ),
-          home: LoginPage(),
-//          routes: routes,
+          initialRoute: RoutePaths.Login,
           onGenerateRoute: Router.generateRoute,
+
         )
       );
   }

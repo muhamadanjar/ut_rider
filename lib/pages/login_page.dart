@@ -3,6 +3,10 @@ import 'home_page.dart';
 import 'package:ut_order/data/rest_ds.dart';
 import '../models/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
+import 'package:ut_order/components/base_widget.dart';
+import 'package:ut_order/models/loginview_model.dart';
+
 class LoginPage extends StatefulWidget {
   static String tag = 'login-page';
   @override
@@ -92,31 +96,58 @@ class _LoginPageState extends State<LoginPage> {
       ),
       onPressed: () {},
     );
-
-    return Scaffold(
+    final form = Scaffold(
       key: scaffoldKey,
       backgroundColor: Colors.white,
       body: Center(
-        child:
-        Form(
-          key: formKey,
-          child:ListView(
-            shrinkWrap: true,
-            padding: EdgeInsets.only(left: 24.0, right: 24.0),
-            children: <Widget>[
-              logo,
-              SizedBox(height: 48.0),
-              email,
-              SizedBox(height: 8.0),
-              password,
-              SizedBox(height: 24.0),
-              loginButton,
-              forgotLabel
-            ],
-          ),
-        )
+          child:
+          Form(
+            key: formKey,
+            child:ListView(
+              shrinkWrap: true,
+              padding: EdgeInsets.only(left: 24.0, right: 24.0),
+              children: <Widget>[
+                logo,
+                SizedBox(height: 48.0),
+                email,
+                SizedBox(height: 8.0),
+                password,
+                SizedBox(height: 24.0),
+                loginButton,
+                forgotLabel
+              ],
+            ),
+          )
       ),
     );
+    final wrapLogin = BaseWidget<LoginViewModel>(
+      model: LoginViewModel(authenticationService: Provider.of(context)),
+      child: form,
+      builder: (context,model,child) => Scaffold(
+          body: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              child,
+              model.busy
+                  ? CircularProgressIndicator()
+                  : FlatButton(
+                color: Colors.white,
+                child: Text(
+                  'Login',
+                  style: TextStyle(color: Colors.black),
+                ),
+                onPressed: _submit
+              )
+            ],
+          )
+      ),
+    );
+
+    return form;
+
+
+
+    return
   }
   void _submit() {
     final form = formKey.currentState;
@@ -124,6 +155,7 @@ class _LoginPageState extends State<LoginPage> {
       setState(() => _isLoading = true);
       form.save();
       print("data $_username $_password");
+
       rs.login(_username, _password).then((user){
         var te = user.toMap();
         print("calling user : $te");

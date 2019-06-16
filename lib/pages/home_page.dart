@@ -8,6 +8,7 @@ import 'package:location/location.dart' as LocationManager;
 import '../data/rest_ds.dart';
 import '../utils/constans.dart';
 import 'place_detail.dart';
+import '../models/user.dart';
 import 'dart:math';
 import 'package:ut_order/models/order.dart';
 import 'package:provider/provider.dart';
@@ -44,10 +45,10 @@ class _HomePageState extends State<HomePage> {
   LocationManager.LocationData  _currentLocation;
   List<PlacesSearchResult> places = [];
   RestDatasource rs = new RestDatasource();
-
   String trip_address_origin,trip_address_destination;
   String trip_or_latitude,trip_or_longitude,trip_des_latitude,trip_des_longitude;
   int trip_total,trip_duration,trip_distance;
+  Order order;
 
   Mode _mode = Mode.fullscreen;
 
@@ -209,7 +210,7 @@ class _HomePageState extends State<HomePage> {
     getNearbyPlaces(center);
   }
 
-  void _order() async{
+  void onHandleOrder() async{
     var data = Order(origin: 'Medan',destination: 'Ayam',originLat: '0',originLng: '0',destinationLat: '0',destinationLng: '0',harga: '0',);
     var response = await rs.orderCar(data);
 //    assert(response);
@@ -365,13 +366,13 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-
+    final dataProvider = Provider.of<User>(context);
     final drawer = Drawer(
       child: ListView(
         children: <Widget>[
           UserAccountsDrawerHeader(
-            decoration: BoxDecoration(color: Colors.black),
-            accountName: Text("Ihwan"),
+            decoration: BoxDecoration(color: Colors.lightBlue),
+            accountName: Text("${dataProvider}"),
             accountEmail: Row(
               children: <Widget>[
                 Text("5.0"),
@@ -400,23 +401,20 @@ class _HomePageState extends State<HomePage> {
                 linkMenuDrawer('Your Trips', () {
                   Navigator.pushNamed(context, RoutePaths.MyTrip);
                 }),
-                linkMenuDrawer('Free Rides', () {
-                  Navigator.pushNamed(context, '/free_rides');
+                linkMenuDrawer('Settings', () {
+                  Navigator.pushNamed(context, RoutePaths.Settings);
                 }),
                 linkMenuDrawer('Help', () {
                   Navigator.pushNamed(context, RoutePaths.Help);
                 }),
-                linkMenuDrawer('Settings', () {
-                  Navigator.pushNamed(context, RoutePaths.Settings);
-                }),
                 linkMenuDrawer('Order Complete', () {
                   Navigator.pushNamed(context, RoutePaths.OrderComplete);
                 }),
-                /*Divider(
+                Divider(
                     color: Colors.black45,
-                  ),
-                  linkMenuDrawer('Drive With Uber', () {}),
-                  linkMenuDrawer('Legal', () {}),*/
+                ),
+
+                linkMenuDrawer('Legal', () {}),
               ]),
         ],
       ),
@@ -696,7 +694,7 @@ class _HomePageState extends State<HomePage> {
                         padding: const EdgeInsets.only(left: 60.0, right: 60.0, top: 15.0,bottom: 15.0),
                         child: Text('Pesan', style: TextStyle(color: Colors.white),),
                       ),
-                      onPressed: _order,
+                      onPressed: onHandleOrder,
                   ),
                 ),
               ),
@@ -931,7 +929,6 @@ class CustomSearchScaffold extends PlacesAutocompleteWidget {
   @override
   _CustomSearchScaffoldState createState() => _CustomSearchScaffoldState();
 }
-
 class _CustomSearchScaffoldState extends PlacesAutocompleteState {
   @override
   Widget build(BuildContext context) {
@@ -969,8 +966,6 @@ class _CustomSearchScaffoldState extends PlacesAutocompleteState {
     }
   }
 }
-
-
 class Uuid {
   final Random _random = Random();
 
@@ -993,9 +988,6 @@ class Uuid {
   String _printDigits(int value, int count) =>
       value.toRadixString(16).padLeft(count, '0');
 }
-
-
-
 class OrangeClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
@@ -1017,7 +1009,6 @@ class OrangeClipper extends CustomClipper<Path> {
   @override
   bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
-
 class BlackClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {

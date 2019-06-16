@@ -41,7 +41,7 @@ class _YourTripViewState extends State<YourTripView> {
     final Polyline polyline = Polyline(
       polylineId: polylineId,
       consumeTapEvents: true,
-      color: Colors.black,
+      color: Colors.lightBlue,
       width: 5,
       points: _createTripPoints(),
       onTap: () {
@@ -73,7 +73,7 @@ class _YourTripViewState extends State<YourTripView> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.black,
+          backgroundColor: Colors.lightBlue,
           title: Text("Your Trips"),
 
         ),

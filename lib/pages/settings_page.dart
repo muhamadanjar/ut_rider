@@ -23,7 +23,7 @@ class _SettingsViewState extends State<SettingsView> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.black,
+          backgroundColor: Colors.lightBlue,
           title: Text("Account Settings"),
         ),
         body: ListView(
