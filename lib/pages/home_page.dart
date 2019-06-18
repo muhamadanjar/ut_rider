@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:ut_order/components/network.dart';
 //import 'package:ut_order/components/functionalButton.dart';
+import 'package:ut_order/enum/connection_status.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:location/location.dart' as LocationManager;
@@ -288,7 +290,6 @@ class _HomePageState extends State<HomePage> {
   }
 
 
-
   Future<Null> showDetailPlace(String placeId) async {
     if (placeId != null) {
       Navigator.push(
@@ -367,6 +368,9 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final dataProvider = Provider.of<User>(context);
+    
+    var con = Provider.of<ConnectivityStatus>(context);
+
     final drawer = Drawer(
       child: ListView(
         children: <Widget>[
@@ -704,6 +708,9 @@ class _HomePageState extends State<HomePage> {
         )
       ],
     );
+    final networkwidget = NetworkWidget(
+      child: mapscreen,
+    );
     return Scaffold(
       resizeToAvoidBottomInset: false,
       key: homeScaffoldKey,
@@ -716,8 +723,9 @@ class _HomePageState extends State<HomePage> {
 //        ),
 //      ),
       drawer: drawer,
-      body: mapscreen,
+      body: networkwidget,
     );
+
   }
 
   Widget _buildDropdownMenu() => DropdownButton(

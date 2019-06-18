@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'models/user.dart';
 import 'utils/authentication.dart';
 import 'data/rest_ds.dart';
+import 'utils/connectivity.dart';
+import 'enum/connection_status.dart';
 List<SingleChildCloneableWidget> providers = [
   ...independentServices,
   ...dependentServices,
@@ -21,7 +23,14 @@ List<SingleChildCloneableWidget> dependentServices = [
 ];
 
 List<SingleChildCloneableWidget> uiConsumableProviders = [
+  
   StreamProvider<User>(
     builder: (context) => Provider.of<AuthenticationService>(context, listen: false).user,
   ),
+  StreamProvider<ConnectivityStatus>.value(
+      value: ConnectivityService().connectivityController.stream,
+  ),
+  
 ];
+  
+

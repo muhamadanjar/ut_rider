@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:connectivity/connectivity.dart';
-
+import 'package:ut_order/enum/connection_status.dart';
 class ConnectivityService {
   ///Connection status controller....
-  StreamController<ConnectionStatus> connectivityController = StreamController<ConnectionStatus>();
-
+  StreamController<ConnectivityStatus> connectivityController = StreamController<ConnectivityStatus>();
+  Stream<ConnectivityStatus> get connection => connectivityController.stream;
   ///Fetch the Connection Status...
   ConnectivityService() {
     Connectivity().onConnectivityChanged.listen((ConnectivityResult status) {
@@ -18,27 +18,23 @@ class ConnectivityService {
 
   //Converts the connectivity result into our enums
   //Currently the output id mobile, wifi,none.....
-  ConnectionStatus _networkStatus(ConnectivityResult status) {
+  ConnectivityStatus _networkStatus(ConnectivityResult status) {
     //Begin...
-
+    
     switch (status) {
       case ConnectivityResult.mobile:
-        return ConnectionStatus.mobileData;
+        return ConnectivityStatus.mobileData;
 
       case ConnectivityResult.wifi:
-        return ConnectionStatus.wifi;
+        return ConnectivityStatus.wifi;
 
       case ConnectivityResult.none:
-        return ConnectionStatus.offline;
+        return ConnectivityStatus.offline;
 
       default:
-        return ConnectionStatus.offline;
+        return ConnectivityStatus.offline;
     }
   }
 }
 
-enum ConnectionStatus {
-  wifi,
-  mobileData,
-  offline,
-}
+
