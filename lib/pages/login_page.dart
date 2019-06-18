@@ -31,12 +31,7 @@ class _LoginPageState extends State<LoginPage> {
       setState(() {
         _token = token;
       });
-
     });
-
-    print(_token);
-    
-
   }
   @override
   Widget build(BuildContext context) {
@@ -123,8 +118,7 @@ class _LoginPageState extends State<LoginPage> {
     final wrapLogin = BaseWidget<LoginViewModel>(
       model: LoginViewModel(authenticationService: Provider.of(context)),
       child: form,
-      builder: (context,model,child) => Scaffold(
-          body: Column(
+      builder: (context,model,child) => Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               child,
@@ -140,8 +134,8 @@ class _LoginPageState extends State<LoginPage> {
               )
             ],
           )
-      ),
-    );
+      );
+    
 
     return form;
 

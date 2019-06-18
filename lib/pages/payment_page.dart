@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ut_order/utils/constans.dart';
 
 class PaymentPage extends StatelessWidget {
   static String tag = 'payment';
@@ -47,7 +48,7 @@ class _PaymentViewState extends State<PaymentView> {
               height: 20,
             ),
             GestureDetector(
-                onTap: () {Navigator.pushNamed(context, '/add_payment');},
+                onTap: () {Navigator.pushNamed(context, RoutePaths.TopUp);},
                 child: Text(
                   "Add Payment Method",
                   style: TextStyle(color: Colors.blue),

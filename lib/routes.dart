@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ut_order/pages/topup_page.dart';
 import 'pages/home_page.dart';
 import 'pages/login_page.dart';
 import 'pages/settings_page.dart';
@@ -34,6 +35,8 @@ class Router {
                 return MaterialPageRoute(builder: (_) => YourTripPage());
             case RoutePaths.Help:
                 return MaterialPageRoute(builder: (_) => HelpPage());
+            case RoutePaths.TopUp:
+                return MaterialPageRoute(builder: (_) => TopupPage());
             default:
                 return MaterialPageRoute(
                     builder: (_) => Scaffold(

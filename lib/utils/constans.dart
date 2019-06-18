@@ -1,3 +1,5 @@
+import 'package:flutter/widgets.dart';
+
 enum AlertAction {
   cancel,
   discard,
@@ -5,7 +7,7 @@ enum AlertAction {
   agree,
 }
 
-const String apiURL = "http://192.168.43.110/api";
+const String apiURL = "http://utama-trans.com/api";
 const bool devMode = false;
 const double textScaleFactor = 1.0;
 const google_android_api = 'AIzaSyAKl4qWeBABIDPoxo_CHvWuIfgkKoEzS7c';
@@ -22,5 +24,22 @@ class RoutePaths {
   static const String MyTrip = 'my-trip';
   static const String TopUp = 'topup';
   static const String Promo = 'promo';
+}
+
+class SizeConfig{
+  static MediaQueryData _mediaQueryData;
+  static double screenWidth;
+  static double screenHeight;
+  static double blockWidth;
+  static double blockHeight;
+
+  void init(BuildContext context) { 
+    _mediaQueryData = MediaQuery.of(context);
+    screenWidth = _mediaQueryData.size.width;
+    screenHeight = _mediaQueryData.size.height;
+    blockWidth = screenWidth / 100;
+    blockHeight = screenHeight / 100;
+    
+  }
 }
 
