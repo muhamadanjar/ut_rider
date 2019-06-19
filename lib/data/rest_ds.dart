@@ -21,6 +21,8 @@ class RestDatasource {
   static final ORDER_CAR =  BASE_URL + "/reguler";
   static final GET_PACKAGE =  BASE_URL + "/rent_package";
   static final GET_PROMO = BASE_URL + "/get_promo";
+  static final POST_RENTAL = BASE_URL + "reguler";
+  static final POST_TAXI = BASE_URL + "order";
   static final _API_KEY = "somerandomkey";
   final token = 'token';
   LocationData _currentLocation;
@@ -108,7 +110,6 @@ class RestDatasource {
   }
 
   Future<LatLng> getUserLocation() async {
-
     final location = new Location();
     try {
       _currentLocation = await location.getLocation();
@@ -158,18 +159,17 @@ class RestDatasource {
   }
   Future<dynamic> orderCar(Order order){
     var data = {
-      'trip_address_origin':'Bogor, West Java, Indonesia',
-   'trip_or_origin':'-6.551775799999999',
-    'trip_or_longitude':'106.6291304',
-    'trip_address_destination':'Cibinong, Bogor, West Java, Indonesia',
-    'trip_des_latitude':'-6.4901067',
-    'trip_des_longitude':'106.8306951',
-    'trip_bookby':'24',
-    'trip_job':'4',
-    'trip_total':'1910',
-    'duration':'5145',
-    'distance':'39720',
-    'rent_package':'1'
+      'trip_address_origin': order.origin,
+      'trip_or_origin':order.originLat,
+      'trip_or_longitude':order.originLng,
+      'trip_address_destination':order.destination,
+      'trip_des_latitude':order.originLat,
+      'trip_des_longitude':order.originLng,
+      'trip_bookby':'24',
+      'trip_job':'4',
+      'trip_total':'1910',
+      'duration':'5145',
+      'distance':'39720',
     };
     var token = getPrefs('token');
     var headers = {

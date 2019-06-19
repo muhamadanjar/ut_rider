@@ -1,12 +1,12 @@
 class Order{
   String origin;
   String destination;
-  String originLat;
-  String originLng;
-  String destinationLat;
-  String destinationLng;
-  String harga;
-  String typeOrder;
+  double originLat;
+  double originLng;
+  double destinationLat;
+  double destinationLng;
+  int harga;
+  int typeOrder;
   int duration;
   int distance;
   Order({
@@ -33,7 +33,6 @@ class Order{
         typeOrder: json['typeOrder'],
         duration: json['duration'],
         distance: json['distance'],
-
     );
   }
   factory Order.initialData() {
@@ -44,8 +43,8 @@ class Order{
       originLat:null,
       destinationLat: null,
       destinationLng:null,
-      harga: "0",
-      typeOrder: 'ride',
+      harga: 0,
+      typeOrder: 0,
       duration: 0,
       distance: 0,
     );
@@ -54,14 +53,14 @@ class Order{
     var map = new Map<String, dynamic>();
     map["origin"] = origin;
     map["destination"] = destination;
-    map['originLat'] = (originLat) as String;
-    map['originLng'] = (originLng) as String;
-    map['destinationLat'] = (destinationLat) as String;
-    map['destinationLng'] =  (destinationLng) as String;
-    map["harga"] = harga as String;
-    map["typeOrder"] = typeOrder as String;
-    map["duration"] = duration as String;
-    map["distance"] = distance as String;
+    map['originLat'] = originLat;
+    map['originLng'] = originLng;
+    map['destinationLat'] = destinationLat;
+    map['destinationLng'] =  destinationLng;
+    map["harga"] = harga;
+    map["typeOrder"] = typeOrder;
+    map["duration"] = duration;
+    map["distance"] = distance;
     return map;
   }
 }

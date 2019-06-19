@@ -40,7 +40,7 @@ class NotFoundPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: appTitle,),
+      appBar: AppBar(title: Text("NotFound"),),
       body: bodyData(),
     );
   }

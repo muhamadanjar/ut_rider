@@ -14,6 +14,20 @@ class OrderService{
   StreamController<Order> orderController = StreamController<Order>();
   Stream<Order> get order => orderController.stream;
 
+  Future<dynamic> showPrediction(context,center) async{
+    Prediction p = await PlacesAutocomplete.show(
+          context: context,
+          strictbounds: center == null ? false : true,
+          apiKey: kGoogleApiKey,
+          onError: (PlacesAutocompleteResponse response){
+            print(response);
+          },
+          mode: Mode.fullscreen,
+          language: "en",
+          location: center == null ? null : Location(center.latitude, center.longitude),
+          radius: center == null ? null : 10000);
+          return p;
+  }
 
   Future<Null> displayPrediction(Prediction p,type) async {
     if (p != null) {
@@ -24,13 +38,19 @@ class OrderService{
       final name =  detail.result.name;
       var order = Order();
       order.destination = name;
-      order.destinationLat = lat as String;
-      order.destinationLng = lng as String;
+      order.destinationLat = lat;
+      order.destinationLng = lng;
       order.typeOrder = type;
       orderController.add(order);
-
-
     }
   }
 
+  void setDataOrder(name,lat,lng){
+    var data = Order(origin: name,originLat: lat,originLng: lng);
+    orderController.add(data);
+  }
+
+  
+
+  
 }

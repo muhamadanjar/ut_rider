@@ -21,9 +21,9 @@ List<SingleChildCloneableWidget> dependentServices = [
   ProxyProvider<RestDatasource, AuthenticationService>(
     builder: (context, api, authenticationService) => AuthenticationService(api: api),
   ),
-  ProxyProvider<RestDatasource, OrderService>(
-    builder: (context, api, orderService) => OrderService(api: api),
-  )
+   ProxyProvider<RestDatasource, OrderService>(
+     builder: (context, api, orderService) => OrderService(api: api),
+   )
 ];
 
 List<SingleChildCloneableWidget> uiConsumableProviders = [

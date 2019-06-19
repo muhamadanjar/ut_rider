@@ -16,7 +16,6 @@ import 'package:ut_order/models/order.dart';
 import 'package:provider/provider.dart';
 const kGoogleApiKey = google_web_api;
 GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: kGoogleApiKey);
-
 final homeScaffoldKey = GlobalKey<ScaffoldState>();
 final searchScaffoldKey = GlobalKey<ScaffoldState>();
 TextEditingController _destinationText = new TextEditingController();
@@ -31,7 +30,6 @@ class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
 }
-
 class _HomePageState extends State<HomePage> {
   _HomePageState();
 
@@ -141,7 +139,6 @@ class _HomePageState extends State<HomePage> {
     final String polylineIdVal = 'polyline_id_$_polylineIdCounter';
     _polylineIdCounter++;
     final PolylineId polylineId = PolylineId(polylineIdVal);
-
     final Polyline polyline = Polyline(
       polylineId: polylineId,
       consumeTapEvents: true,
@@ -213,9 +210,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   void onHandleOrder() async{
-    var data = Order(origin: 'Medan',destination: 'Ayam',originLat: '0',originLng: '0',destinationLat: '0',destinationLng: '0',harga: '0',);
+    var data = Order(origin: 'Medan',destination: 'Ayam',originLat: 0,originLng: 0,destinationLat: 0,destinationLng: 0,harga: 0,);
     var response = await rs.orderCar(data);
-//    assert(response);
   }
 
   Future<LatLng> getUserLocation() async {
@@ -223,7 +219,6 @@ class _HomePageState extends State<HomePage> {
     final location = new LocationManager.Location();
     try {
       _currentLocation = await location.getLocation();
-      print(_currentLocation);
       final lat = _currentLocation.latitude;
       final lng = _currentLocation.longitude;
       final center = LatLng(lat, lng);
@@ -276,13 +271,9 @@ class _HomePageState extends State<HomePage> {
           onError: onError,
           mode: _mode,
           language: "en",
-//          components: [Component(Component.country, "en")],
           location: center == null ? null : Location(center.latitude, center.longitude),
           radius: center == null ? null : 10000);
-
-//      showDetailPlace(p.placeId);
-
-        displayPrediction(p, homeScaffoldKey.currentState);
+      displayPrediction(p, homeScaffoldKey.currentState);
 
     } catch (e) {
       return;
@@ -368,15 +359,13 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final dataProvider = Provider.of<User>(context);
-    
-    var con = Provider.of<ConnectivityStatus>(context);
-
+    final dataOrder = Provider.of<Order>(context);
     final drawer = Drawer(
       child: ListView(
         children: <Widget>[
           UserAccountsDrawerHeader(
             decoration: BoxDecoration(color: Colors.lightBlue),
-            accountName: Text("${dataProvider}"),
+            accountName: Text("${dataProvider.name}"),
             accountEmail: Row(
               children: <Widget>[
                 Text("5.0"),
@@ -424,7 +413,7 @@ class _HomePageState extends State<HomePage> {
                     color: Colors.black45,
                 ),
 
-                linkMenuDrawer('Legal', () {}),
+                linkMenuDrawer('Legal', () => Navigator.pushNamed(context, RoutePaths.Legal)),
               ]),
         ],
       ),
@@ -453,11 +442,7 @@ class _HomePageState extends State<HomePage> {
               borderRadius: BorderRadius.circular(3.0),
               color: Colors.white,
               boxShadow: [
-                BoxShadow(
-                    color: Colors.grey,
-                    offset: Offset(1.0, 5.0),
-                    blurRadius: 15,
-                    spreadRadius: 3)
+                BoxShadow(color: Colors.grey,offset: Offset(1.0, 5.0),blurRadius: 15,spreadRadius: 3)
               ],
             ),
             child: TextField(
@@ -581,7 +566,6 @@ class _HomePageState extends State<HomePage> {
     );
     final mapscreen = new Column(
       mainAxisAlignment: MainAxisAlignment.start,
-
       children: <Widget>[
         Container(
           height: MediaQuery.of(context).size.height,
@@ -717,6 +701,7 @@ class _HomePageState extends State<HomePage> {
     final networkwidget = NetworkWidget(
       child: mapscreen,
     );
+    print(dataOrder);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       key: homeScaffoldKey,
@@ -755,9 +740,7 @@ class _HomePageState extends State<HomePage> {
   LatLng _createLatLng(double lat, double lng) {
     return LatLng(lat, lng);
   }
-
-  Widget cardWidget(BuildContext context, String image, String title,
-      String subtitle, String desc, String amount, String days, Color color) {
+  Widget cardWidget(BuildContext context, String image, String title,String subtitle, String desc, String amount, String days, Color color) {
     return Material(
       elevation: 2.0,
       borderRadius: BorderRadius.circular(18.0),
@@ -905,14 +888,10 @@ Widget linkMenuDrawer(String title, Function onPressed) {
     child: Container(
       padding: EdgeInsets.symmetric(vertical: 13, horizontal: 15),
       width: double.infinity,
-      child: Text(
-        title,
-        style: TextStyle(fontSize: 15.0),
-      ),
+      child: Text(title,style: TextStyle(fontSize: 15.0),),
     ),
   );
 }
-
 
 Future<Null> displayPrediction(Prediction p, ScaffoldState scaffold) async {
   if (p != null) {
@@ -929,7 +908,6 @@ Future<Null> displayPrediction(Prediction p, ScaffoldState scaffold) async {
     );
   }
 }
-
 
 class CustomSearchScaffold extends PlacesAutocompleteWidget {
   CustomSearchScaffold()
@@ -984,9 +962,7 @@ class Uuid {
   final Random _random = Random();
 
   String generateV4() {
-    // Generate xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx / 8-4-4-4-12.
     final int special = 8 + _random.nextInt(4);
-
     return '${_bitsDigits(16, 4)}${_bitsDigits(16, 4)}-'
         '${_bitsDigits(16, 4)}-'
         '4${_bitsDigits(12, 3)}-'

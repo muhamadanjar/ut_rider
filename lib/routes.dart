@@ -9,6 +9,7 @@ import 'pages/your_trip_page.dart';
 import 'pages/help_page.dart';
 import 'pages/rental_page.dart';
 import 'pages/dashboard_page.dart';
+import 'pages/register_page.dart';
 import 'pages/notfound.dart';
 
 import 'utils/constans.dart';
@@ -30,6 +31,8 @@ class Router {
                 return MaterialPageRoute(builder: (_) => HomePage());
             case RoutePaths.Login:
                 return MaterialPageRoute(builder: (_) => LoginPage());
+            case RoutePaths.Register:
+                return MaterialPageRoute(builder: (_) => RegisterPage());
             case RoutePaths.OrderComplete:
                 return MaterialPageRoute(builder: (_) => OrderComplete());
             case RoutePaths.Settings:
