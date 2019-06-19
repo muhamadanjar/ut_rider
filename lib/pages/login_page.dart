@@ -14,7 +14,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  RestDatasource rs = new RestDatasource();
+  RestDatasource rs;
   String _username, _password, _token;
   final scaffoldKey = new GlobalKey<ScaffoldState>();
   final formKey = new GlobalKey<FormState>();
@@ -35,6 +35,7 @@ class _LoginPageState extends State<LoginPage> {
   }
   @override
   Widget build(BuildContext context) {
+    rs = Provider.of<RestDatasource>(context);
     final logo = Hero(
       tag: 'hero',
       child: CircleAvatar(
@@ -43,7 +44,6 @@ class _LoginPageState extends State<LoginPage> {
         child: Image.asset('assets/logo.png'),
       ),
     );
-
     final email = TextFormField(
       keyboardType: TextInputType.emailAddress,
       autofocus: false,
@@ -55,7 +55,6 @@ class _LoginPageState extends State<LoginPage> {
       ),
       onSaved: (value) => _username = value,
     );
-
     final password = TextFormField(
       autofocus: false,
       initialValue: 'password',
@@ -67,7 +66,6 @@ class _LoginPageState extends State<LoginPage> {
       ),
       onSaved: (value) => _password = value,
     );
-
     final loginButton = Padding(
       padding: EdgeInsets.symmetric(vertical: 16.0),
       child: Material(
@@ -83,7 +81,6 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
-
     final forgotLabel = FlatButton(
       child: Text(
         'Forgot password?',
@@ -91,7 +88,27 @@ class _LoginPageState extends State<LoginPage> {
       ),
       onPressed: () {},
     );
-    final form = Scaffold(
+    final form = Center(
+          child:
+          Form(
+            key: formKey,
+            child:ListView(
+              shrinkWrap: true,
+              padding: EdgeInsets.only(left: 24.0, right: 24.0),
+              children: <Widget>[
+                logo,
+                SizedBox(height: 48.0),
+                email,
+                SizedBox(height: 8.0),
+                password,
+                SizedBox(height: 24.0),
+
+              ],
+            ),
+          )
+
+    );
+    final scal = Scaffold(
       key: scaffoldKey,
       backgroundColor: Colors.white,
       body: Center(
@@ -114,30 +131,52 @@ class _LoginPageState extends State<LoginPage> {
             ),
           )
       ),
-    );
-    final wrapLogin = BaseWidget<LoginViewModel>(
-      model: LoginViewModel(authenticationService: Provider.of(context)),
-      child: form,
-      builder: (context,model,child) => Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              child,
-              model.busy
-                  ? CircularProgressIndicator()
-                  : FlatButton(
-                color: Colors.white,
-                child: Text(
-                  'Login',
-                  style: TextStyle(color: Colors.black),
-                ),
-                onPressed: _submit
-              )
-            ],
-          )
-      );
-    
 
-    return form;
+    );
+    final wraplogin = BaseWidget<LoginViewModel>(
+        model: LoginViewModel(authenticationService: Provider.of(context)),
+        child: form,
+        builder: (context, model, child){
+          return Scaffold(
+            key: scaffoldKey,
+            body: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                  child,
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 16.0),
+                    child: Material(
+                      borderRadius: BorderRadius.circular(30.0),
+                      shadowColor: Colors.lightBlueAccent.shade100,
+                      elevation: 5.0,
+                      child: model.busy ? CircularProgressIndicator():MaterialButton(
+                        minWidth: 200.0,
+                        height: 42.0,
+                        onPressed: (){
+                          final form = formKey.currentState;
+                          if (form.validate()) {
+                            setState(() => _isLoading = true);
+                            form.save();
+                            print("data $_username $_password");
+
+                            model.login(_username, _password).then((user){
+                              Navigator.of(context).pushNamed(HomePage.tag);
+                            });
+
+
+                          }
+                        },
+                        color: Colors.lightBlueAccent,
+                        child: Text('Log In', style: TextStyle(color: Colors.white)),
+                      ),
+                    ),
+                  )
+              ],
+            ),
+          );
+        },
+    );
+    return wraplogin;
 
   }
   void _submit() {

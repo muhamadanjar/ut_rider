@@ -5,7 +5,7 @@ import 'package:ut_order/enum/connection_status.dart';
 class ConnectivityService {
   ///Connection status controller....
   StreamController<ConnectivityStatus> connectivityController = StreamController<ConnectivityStatus>();
-  Stream<ConnectivityStatus> get connection => connectivityController.stream;
+
   ///Fetch the Connection Status...
   ConnectivityService() {
     Connectivity().onConnectivityChanged.listen((ConnectivityResult status) {
@@ -15,7 +15,7 @@ class ConnectivityService {
       connectivityController.add(_connectionStatus);
     });
   }
-
+  Stream<ConnectivityStatus> get connection => connectivityController.stream;
   //Converts the connectivity result into our enums
   //Currently the output id mobile, wifi,none.....
   ConnectivityStatus _networkStatus(ConnectivityResult status) {

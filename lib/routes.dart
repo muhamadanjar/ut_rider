@@ -7,13 +7,16 @@ import 'pages/payment_page.dart';
 import 'pages/order_complete.dart';
 import 'pages/your_trip_page.dart';
 import 'pages/help_page.dart';
+import 'pages/rental_page.dart';
+import 'pages/dashboard_page.dart';
+import 'pages/notfound.dart';
 
 import 'utils/constans.dart';
 final routes = <String, WidgetBuilder>{
     LoginPage.tag: (context) => LoginPage(),
     HomePage.tag: (context) => HomePage(),
-    SettingsPage.tag :(context) => SettingsPage(),
-    '/payment':(BuildContext context) => new PaymentPage(),
+    SettingsPage.tag:(context) => SettingsPage(),
+    PaymentPage.tag:(context) => PaymentPage(),
     '/search':(context) => CustomSearchScaffold(),
 
 };
@@ -21,6 +24,8 @@ final routes = <String, WidgetBuilder>{
 class Router {
     static Route<dynamic> generateRoute(RouteSettings settings) {
         switch (settings.name) {
+            case RoutePaths.Dashboard:
+                return MaterialPageRoute(builder: (_) => DashboardPage());
             case RoutePaths.Home:
                 return MaterialPageRoute(builder: (_) => HomePage());
             case RoutePaths.Login:
@@ -35,15 +40,12 @@ class Router {
                 return MaterialPageRoute(builder: (_) => YourTripPage());
             case RoutePaths.Help:
                 return MaterialPageRoute(builder: (_) => HelpPage());
+            case RoutePaths.Rental:
+                return MaterialPageRoute(builder: (_) => RentalPage());
             case RoutePaths.TopUp:
                 return MaterialPageRoute(builder: (_) => TopupPage());
             default:
-                return MaterialPageRoute(
-                    builder: (_) => Scaffold(
-                        body: Center(
-                            child: Text('No route defined for ${settings.name}'),
-                        ),
-                    ));
+                return MaterialPageRoute(builder: (_) => NotFoundPage());
         }
     }
 }

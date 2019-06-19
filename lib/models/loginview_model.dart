@@ -9,9 +9,9 @@ class LoginViewModel extends BaseModel {
     @required AuthenticationService authenticationService,
   }) : _authenticationService = authenticationService;
 
-  Future<bool> login(String userIdText) async {
+  Future<dynamic> login(String username,password) async {
     setBusy(true);
-    var success = await _authenticationService.getUser(userIdText);
+    var success = await _authenticationService.login(username,password);
     setBusy(false);
     return success;
   }

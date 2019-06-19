@@ -17,6 +17,7 @@ const google_web_api = 'AIzaSyAyGT-CSg1nb0YBLihgn8vk9zfbbkk-f1c';
 class RoutePaths {
   static const String Login = 'login';
   static const String Help = 'help';
+  static const String Dashboard = 'dashboard';
   static const String Home = 'home-page';
   static const String Settings = 'settings';
   static const String Payment = 'payment';
@@ -24,6 +25,7 @@ class RoutePaths {
   static const String MyTrip = 'my-trip';
   static const String TopUp = 'topup';
   static const String Promo = 'promo';
+  static const String Rental = 'rental';
 }
 
 class SizeConfig{

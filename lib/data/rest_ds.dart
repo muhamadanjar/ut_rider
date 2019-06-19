@@ -7,6 +7,7 @@ import 'package:ut_order/utils/constans.dart';
 import 'package:location/location.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'database_helper.dart';
+import 'package:ut_order/models/package.dart';
 class RestDatasource {
   NetworkUtil _networkUtil = new NetworkUtil();
 
@@ -18,6 +19,8 @@ class RestDatasource {
   static final SET_STATUS_ONLINE =  BASE_URL + "/user/changeonline";
   static final CHECK_JOB =  BASE_URL + "/driver/checkjob";
   static final ORDER_CAR =  BASE_URL + "/reguler";
+  static final GET_PACKAGE =  BASE_URL + "/rent_package";
+  static final GET_PROMO = BASE_URL + "/get_promo";
   static final _API_KEY = "somerandomkey";
   final token = 'token';
   LocationData _currentLocation;
@@ -119,7 +122,40 @@ class RestDatasource {
       return null;
     }
   }
+  Future<List> getPackage(type) async{
+    var response = await _networkUtil.get("${GET_PACKAGE}/${type}");
+    List list_package = new List();
+    var result =(response['data'] as List).forEach((f){
+        var data = new Map<String,dynamic>();
+        data['id'] = f['rp_id'];
+        data['name'] = f['rp_name'];
+        data['harga'] = f['rp_total_price'];
+        data['harga_km'] = f['rp_miles_km'];
+        data['harga_jam'] = f['rp_hour'];
+        data['harga_addkm'] = f['rp_add_mile_km'];
+        data['harga_addmenit'] = f['rp_add_min'];
+        list_package.add(data);
+      }
+    );
+    return list_package;
 
+
+
+  }
+  Future<List> getPromo() async{
+    var response = await _networkUtil.get("${GET_PROMO}");
+    var list_promo = new List();
+    var result = (response["data"] as List).forEach((f){
+      var data = new Map();
+      data["name"] =  f["name"];
+      data["kodepromo"] =  f["kode_promo"];
+      data["discount"] =  f["discount"];
+      list_promo.add(data);
+    });
+
+    return list_promo;
+
+  }
   Future<dynamic> orderCar(Order order){
     var data = {
       'trip_address_origin':'Bogor, West Java, Indonesia',

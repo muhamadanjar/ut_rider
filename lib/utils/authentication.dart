@@ -22,11 +22,12 @@ class AuthenticationService {
     return hasUser;
   }
 
-  Future<bool> login(String username,String password) async{
+  Future<User> login(String username,String password) async{
     var fetchUser = await _api.login(username, password);
     var hasUser = fetchUser != null;
     if(hasUser){
       _userController.add(fetchUser);
     }
+    return fetchUser;
   }
 }

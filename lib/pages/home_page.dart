@@ -248,12 +248,12 @@ class _HomePageState extends State<HomePage> {
 
     final location = Location(center.latitude, center.longitude);
     final result = await _places.searchNearbyWithRadius(location, 2500);
-    print(location);
     setState(() {
       this.isLoading = false;
       if (result.status == "OK") {
         this.places = result.results;
         result.results.forEach((f) {
+          _createLatLng(f.geometry.location.lat, f.geometry.location.lng);
 //          final markerOptions = MarkerOptions(
 //              position:
 //              LatLng(f.geometry.location.lat, f.geometry.location.lng),
@@ -399,6 +399,12 @@ class _HomePageState extends State<HomePage> {
           Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
+                linkMenuDrawer('Dashboard', () {
+                  Navigator.pushNamed(context, RoutePaths.Dashboard);
+                }),
+                linkMenuDrawer('Rental', () {
+                  Navigator.pushNamed(context, RoutePaths.Rental);
+                }),
                 linkMenuDrawer('Payment', () {
                   Navigator.pushNamed(context, RoutePaths.Payment);
                 }),
