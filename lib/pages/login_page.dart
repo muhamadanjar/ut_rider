@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ut_order/utils/constans.dart';
 import 'home_page.dart';
 import 'package:ut_order/data/rest_ds.dart';
 import '../models/user.dart';
@@ -170,7 +171,28 @@ class _LoginPageState extends State<LoginPage> {
                         child: Text('Log In', style: TextStyle(color: Colors.white)),
                       ),
                     ),
-                  )
+                ),
+                SizedBox(height: 15.0),
+                Row(
+                  children: <Widget>[
+                    Text("New to Utama Trans ?"),
+                    SizedBox(width: 5.0,),
+                    InkWell(
+                      onTap: (){
+                        Navigator.of(context).pushNamed(RoutePaths.Register);
+                      },
+                      child: Text("Register",
+                        style: TextStyle(
+                          color: Colors.green,
+                          fontFamily: 'Montserrat',
+                          fontWeight: FontWeight.bold,
+                          decoration: TextDecoration.underline
+                        ),
+                      ),
+                    )
+
+                  ],
+                )
               ],
             ),
           );
