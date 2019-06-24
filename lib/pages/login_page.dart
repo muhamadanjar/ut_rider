@@ -151,7 +151,7 @@ class _LoginPageState extends State<LoginPage> {
                       shadowColor: Colors.lightBlueAccent.shade100,
                       elevation: 5.0,
                       child: model.busy ? CircularProgressIndicator():MaterialButton(
-                        minWidth: 200.0,
+                        minWidth: 350.0,
                         height: 42.0,
                         onPressed: (){
                           final form = formKey.currentState;
@@ -183,7 +183,7 @@ class _LoginPageState extends State<LoginPage> {
                       },
                       child: Text("Register",
                         style: TextStyle(
-                          color: Colors.green,
+                          color: Colors.blue,
                           fontFamily: 'Montserrat',
                           fontWeight: FontWeight.bold,
                           decoration: TextDecoration.underline

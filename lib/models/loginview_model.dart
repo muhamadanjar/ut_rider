@@ -15,4 +15,11 @@ class LoginViewModel extends BaseModel {
     setBusy(false);
     return success;
   }
+
+  Future<dynamic> register(Map data) async{
+    setBusy(true);
+    var success = await _authenticationService.register(data);
+    setBusy(false);
+    return success;
+  }
 }

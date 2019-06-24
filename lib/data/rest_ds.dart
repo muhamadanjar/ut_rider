@@ -13,6 +13,7 @@ class RestDatasource {
 
   static final BASE_URL = apiURL;
   static final LOGIN_URL = BASE_URL + "/login";
+  static final REGISTER_URL = BASE_URL + "/register";
   static final LOGOUT_URL = BASE_URL + "/logout";
   static final UPDATE_LOCATION =  BASE_URL + "/user/update_position";
   static final GET_USER =  BASE_URL + "/user/details";
@@ -51,6 +52,35 @@ class RestDatasource {
     }).catchError((res){ return res;});
   }
 
+  Future<dynamic> register(Map mapData){
+    print("Map Data Register ${mapData}");
+    print(mapData['name']);
+    var data = {
+      "username": mapData['email'],
+      "password": (mapData["password"] as String),
+      "c_password": (mapData["c_password"] as String),
+      "email": (mapData["email"] as String),
+      "name": (mapData["name"] as String),
+      "no_telepon": (mapData['no_telepon'] as String),
+
+      // "username":"testing",
+      // "password":"testing123",
+      // "c_password":"testing123",
+      // "email":"testing1234@example.com",
+      // "name":"Testing user",
+      // "no_telepon":"08790843370472",
+    };
+    var headers ={
+      'Accept': 'application/json',
+    };
+
+    _networkUtil.post(REGISTER_URL,body:data,headers: headers).then((dynamic res){
+      print("Print Response ${res}");
+      if(res['status']){
+        return res['data'];
+      }
+    });
+  }
   Future<dynamic> logout(){
     var db = new DatabaseHelper();
     return _networkUtil.get(LOGOUT_URL).then((dynamic res)=>{

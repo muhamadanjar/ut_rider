@@ -30,4 +30,14 @@ class AuthenticationService {
     }
     return fetchUser;
   }
+
+  Future<Map> register(Map mapData) async{
+    var dataUser = await _api.register(mapData);
+    var hasUser = dataUser != null;
+    if(hasUser){
+      _userController.add(dataUser);
+    }
+    return dataUser;
+    
+  }
 }
