@@ -33,9 +33,12 @@ class AuthenticationService {
 
   Future<Map> register(Map mapData) async{
     var dataUser = await _api.register(mapData);
+    
     var hasUser = dataUser != null;
-    if(hasUser){
+    if(hasUser && dataUser['status']){
       _userController.add(dataUser);
+    }else{
+      print("Print user ${dataUser['error']}");
     }
     return dataUser;
     

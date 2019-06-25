@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:ut_order/utils/network_util.dart';
 import 'package:ut_order/models/user.dart';
 import 'package:ut_order/models/order.dart';
@@ -53,8 +54,8 @@ class RestDatasource {
   }
 
   Future<dynamic> register(Map mapData){
-    print("Map Data Register ${mapData}");
-    print(mapData['name']);
+    
+    
     var data = {
       "username": mapData['email'],
       "password": (mapData["password"] as String),
@@ -62,24 +63,16 @@ class RestDatasource {
       "email": (mapData["email"] as String),
       "name": (mapData["name"] as String),
       "no_telepon": (mapData['no_telepon'] as String),
-
-      // "username":"testing",
-      // "password":"testing123",
-      // "c_password":"testing123",
-      // "email":"testing1234@example.com",
-      // "name":"Testing user",
-      // "no_telepon":"08790843370472",
     };
     var headers ={
       'Accept': 'application/json',
     };
 
-    _networkUtil.post(REGISTER_URL,body:data,headers: headers).then((dynamic res){
-      print("Print Response ${res}");
-      if(res['status']){
-        return res['data'];
-      }
-    });
+    return _networkUtil.post(REGISTER_URL,body:data,headers: headers).then((dynamic res){
+      return res;
+    });  
+    
+
   }
   Future<dynamic> logout(){
     var db = new DatabaseHelper();

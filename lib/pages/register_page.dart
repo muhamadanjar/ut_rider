@@ -34,7 +34,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           Container(
                             padding: EdgeInsets.fromLTRB(15.0, 110.0, 0.0, 0.0),
                             child: Text(
-                              'Signup',
+                              'Daftar',
                               style:
                                   TextStyle(fontSize: 50.0, fontWeight: FontWeight.bold),
                             ),
@@ -126,10 +126,11 @@ class _RegisterPageState extends State<RegisterPage> {
                             child: RaisedButton (
                               // padding: EdgeInsets.only(left: 10,right: 10.0),
                               onPressed: (){
-                                var data = _submit();
+                                var data = _storeToData();
                                 model.register(data).then((v){
-                                  print("Pendaftaran Berhasil");
-                                  print("${v}");
+                                  if(v['status']){
+                                    print("Pendaftaran Berhasil");
+                                  }
 
                                 });
                               },
@@ -159,11 +160,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                   Navigator.of(context).pop();
                                 },
                                 child: Center(
-                                      child: Text('Kembali',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontFamily: 'Montserrat')),
-                                    ),
+                                  child: Text('Kembali',style: TextStyle(fontWeight: FontWeight.bold,fontFamily: 'Montserrat')),
+                                ),
                                 
                                 
                               ),
@@ -187,7 +185,7 @@ class _RegisterPageState extends State<RegisterPage> {
       _agreedToTOS = newValue;
     });
   }
-  Map _submit() {
+  Map _storeToData() {
     final form = _formKey.currentState;
     if(form.validate()){
       form.save();
