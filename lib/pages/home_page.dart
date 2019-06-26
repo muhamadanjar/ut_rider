@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:ut_order/components/menu_drawer.dart';
 import 'package:ut_order/components/network.dart';
 //import 'package:ut_order/components/functionalButton.dart';
-import 'package:ut_order/enum/connection_status.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:location/location.dart' as LocationManager;
@@ -33,7 +33,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   _HomePageState();
 
-  GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
+  // GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
   Completer<GoogleMapController> _controller = Completer();
   Map<PolylineId, Polyline> polylines = <PolylineId, Polyline>{};
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
@@ -361,62 +361,8 @@ class _HomePageState extends State<HomePage> {
     final dataProvider = Provider.of<User>(context);
     final dataOrder = Provider.of<Order>(context);
     final drawer = Drawer(
-      child: ListView(
-        children: <Widget>[
-          UserAccountsDrawerHeader(
-            decoration: BoxDecoration(color: Colors.lightBlue),
-            accountName: Text("${dataProvider.name}"),
-            accountEmail: Row(
-              children: <Widget>[
-                Text("5.0"),
-                Icon(
-                  Icons.star,
-                  color: Colors.white,
-                  size: 12,
-                )
-              ],
-            ),
-            currentAccountPicture: ClipOval(
-              child: Image.asset(
-                "assets/avatar5.png",
-                width: 10,
-                height: 10,
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                linkMenuDrawer('Dashboard', () {
-                  Navigator.pushNamed(context, RoutePaths.Dashboard);
-                }),
-                linkMenuDrawer('Rental', () {
-                  Navigator.pushNamed(context, RoutePaths.Rental);
-                }),
-                linkMenuDrawer('Payment', () {
-                  Navigator.pushNamed(context, RoutePaths.Payment);
-                }),
-                linkMenuDrawer('Your Trips', () {
-                  Navigator.pushNamed(context, RoutePaths.MyTrip);
-                }),
-                linkMenuDrawer('Settings', () {
-                  Navigator.pushNamed(context, RoutePaths.Settings);
-                }),
-                linkMenuDrawer('Help', () {
-                  Navigator.pushNamed(context, RoutePaths.Help);
-                }),
-                linkMenuDrawer('Order Complete', () {
-                  Navigator.pushNamed(context, RoutePaths.OrderComplete);
-                }),
-                Divider(
-                    color: Colors.black45,
-                ),
-
-                linkMenuDrawer('Legal', () => Navigator.pushNamed(context, RoutePaths.Legal)),
-              ]),
-        ],
-      ),
+      child: MenuHome(UserName: "User")
+      
     );
     final body = Stack(
       children: <Widget>[
