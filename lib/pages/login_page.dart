@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ut_order/pages/dashboard_page.dart';
 import 'package:ut_order/utils/constans.dart';
 import 'home_page.dart';
 import 'package:ut_order/data/rest_ds.dart';
@@ -161,7 +162,7 @@ class _LoginPageState extends State<LoginPage> {
                             print("data $_username $_password");
 
                             model.login(_username, _password).then((user){
-                              Navigator.of(context).pushNamed(HomePage.tag);
+                              Navigator.of(context).pushReplacementNamed(DashboardPage.tag);
                             });
 
 

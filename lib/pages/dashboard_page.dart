@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ut_order/utils/constans.dart';
+
+BuildContext _ctx;
 class DashboardPage extends StatefulWidget {
   static String tag = RoutePaths.Dashboard;
   DashboardPage({Key key, this.title}) : super(key: key);
@@ -12,6 +14,7 @@ class DashboardPage extends StatefulWidget {
 class _DashboardPageState extends State<DashboardPage> {
   @override
   Widget build(BuildContext context) {
+    _ctx = context;
     return Scaffold(
       appBar: AppBar(
         title: Text("Dashboard"),
@@ -24,21 +27,16 @@ class _DashboardPageState extends State<DashboardPage> {
       ),
       body: ListView(
         children: <Widget>[
-          Padding(
-            padding: EdgeInsets.all(10.0),
+          Profile(
+            name: "Customer 1",
+            imgUrl: "https://i.pravatar.cc/200",
           ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              MenuUtama(),
-              Container(color: Colors.blue,)
-            ],
-
-
+          Divider(),
+          MenuUtama(
+            menuList: menuUtamaItem,
           ),
-
-          Promo()
+          Promo(),
+          Promo(),
         ],
       ),
     );
@@ -74,8 +72,8 @@ class Promo extends StatelessWidget {
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
-                        Colors.blue,
-                        Colors.blue[800],
+                        Color.fromARGB(100, 176, 223, 229),
+                        Color.fromARGB(100, 0, 142, 204)
                       ]),
                   borderRadius: BorderRadius.circular(8.0),
                 ),
@@ -120,12 +118,12 @@ class Promo extends StatelessWidget {
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                         colors: [
-                          Colors.blue,
-                          Colors.blue[800],
+                          Color.fromARGB(100, 176, 223, 229),
+                          Color.fromARGB(100, 0, 142, 204)
                         ]),
                     borderRadius: BorderRadius.circular(8.0),
                     image: DecorationImage(
-                        image: AssetImage('images/promo.jpeg'))),
+                        image: NetworkImage("https://via.placeholder.com/300x150"))),
                 margin: EdgeInsets.only(left: 10.0),
                 height: 150.0,
                 width: 300.0,
@@ -141,12 +139,18 @@ class Promo extends StatelessWidget {
 
 
 class MenuUtama extends StatelessWidget {
+  List menuList;
+  MenuUtama({this.menuList});
   @override
   Widget build(BuildContext context) {
     return GridView.count(
       shrinkWrap: true,
-      crossAxisCount: 5,
-      children: menuUtamaItem,
+      crossAxisCount: 2,
+      crossAxisSpacing: 4.0,
+      mainAxisSpacing: 4.0,
+      childAspectRatio: MediaQuery.of(context).size.width /
+              (MediaQuery.of(context).size.height / 2),
+      children: menuList,
     );
   }
 }
@@ -156,18 +160,22 @@ List<MenuUtamaItems> menuUtamaItem = [
     icon: Icons.local_taxi,
     colorBox: Colors.blue,
     colorIcon: Colors.white,
-    onPress: (){},
+    onPress: (){
+      print(RoutePaths.Rental);
+      Navigator.pushNamed(_ctx, RoutePaths.Rental);
+    },
   ),
   MenuUtamaItems(
     title: "Reguler",
     icon: Icons.local_taxi,
-    colorBox: Colors.teal[900],
+    colorBox: Colors.grey,
     colorIcon: Colors.white,
-    onPress: (){},
-  )
+    onPress: (){
+      Navigator.pushNamed(_ctx, RoutePaths.Rental);
+    },
+  ),
 
 ];
-
 class MenuUtamaItems extends StatelessWidget {
   MenuUtamaItems({this.title, this.icon, this.colorBox, this.colorIcon,this.onPress});
   final String title;
@@ -176,37 +184,95 @@ class MenuUtamaItems extends StatelessWidget {
   final Function onPress;
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return InkWell(
         onTap: onPress,
-        child:
-    Column(
-      children: <Widget>[
-
-        Container(
-            width: 50.0,
-            height: 50.0,
-            decoration: BoxDecoration(
-              color: colorBox,
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              icon,
-              color: colorIcon,
-            )),
-        Padding(
-          padding: const EdgeInsets.only(top: 2.0),
-          child: Text(
-            title,
-            style: TextStyle(
-              fontSize: 12.0,
-            ),
-            textAlign: TextAlign.center,
+        child:Card(
+          color: Colors.white,
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                Container(
+                  width: SizeConfig.blockWidth * 15,
+                  height: SizeConfig.blockHeight * 15,
+                  decoration: BoxDecoration(
+                    color: colorBox,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    icon,
+                    color: colorIcon,
+                    size: 40.0,
+                  )
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 2.0),
+                  child: Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 16.0,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                )
+      ],
+      ),
           ),
         )
-      ],
-    )
     );
   }
 }
 
-
+class Profile extends StatelessWidget {
+  String imgUrl;
+  String name;
+  Profile({this.name,this.imgUrl});
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: ListTile(
+        leading: Container(
+          width: 50.0,
+          height: 50.0,
+          decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              image: DecorationImage(
+                  fit: BoxFit.fill,
+                  image: NetworkImage(imgUrl))),
+        ),
+        title: Text(
+          name,
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        subtitle: Row(
+          children: <Widget>[
+            RaisedButton.icon(
+              icon: Icon(Icons.album),
+              label: Text("0 Poin"),
+              onPressed: () {},
+              color: Colors.grey[200],
+              elevation: 0.0,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0)),
+            ),
+            Padding(
+              padding: EdgeInsets.all(8.0),
+            ),
+            RaisedButton.icon(
+              icon: Icon(Icons.attach_money),
+              label: Text("Saldo"),
+              onPressed: () {},
+              color: Colors.grey[200],
+              elevation: 0.0,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0)),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
