@@ -618,7 +618,7 @@ class _HomePageState extends State<HomePage> {
                     'ID: 123456789',
                     'Medan To Binjai',
                     '\Rp. 200 K',
-                    'Due in 3 days',
+                    '',
                     Colors.blue[900]),
               ),
               Positioned(

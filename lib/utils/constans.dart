@@ -29,6 +29,7 @@ class RoutePaths {
   static const String Rental = 'rental';
   static const String Forgot = 'forgot';
   static const String Legal = 'legal';
+
 }
 
 class SizeConfig{

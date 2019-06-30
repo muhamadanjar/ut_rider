@@ -36,7 +36,6 @@ class _DashboardPageState extends State<DashboardPage> {
             menuList: menuUtamaItem,
           ),
           Promo(),
-          Promo(),
         ],
       ),
     );
@@ -101,12 +100,17 @@ class Promo extends StatelessWidget {
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        'Lihat Semua \nPromo',
-                        style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            color: Colors.white,
-                            fontSize: 18.0),
+                      child: InkWell(
+                        onTap: (){
+                          Navigator.pushNamed(context, RoutePaths.Promo);
+                        },
+                        child: Text(
+                          'Lihat Semua \nPromo',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
+                              fontSize: 18.0),
+                        ),
                       ),
                     )
                   ],
@@ -171,7 +175,7 @@ List<MenuUtamaItems> menuUtamaItem = [
     colorBox: Colors.grey,
     colorIcon: Colors.white,
     onPress: (){
-      Navigator.pushNamed(_ctx, RoutePaths.Rental);
+      Navigator.pushNamed(_ctx, RoutePaths.Home);
     },
   ),
 

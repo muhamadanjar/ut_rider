@@ -11,6 +11,7 @@ import 'pages/rental_page.dart';
 import 'pages/dashboard_page.dart';
 import 'pages/register_page.dart';
 import 'pages/notfound.dart';
+import 'pages/promo_page.dart';
 
 import 'utils/constans.dart';
 final routes = <String, WidgetBuilder>{
@@ -47,6 +48,8 @@ class Router {
                 return MaterialPageRoute(builder: (_) => RentalPage());
             case RoutePaths.TopUp:
                 return MaterialPageRoute(builder: (_) => TopupPage());
+            case RoutePaths.Promo:
+                return MaterialPageRoute(builder: (_) => PromoPage());
             default:
                 return MaterialPageRoute(builder: (_) => NotFoundPage());
         }
