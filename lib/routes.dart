@@ -12,7 +12,8 @@ import 'pages/dashboard_page.dart';
 import 'pages/register_page.dart';
 import 'pages/notfound.dart';
 import 'pages/promo_page.dart';
-
+import 'pages/profil_page.dart';
+import 'pages/notification_page.dart';
 import 'utils/constans.dart';
 final routes = <String, WidgetBuilder>{
     LoginPage.tag: (context) => LoginPage(),
@@ -28,6 +29,8 @@ class Router {
         switch (settings.name) {
             case RoutePaths.Dashboard:
                 return MaterialPageRoute(builder: (_) => DashboardPage());
+            case RoutePaths.Profile:
+                return MaterialPageRoute(builder: (_) => ProfilPage());
             case RoutePaths.Home:
                 return MaterialPageRoute(builder: (_) => HomePage());
             case RoutePaths.Login:
@@ -50,6 +53,8 @@ class Router {
                 return MaterialPageRoute(builder: (_) => TopupPage());
             case RoutePaths.Promo:
                 return MaterialPageRoute(builder: (_) => PromoPage());
+            case RoutePaths.Notifications:
+                return MaterialPageRoute(builder: (_) => NotificationPage());
             default:
                 return MaterialPageRoute(builder: (_) => NotFoundPage());
         }

@@ -35,8 +35,7 @@ Widget tripDetailsWidget(bool value) {
       ));
 }
 
-Widget flightDetailsWidget(IconData icon, String title, int index,
-    {String subtitle}) {
+Widget flightDetailsWidget(IconData icon, String title, int index, {String subtitle}) {
   return ListTile(
     title: Text(title, style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
     subtitle: index == 3

@@ -38,14 +38,14 @@ class _MenuHomeState extends State<MenuHome> {
           Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                linkMenuDrawer('Dashboard', () {
-                  Navigator.pushNamed(context, RoutePaths.Dashboard);
-                }),
-                linkMenuDrawer('Rental', () {
-                  Navigator.pushNamed(context, RoutePaths.Rental);
+                linkMenuDrawer('Profil', () {
+                  Navigator.pushNamed(context, RoutePaths.Profile);
                 }),
                 linkMenuDrawer('Payment', () {
                   Navigator.pushNamed(context, RoutePaths.Payment);
+                }),
+                linkMenuDrawer('Saldo', () {
+                  Navigator.pushNamed(context, RoutePaths.TopUp);
                 }),
                 linkMenuDrawer('Your Trips', () {
                   Navigator.pushNamed(context, RoutePaths.MyTrip);
@@ -53,12 +53,13 @@ class _MenuHomeState extends State<MenuHome> {
                 linkMenuDrawer('Settings', () {
                   Navigator.pushNamed(context, RoutePaths.Settings);
                 }),
+                linkMenuDrawer('Pemberitahuan', () {
+                  Navigator.pushNamed(context, RoutePaths.Notifications);
+                }),
                 linkMenuDrawer('Help', () {
                   Navigator.pushNamed(context, RoutePaths.Help);
                 }),
-                linkMenuDrawer('Order Complete', () {
-                  Navigator.pushNamed(context, RoutePaths.OrderComplete);
-                }),
+
                 Divider(
                     color: Colors.black45,
                 ),

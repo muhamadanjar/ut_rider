@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ut_order/utils/constans.dart';
-
+import 'package:ut_order/components/menu_drawer.dart';
+import '../models/promo.dart';
+import '../data/rest_ds.dart';
 BuildContext _ctx;
 class DashboardPage extends StatefulWidget {
   static String tag = RoutePaths.Dashboard;
@@ -12,10 +14,23 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
+  RestDatasource _rd =  new RestDatasource();
+  List<Promo> lPromo = [];
+  @override
+  void initState() {
+    _rd.getPromo().then((data){
+      lPromo = data;
+    });
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     _ctx = context;
+    final drawer = Drawer(
+        child: MenuHome(UserName: "User")
+    );
     return Scaffold(
+      drawer: drawer,
       appBar: AppBar(
         title: Text("Dashboard"),
         actions: <Widget>[
@@ -35,7 +50,7 @@ class _DashboardPageState extends State<DashboardPage> {
           MenuUtama(
             menuList: menuUtamaItem,
           ),
-          Promo(),
+          PromoWidget(list_promo: lPromo,),
         ],
       ),
     );
@@ -43,9 +58,12 @@ class _DashboardPageState extends State<DashboardPage> {
 }
 
 
-class Promo extends StatelessWidget {
+class PromoWidget extends StatelessWidget {
+  List<Promo> list_promo = [];
+  PromoWidget({this.list_promo});
   @override
   Widget build(BuildContext context) {
+
     return Column(
       children: <Widget>[
         ListTile(
@@ -62,78 +80,100 @@ class Promo extends StatelessWidget {
           width: double.infinity,
           height: 150.0,
           padding: const EdgeInsets.only(left: 8.0),
-          child: ListView(
-            scrollDirection: Axis.horizontal,
-            children: <Widget>[
-              Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Color.fromARGB(100, 176, 223, 229),
-                        Color.fromARGB(100, 0, 142, 204)
-                      ]),
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                // padding: EdgeInsets.all(8.0),
-                margin: EdgeInsets.only(left: 8.0),
-                height: 150.0,
-                width: 100.0,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Container(
-                        decoration: BoxDecoration(
-                            color: Colors.red[300],
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.elliptical(20.0,20.0),
-                                bottomRight: Radius.elliptical(150.0, 150.0)
-                            )
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 2.0, left: 5.0, right: 30.0, bottom: 30.0),
-                          child: Text('%', style: TextStyle(fontSize: 24.0,color: Colors.white),),
-                        )),
-                    Expanded(
-                      child: Container(),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: InkWell(
-                        onTap: (){
-                          Navigator.pushNamed(context, RoutePaths.Promo);
-                        },
-                        child: Text(
-                          'Lihat Semua \nPromo',
-                          style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white,
-                              fontSize: 18.0),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              Container(
-                decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Color.fromARGB(100, 176, 223, 229),
-                          Color.fromARGB(100, 0, 142, 204)
-                        ]),
-                    borderRadius: BorderRadius.circular(8.0),
-                    image: DecorationImage(
-                        image: NetworkImage("https://via.placeholder.com/300x150"))),
-                margin: EdgeInsets.only(left: 10.0),
-                height: 150.0,
-                width: 300.0,
-                child: null,
-              )
-            ],
+//          child: ListView(
+//            scrollDirection: Axis.horizontal,
+//            children: <Widget>[
+//              Container(
+//                decoration: BoxDecoration(
+//                  gradient: LinearGradient(
+//                      begin: Alignment.topCenter,
+//                      end: Alignment.bottomCenter,
+//                      colors: [
+//                        Color.fromARGB(100, 176, 223, 229),
+//                        Color.fromARGB(100, 0, 142, 204)
+//                      ]),
+//                  borderRadius: BorderRadius.circular(8.0),
+//                ),
+//                // padding: EdgeInsets.all(8.0),
+//                margin: EdgeInsets.only(left: 8.0),
+//                height: 150.0,
+//                width: 100.0,
+//                child: Column(
+//                  crossAxisAlignment: CrossAxisAlignment.start,
+//                  children: <Widget>[
+//                    Container(
+//                        decoration: BoxDecoration(
+//                            color: Colors.red[300],
+//                            borderRadius: BorderRadius.only(
+//                                topLeft: Radius.elliptical(20.0,20.0),
+//                                bottomRight: Radius.elliptical(150.0, 150.0)
+//                            )
+//                        ),
+//                        child: Padding(
+//                          padding: const EdgeInsets.only(top: 2.0, left: 5.0, right: 30.0, bottom: 30.0),
+//                          child: Text('%', style: TextStyle(fontSize: 24.0,color: Colors.white),),
+//                        )),
+//                    Expanded(
+//                      child: Container(),
+//                    ),
+//                    Padding(
+//                      padding: const EdgeInsets.all(8.0),
+//                      child: InkWell(
+//                        onTap: (){
+//                          Navigator.pushNamed(context, RoutePaths.Promo);
+//                        },
+//                        child: Text(
+//                          'Lihat Semua \nPromo',
+//                          style: TextStyle(
+//                              fontWeight: FontWeight.w500,
+//                              color: Colors.white,
+//                              fontSize: 18.0),
+//                        ),
+//                      ),
+//                    )
+//                  ],
+//                ),
+//              ),
+//              Container(
+//                decoration: BoxDecoration(
+//                    gradient: LinearGradient(
+//                        begin: Alignment.topCenter,
+//                        end: Alignment.bottomCenter,
+//                        colors: [
+//                          Color.fromARGB(100, 176, 223, 229),
+//                          Color.fromARGB(100, 0, 142, 204)
+//                        ]),
+//                    borderRadius: BorderRadius.circular(8.0),
+//                    image: DecorationImage(
+//                        image: NetworkImage("https://via.placeholder.com/300x150"))),
+//                margin: EdgeInsets.only(left: 10.0),
+//                height: 150.0,
+//                width: 300.0,
+//                child: null,
+//              )
+//            ],
+//          ),
+          child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: list_promo.length,
+              itemBuilder: (context,idx){
+                return Container(
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Color.fromARGB(100, 176, 223, 229),
+                            Color.fromARGB(100, 0, 142, 204)
+                          ]),
+                      borderRadius: BorderRadius.circular(8.0),
+                      image: DecorationImage(
+                          image: NetworkImage(list_promo[idx].imgUrl))),
+                  margin: EdgeInsets.only(left: 10.0),
+                  height: 150.0,
+                  width: 300.0,
+                );
+              }
           ),
         )
       ],

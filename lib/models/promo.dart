@@ -7,7 +7,7 @@ class Promo {
   Promo({this.name,this.kode_promo,this.discount,this.imgUrl,this.description});
 
   factory Promo.fromMap(Map json){
-    return new Promo(name: json['name'],kode_promo: json['kode_promo'],discount: json['discount']);
+    return new Promo(name: json['name'],kode_promo: json['kode_promo'],discount: json['discount'],imgUrl: json['imgUrl']);
   }
 
   Map<String,dynamic> toMap(){

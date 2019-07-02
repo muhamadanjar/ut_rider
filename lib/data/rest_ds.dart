@@ -1,14 +1,13 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:ut_order/utils/network_util.dart';
 import 'package:ut_order/models/user.dart';
 import 'package:ut_order/models/order.dart';
+import 'package:ut_order/models/promo.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ut_order/utils/constans.dart';
 import 'package:location/location.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'database_helper.dart';
-import 'package:ut_order/models/package.dart';
 class RestDatasource {
   NetworkUtil _networkUtil = new NetworkUtil();
 
@@ -149,7 +148,7 @@ class RestDatasource {
   Future<List> getPackage(type) async{
     var response = await _networkUtil.get("${GET_PACKAGE}/${type}");
     List list_package = new List();
-    var result =(response['data'] as List).forEach((f){
+    (response['data'] as List).forEach((f){
         var data = new Map<String,dynamic>();
         data['id'] = f['rp_id'];
         data['name'] = f['rp_name'];
@@ -166,14 +165,11 @@ class RestDatasource {
 
 
   }
-  Future<List> getPromo() async{
+  Future<List<Promo>> getPromo() async{
     var response = await _networkUtil.get("${GET_PROMO}");
-    var list_promo = new List();
-    var result = (response["data"] as List).forEach((f){
-      var data = new Map();
-      data["name"] =  f["name"];
-      data["kodepromo"] =  f["kode_promo"];
-      data["discount"] =  f["discount"];
+    var list_promo = new List<Promo>();
+    (response["data"] as List).forEach((f){
+      var data = Promo(name: f["name"],kode_promo: f["kode_promo"],discount: int.parse(f["discount"]),imgUrl: f["image_path"]);
       list_promo.add(data);
     });
 

@@ -11,6 +11,7 @@ import '../data/rest_ds.dart';
 import '../utils/constans.dart';
 import 'place_detail.dart';
 import '../models/user.dart';
+import '../models/place_item_res.dart';
 import 'dart:math';
 import 'package:ut_order/models/order.dart';
 import 'package:provider/provider.dart';
@@ -37,6 +38,7 @@ class _HomePageState extends State<HomePage> {
   Completer<GoogleMapController> _controller = Completer();
   Map<PolylineId, Polyline> polylines = <PolylineId, Polyline>{};
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
+  BitmapDescriptor _markerIcon;
   int _polylineIdCounter = 1;
   PolylineId selectedPolyline;
   bool isLoading = false;
@@ -175,6 +177,29 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       polylines[polylineId] = polyline;
     });
+  }
+
+  void onPlaceSelected(PlaceItemRes place, bool fromAddress) {
+    var mkId = fromAddress ? "from_address" : "to_address";
+    _addMarker(mkId, place);
+//    _moveCamera();
+//    _checkDrawPolyline();
+  }
+
+  void _addMarker(String mkId, PlaceItemRes place) async {
+    // remove old
+    markers.remove(mkId);
+//    mapController.clearMarkers();
+
+    markers[MarkerId(mkId)] = Marker(
+//        icon: _markerIcon,
+        markerId:MarkerId(mkId),
+        position: LatLng(place.lat, place.lng),
+        infoWindow: InfoWindow(title: place.name,snippet: place.address));
+      print(markers);
+//    for (var m in markers.values) {
+//      await _mapController.addMarker(m.options);
+//    }
   }
 
   Future<void> _homeCameraPosition() async {
@@ -362,7 +387,6 @@ class _HomePageState extends State<HomePage> {
     final dataOrder = Provider.of<Order>(context);
     final drawer = Drawer(
       child: MenuHome(UserName: "User")
-      
     );
     final body = Stack(
       children: <Widget>[
