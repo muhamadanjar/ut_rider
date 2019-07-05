@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:ut_order/utils/constans.dart';
 import 'package:ut_order/components/menu_drawer.dart';
+import 'package:provider/provider.dart';
+import 'package:ut_order/utils/promoService.dart';
 import '../models/promo.dart';
+import '../models/user.dart';
 import '../data/rest_ds.dart';
 BuildContext _ctx;
 class DashboardPage extends StatefulWidget {
@@ -25,9 +28,11 @@ class _DashboardPageState extends State<DashboardPage> {
   }
   @override
   Widget build(BuildContext context) {
+    final dp = Provider.of<User>(context);
+    print(dp);
     _ctx = context;
     final drawer = Drawer(
-        child: MenuHome(UserName: "User")
+        child: HomeMenu(name: dp.name)
     );
     return Scaffold(
       drawer: drawer,
@@ -50,6 +55,23 @@ class _DashboardPageState extends State<DashboardPage> {
           MenuUtama(
             menuList: menuUtamaItem,
           ),
+//          StreamBuilder<List<Promo>>(
+//            stream: StreamP,
+//            builder: (BuildContext context,AsyncSnapshot<List<Promo>> snapshot){
+//              if (snapshot.hasError) {
+//                return Text('Error: ${snapshot.error}');
+//              }
+//              switch (snapshot.connectionState) {
+//                case ConnectionState.waiting:
+//                  return const Text('Loading...');
+//                default:
+//                  if (snapshot.data.isEmpty) {
+//                    return const Text("Data tidak ada");
+//                  }
+//                  return PromoWidget(list_promo: snapshot.data,);
+//              }
+//            }
+//          ),
           PromoWidget(list_promo: lPromo,),
         ],
       ),
@@ -73,91 +95,72 @@ class PromoWidget extends StatelessWidget {
           ),
           trailing: IconButton(
             icon: Icon(Icons.keyboard_arrow_right),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pushNamed(context, RoutePaths.Promo);
+            },
           ),
         ),
         Container(
           width: double.infinity,
           height: 150.0,
           padding: const EdgeInsets.only(left: 8.0),
-//          child: ListView(
-//            scrollDirection: Axis.horizontal,
-//            children: <Widget>[
-//              Container(
-//                decoration: BoxDecoration(
-//                  gradient: LinearGradient(
-//                      begin: Alignment.topCenter,
-//                      end: Alignment.bottomCenter,
-//                      colors: [
-//                        Color.fromARGB(100, 176, 223, 229),
-//                        Color.fromARGB(100, 0, 142, 204)
-//                      ]),
-//                  borderRadius: BorderRadius.circular(8.0),
-//                ),
-//                // padding: EdgeInsets.all(8.0),
-//                margin: EdgeInsets.only(left: 8.0),
-//                height: 150.0,
-//                width: 100.0,
-//                child: Column(
-//                  crossAxisAlignment: CrossAxisAlignment.start,
-//                  children: <Widget>[
-//                    Container(
-//                        decoration: BoxDecoration(
-//                            color: Colors.red[300],
-//                            borderRadius: BorderRadius.only(
-//                                topLeft: Radius.elliptical(20.0,20.0),
-//                                bottomRight: Radius.elliptical(150.0, 150.0)
-//                            )
-//                        ),
-//                        child: Padding(
-//                          padding: const EdgeInsets.only(top: 2.0, left: 5.0, right: 30.0, bottom: 30.0),
-//                          child: Text('%', style: TextStyle(fontSize: 24.0,color: Colors.white),),
-//                        )),
-//                    Expanded(
-//                      child: Container(),
-//                    ),
-//                    Padding(
-//                      padding: const EdgeInsets.all(8.0),
-//                      child: InkWell(
-//                        onTap: (){
-//                          Navigator.pushNamed(context, RoutePaths.Promo);
-//                        },
-//                        child: Text(
-//                          'Lihat Semua \nPromo',
-//                          style: TextStyle(
-//                              fontWeight: FontWeight.w500,
-//                              color: Colors.white,
-//                              fontSize: 18.0),
-//                        ),
-//                      ),
-//                    )
-//                  ],
-//                ),
-//              ),
-//              Container(
-//                decoration: BoxDecoration(
-//                    gradient: LinearGradient(
-//                        begin: Alignment.topCenter,
-//                        end: Alignment.bottomCenter,
-//                        colors: [
-//                          Color.fromARGB(100, 176, 223, 229),
-//                          Color.fromARGB(100, 0, 142, 204)
-//                        ]),
-//                    borderRadius: BorderRadius.circular(8.0),
-//                    image: DecorationImage(
-//                        image: NetworkImage("https://via.placeholder.com/300x150"))),
-//                margin: EdgeInsets.only(left: 10.0),
-//                height: 150.0,
-//                width: 300.0,
-//                child: null,
-//              )
-//            ],
-//          ),
           child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: list_promo.length,
               itemBuilder: (context,idx){
-                return Container(
+                var allcon = Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Color.fromARGB(100, 176, 223, 229),
+                          Color.fromARGB(100, 0, 142, 204)
+                        ]
+                    ),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+
+                  margin: EdgeInsets.only(left: 8.0),
+                  height: 150.0,
+                  width: 100.0,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                          decoration: BoxDecoration(
+                              color: Colors.red[300],
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.elliptical(20.0,20.0),
+                                  bottomRight: Radius.elliptical(150.0, 150.0)
+                              )
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 2.0, left: 5.0, right: 30.0, bottom: 30.0),
+                            child: Text('%', style: TextStyle(fontSize: 24.0,color: Colors.white),),
+                          )),
+                      Expanded(
+                        child: Container(),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: InkWell(
+                          onTap: (){
+                            Navigator.pushNamed(context, RoutePaths.Promo);
+                          },
+                          child: Text(
+                            'Lihat Semua \nPromo',
+                            style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                color: Colors.white,
+                                fontSize: 18.0),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                );
+                var listCon = Container(
                   decoration: BoxDecoration(
                       gradient: LinearGradient(
                           begin: Alignment.topCenter,
@@ -168,11 +171,15 @@ class PromoWidget extends StatelessWidget {
                           ]),
                       borderRadius: BorderRadius.circular(8.0),
                       image: DecorationImage(
-                          image: NetworkImage(list_promo[idx].imgUrl))),
+                          image: NetworkImage(list_promo[idx].imgUrl),
+                          fit: BoxFit.cover
+                      )
+                  ),
                   margin: EdgeInsets.only(left: 10.0),
                   height: 150.0,
                   width: 300.0,
                 );
+                return (idx == 0) ? listCon:listCon;
               }
           ),
         )
@@ -200,7 +207,7 @@ class MenuUtama extends StatelessWidget {
 }
 List<MenuUtamaItems> menuUtamaItem = [
   MenuUtamaItems(
-    title: "Rental",
+    title: "Rencar",
     icon: Icons.local_taxi,
     colorBox: Colors.blue,
     colorIcon: Colors.white,
@@ -293,22 +300,16 @@ class Profile extends StatelessWidget {
         ),
         subtitle: Row(
           children: <Widget>[
-            RaisedButton.icon(
-              icon: Icon(Icons.album),
-              label: Text("0 Poin"),
-              onPressed: () {},
-              color: Colors.grey[200],
-              elevation: 0.0,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0)),
-            ),
+
             Padding(
               padding: EdgeInsets.all(8.0),
             ),
             RaisedButton.icon(
               icon: Icon(Icons.attach_money),
               label: Text("Saldo"),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(context, RoutePaths.TopUp);
+              },
               color: Colors.grey[200],
               elevation: 0.0,
               shape: RoundedRectangleBorder(

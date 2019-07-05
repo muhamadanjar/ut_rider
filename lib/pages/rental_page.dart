@@ -153,7 +153,7 @@ class _RentalPageState extends State<RentalPage> {
   @override
   void initState() {
     super.initState();
-    get_package();
+    getPackage();
   }
   void _settingModalBottomSheet(context) {
     showModalBottomSheet(
@@ -179,7 +179,7 @@ class _RentalPageState extends State<RentalPage> {
         }
     );
   }
-  void get_package() async{
+  void getPackage() async{
     var package = await rs.getPackage(1);
 
     setState(() {

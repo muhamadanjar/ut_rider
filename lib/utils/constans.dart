@@ -7,7 +7,7 @@ enum AlertAction {
   agree,
 }
 
-const String apiURL = "http://utama-trans.com/new/api";
+const String apiURL = "http://192.168.1.35/api";
 const bool devMode = false;
 const double textScaleFactor = 1.0;
 const google_android_api = 'AIzaSyAKl4qWeBABIDPoxo_CHvWuIfgkKoEzS7c';

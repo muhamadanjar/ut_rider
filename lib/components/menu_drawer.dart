@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import '../utils/constans.dart';
-class MenuHome extends StatefulWidget {
-  @override
-  String UserName;
-  MenuHome({this.UserName});
-  _MenuHomeState createState() => _MenuHomeState();
+class HomeMenu extends StatefulWidget {
+
+  String name;
+  HomeMenu({this.name});
+  _HomeMenuState createState() => _HomeMenuState();
 }
 
-class _MenuHomeState extends State<MenuHome> {
+class _HomeMenuState extends State<HomeMenu> {
   @override
   
   Widget build(BuildContext context) {
@@ -15,7 +15,7 @@ class _MenuHomeState extends State<MenuHome> {
         children: <Widget>[
           UserAccountsDrawerHeader(
             decoration: BoxDecoration(color: Colors.lightBlue),
-            accountName: Text(widget.UserName),
+            accountName: Text(widget.name),
             accountEmail: Row(
               children: <Widget>[
                 Text("5.0"),

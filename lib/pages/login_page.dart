@@ -20,7 +20,6 @@ class _LoginPageState extends State<LoginPage> {
   String _username, _password, _token;
   final scaffoldKey = new GlobalKey<ScaffoldState>();
   final formKey = new GlobalKey<FormState>();
-  bool _isLoading = false;
   SharedPreferences _sp;
 
   @override
@@ -157,7 +156,7 @@ class _LoginPageState extends State<LoginPage> {
                         onPressed: (){
                           final form = formKey.currentState;
                           if (form.validate()) {
-                            setState(() => _isLoading = true);
+
                             form.save();
                             print("data $_username $_password");
 
@@ -205,7 +204,7 @@ class _LoginPageState extends State<LoginPage> {
   void _submit() {
     final form = formKey.currentState;
     if (form.validate()) {
-      setState(() => _isLoading = true);
+
       form.save();
       print("data $_username $_password");
 
@@ -225,7 +224,7 @@ class _LoginPageState extends State<LoginPage> {
   void onLoginSuccess(User user) async{
     print(user.toString());
     _showSnackBar(user.toString());
-    setState(() => _isLoading = false);
+    
   }
 
   getPrefs(val) async{

@@ -1,12 +1,17 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:ut_order/components/car_pickup.dart';
 import 'package:ut_order/components/menu_drawer.dart';
 import 'package:ut_order/components/network.dart';
 //import 'package:ut_order/components/functionalButton.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:location/location.dart' as LocationManager;
+import 'package:ut_order/components/rider_picker.dart';
+import 'package:ut_order/models/step_res.dart';
+import 'package:ut_order/models/trip_info_res.dart';
+import 'package:ut_order/utils/place.dart';
 import '../data/rest_ds.dart';
 import '../utils/constans.dart';
 import 'place_detail.dart';
@@ -47,10 +52,11 @@ class _HomePageState extends State<HomePage> {
   LocationManager.LocationData  _currentLocation;
   List<PlacesSearchResult> places = [];
   RestDatasource rs = new RestDatasource();
-  String trip_address_origin,trip_address_destination;
-  String trip_or_latitude,trip_or_longitude,trip_des_latitude,trip_des_longitude;
-  int trip_total,trip_duration,trip_distance;
+  String tripAddressOrigin,tripAddressDestination;
+  String tripOrLatitude,tripOrLongitude,tripDesLatitude,tripDesLongitude;
+  int tripTotal,tripDuration,tripDistance;
   Order order;
+  var _tripDistance = 0;
 
   Mode _mode = Mode.fullscreen;
 
@@ -182,8 +188,8 @@ class _HomePageState extends State<HomePage> {
   void onPlaceSelected(PlaceItemRes place, bool fromAddress) {
     var mkId = fromAddress ? "from_address" : "to_address";
     _addMarker(mkId, place);
-//    _moveCamera();
-//    _checkDrawPolyline();
+    _moveCamera();
+    _checkDrawPolyline();
   }
 
   void _addMarker(String mkId, PlaceItemRes place) async {
@@ -200,6 +206,61 @@ class _HomePageState extends State<HomePage> {
 //    for (var m in markers.values) {
 //      await _mapController.addMarker(m.options);
 //    }
+  }
+
+  void _moveCamera() {
+    print("move camera: ");
+    print(markers);
+
+    if (markers.values.length > 1) {
+      var fromLatLng = markers["from_address"].position;
+      var toLatLng = markers["to_address"].position;
+
+      var sLat, sLng, nLat, nLng;
+      if(fromLatLng.latitude <= toLatLng.latitude) {
+        sLat = fromLatLng.latitude;
+        nLat = toLatLng.latitude;
+      } else {
+        sLat = toLatLng.latitude;
+        nLat = fromLatLng.latitude;
+      }
+
+      if(fromLatLng.longitude <= toLatLng.longitude) {
+        sLng = fromLatLng.longitude;
+        nLng = toLatLng.longitude;
+      } else {
+        sLng = toLatLng.longitude;
+        nLng = fromLatLng.longitude;
+      }
+
+      LatLngBounds bounds = LatLngBounds(northeast: LatLng(nLat, nLng), southwest: LatLng(sLat, sLng));
+      mapController.animateCamera(CameraUpdate.newLatLngBounds(bounds, 50));
+    } else {
+      mapController.animateCamera(CameraUpdate.newLatLng(markers.values.elementAt(0).position));
+    }
+  }
+
+  void _checkDrawPolyline() {
+//  remove old polyline
+//    mapController.clearPolylines();
+
+    if (markers.length > 1) {
+      var from = markers["from_address"].position;
+      var to = markers["to_address"].position;
+      PlaceService.getStep(from.latitude, from.longitude, to.latitude, to.longitude).then((vl) {
+        TripInfoRes infoRes = vl;
+        _tripDistance = infoRes.distance;
+        List<StepsRes> rs = infoRes.steps;
+        List<LatLng> paths = new List();
+        for (var t in rs) {
+          paths
+              .add(LatLng(t.startLocation.latitude, t.startLocation.longitude));
+          paths.add(LatLng(t.endLocation.latitude, t.endLocation.longitude));
+        }
+//        print(paths);
+//        mapController.addPolyline(PolylineOptions(points: paths, color: Color(0xFF3ADF00).value, width: 10));
+      });
+    }
   }
 
   Future<void> _homeCameraPosition() async {
@@ -237,6 +298,7 @@ class _HomePageState extends State<HomePage> {
   void onHandleOrder() async{
     var data = Order(origin: 'Medan',destination: 'Ayam',originLat: 0,originLng: 0,destinationLat: 0,destinationLng: 0,harga: 0,);
     var response = await rs.orderCar(data);
+    return response;
   }
 
   Future<LatLng> getUserLocation() async {
@@ -386,7 +448,7 @@ class _HomePageState extends State<HomePage> {
     final dataProvider = Provider.of<User>(context);
     final dataOrder = Provider.of<Order>(context);
     final drawer = Drawer(
-      child: MenuHome(UserName: "User")
+      child: HomeMenu(name: "User")
     );
     final body = Stack(
       children: <Widget>[
@@ -555,113 +617,82 @@ class _HomePageState extends State<HomePage> {
                   ),
                   padding: EdgeInsets.all(1.0),
                ),
+
+
+
               Positioned(
-                top: 80.0,
-                right: 15.0,
-                left: 15.0,
-                child:Container(
-                  height: 50.0,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(3.0),
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                          color: Colors.grey,
-                          offset: Offset(1.0, 5.0),
-                          blurRadius: 15,
-                          spreadRadius: 3)
-                    ],
-                  ),
-                  child: TextField(
-                    decoration: InputDecoration(
-                      icon: Container(margin: EdgeInsets.only(left: 20, top: 18), width: 10, height: 10, decoration: BoxDecoration(color: Colors.black)),
-                      hintText: "Tujuan ?",
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.only(left: 15.0, top: 16.0),
-
+                left: 0,
+                top: 0,
+                right: 0,
+                child: Column(
+                  children: <Widget>[
+                    AppBar(
+                      backgroundColor: Colors.white,
+                      elevation: 0.0,
+                      title: Text(
+                        "Utama Trans Reguler",
+                        style: TextStyle(color: Colors.black),
+                      ),
+                      leading: FlatButton(
+                          onPressed: () {
+                            print("click menu");
+                            homeScaffoldKey.currentState.openDrawer();
+                          },
+                          child: Image.asset("assets/ic_menu.png")),
+                      actions: <Widget>[
+                        FlatButton(
+                            onPressed: (){
+                              print("ini notif");
+                            },
+                            child: Image.asset("assets/ic_notify.png")
+                        )
+                      ],
                     ),
-                    controller: _destinationText,
-                    onTap: _handlePressButton,
-
-                  ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 20, left: 20, right: 20),
+                      child: RidePicker(onPlaceSelected),
+                    ),
+                  ],
                 ),
               ),
-              Positioned(
-                top: 140.0,
-                right: 15.0,
-                left: 15.0,
-                child:Container(
-                  height: 50.0,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(3.0),
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                          color: Colors.grey,
-                          offset: Offset(1.0, 5.0),
-                          blurRadius: 15,
-                          spreadRadius: 3)
-                    ],
-                  ),
-                  child: TextField(
-                    decoration: InputDecoration(
-                      icon: Container(margin: EdgeInsets.only(left: 20, top: 18), width: 10, height: 10, decoration: BoxDecoration(color: Colors.black)),
-                      hintText: "Tujuan ?",
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.only(left: 15.0, top: 16.0),
 
-                    ),
-                    controller: _destinationText,
-                    onTap: _handlePressButton,
-
-                  ),
-                ),
-              ),
-              Positioned(
-                  top: 30,
-                  left: 6,
-                  child: IconButton(
-                    icon: Icon(Icons.menu),
-                    color: Colors.black,
-                    onPressed: () {
-                      homeScaffoldKey.currentState.openDrawer();
-                    },
-                  )
+              Positioned(left: 20, right: 20, bottom: 40,height: 248,
+                child: CarPickup(_tripDistance),
               ),
 
               Positioned(
-                bottom: 80,
+                bottom: 20,
                 left: 20,
                 right: 20,
-                child: cardWidget(
-                    context,
-                    'assets/taxi.png',
-                    'Medan',
-                    'ID: 123456789',
-                    'Medan To Binjai',
-                    '\Rp. 200 K',
-                    '',
-                    Colors.blue[900]),
-              ),
-              Positioned(
-                  bottom: 20,
-                  left: 20,
-                  right: 20,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 20.0),
-                    child: RaisedButton(
-                      color: Colors.blue[700],
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 60.0, right: 60.0, top: 15.0,bottom: 15.0),
-                        child: Text('Pesan', style: TextStyle(color: Colors.white),),
-                      ),
-                      onPressed: onHandleOrder,
-                  ),
+                child: Column(
+                  children: <Widget>[
+                    cardWidget(
+                        context,
+                        'assets/taxi.png',
+                        'Medan',
+                        'ID: 123456789',
+                        'Medan To Binjai',
+                        '\Rp. 200 K',
+                        '',
+                        Colors.blue[900]),
+                        Padding(
+                          padding: const EdgeInsets.only(top:8.0),
+                          child: ButtonTheme(
+                            height: 50.0,
+                            minWidth: SizeConfig.screenWidth,
+                            child: RaisedButton(
+                              color: Colors.blue[700],
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                              child: Text('Pesan', style: TextStyle(color: Colors.white)),
+                              onPressed: onHandleOrder,
+                            ),
+                          ),
+                        ),
+
+                      ],
                 ),
               ),
+
 
             ],
           ),
@@ -907,7 +938,7 @@ class _CustomSearchScaffoldState extends PlacesAutocompleteState {
     return Container(
       child: body,
     );
-    return Scaffold(key: searchScaffoldKey, appBar: appBar, body: body);
+//    return Scaffold(key: searchScaffoldKey, appBar: appBar, body: body);
   }
 
   @override

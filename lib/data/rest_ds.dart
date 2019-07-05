@@ -48,7 +48,7 @@ class RestDatasource {
       if(res["error"] == true) throw new Exception(res["message"]);
       final prefs = await SharedPreferences.getInstance();
       prefs.setString('token', res['data']['token']);
-      return new User.fromJson(res["data"]);
+      return new User.fromJson(res["data"]['user']);
     }).catchError((res){ return res;});
   }
 
@@ -75,11 +75,11 @@ class RestDatasource {
   }
   Future<dynamic> logout(){
     var db = new DatabaseHelper();
-    return _networkUtil.get(LOGOUT_URL).then((dynamic res)=>{
+    return _networkUtil.get(LOGOUT_URL).then((dynamic res){
       SharedPreferences.getInstance().then((pref){
         pref.clear();
         db.deleteUsers();
-      })
+      });
     });
   }
 
@@ -89,7 +89,7 @@ class RestDatasource {
       'Accept': 'application/json',
       'Authorization': 'Bearer $token',
     };
-    _networkUtil.post(GET_USER,body:data,headers: headers).then((dynamic res){
+    return _networkUtil.post(GET_USER,body:data,headers: headers).then((dynamic res){
       return User.fromJson(res['data']);
     });
   }
@@ -118,7 +118,7 @@ class RestDatasource {
       print(res);
     });
   }
-  Future<dynamic> checkJob(){
+  Future<void> checkJob(){
     var body = {
       'driverId':'1'
     };
@@ -126,7 +126,7 @@ class RestDatasource {
       'Accept': 'application/json',
       'Authorization': 'Bearer $token',
     };
-    _networkUtil.post(CHECK_JOB,body: body,headers: headers).then((dynamic res){
+    return _networkUtil.post(CHECK_JOB,body: body,headers: headers).then((dynamic res){
       print(res);
     });
   }
@@ -147,7 +147,7 @@ class RestDatasource {
   }
   Future<List> getPackage(type) async{
     var response = await _networkUtil.get("${GET_PACKAGE}/${type}");
-    List list_package = new List();
+    List listPackage = new List();
     (response['data'] as List).forEach((f){
         var data = new Map<String,dynamic>();
         data['id'] = f['rp_id'];
@@ -157,23 +157,23 @@ class RestDatasource {
         data['harga_jam'] = f['rp_hour'];
         data['harga_addkm'] = f['rp_add_mile_km'];
         data['harga_addmenit'] = f['rp_add_min'];
-        list_package.add(data);
+        listPackage.add(data);
       }
     );
-    return list_package;
+    return listPackage;
 
 
 
   }
   Future<List<Promo>> getPromo() async{
     var response = await _networkUtil.get("${GET_PROMO}");
-    var list_promo = new List<Promo>();
+    var listPromo = new List<Promo>();
     (response["data"] as List).forEach((f){
-      var data = Promo(name: f["name"],kode_promo: f["kode_promo"],discount: int.parse(f["discount"]),imgUrl: f["image_path"]);
-      list_promo.add(data);
+      var data = Promo(name: f["name"],kodePromo: f["kode_promo"],discount: (f["discount"]),imgUrl: f["image_path"]);
+      listPromo.add(data);
     });
 
-    return list_promo;
+    return listPromo;
 
   }
   Future<dynamic> orderCar(Order order){

@@ -11,10 +11,10 @@ class PromoPage extends StatefulWidget {
 
 class _PromoPageState extends State<PromoPage> {
   List<Promo> promo = [
-    Promo(name: 'Promo 1',kode_promo :'1235',imgUrl: 'https://placeimg.com/300/100/any?t=1561888280951',
+    Promo(name: 'Promo 1',kodePromo :'1235',imgUrl: 'https://placeimg.com/300/100/any?t=1561888280951',
   description:"Start by taking a couple of minutes to read the info in this section. Launch your app and click on the Settings menu.  While on the settings page, click the Save button.  You should see a circular progress indicator display in the middle of the page and the user interface elements cannot be clicked due to the modal barrier that is constructed."),
-    Promo(name: 'Promo 2',kode_promo :'1235',imgUrl: 'https://placeimg.com/300/100/any?t=1561888301057',description:"Start by taking a couple of minutes to read the info in this section. Launch your app and click on the Settings menu.  While on the settings page, click the Save button.  You should see a circular progress indicator display in the middle of the page and the user interface elements cannot be clicked due to the modal barrier that is constructed."),
-    Promo(name: 'Promo 3',kode_promo :'1235',imgUrl: 'https://placeimg.com/300/100/any?t=1561888323523',description:"Start by taking a couple of minutes to read the info in this section. Launch your app and click on the Settings menu.  While on the settings page, click the Save button.  You should see a circular progress indicator display in the middle of the page and the user interface elements cannot be clicked due to the modal barrier that is constructed."),
+    Promo(name: 'Promo 2',kodePromo :'1235',imgUrl: 'https://placeimg.com/300/100/any?t=1561888301057',description:"Start by taking a couple of minutes to read the info in this section. Launch your app and click on the Settings menu.  While on the settings page, click the Save button.  You should see a circular progress indicator display in the middle of the page and the user interface elements cannot be clicked due to the modal barrier that is constructed."),
+    Promo(name: 'Promo 3',kodePromo :'1235',imgUrl: 'https://placeimg.com/300/100/any?t=1561888323523',description:"Start by taking a couple of minutes to read the info in this section. Launch your app and click on the Settings menu.  While on the settings page, click the Save button.  You should see a circular progress indicator display in the middle of the page and the user interface elements cannot be clicked due to the modal barrier that is constructed."),
   ];
   @override
   Widget build(BuildContext context) {
@@ -47,7 +47,7 @@ class _PromoPageState extends State<PromoPage> {
             flex: 4,
             child: Padding(
                 padding: EdgeInsets.only(left: 10.0),
-                child: Text(promo.kode_promo,
+                child: Text(promo.kodePromo,
                     style: TextStyle(color: Colors.white))),
           )
         ],
@@ -110,7 +110,7 @@ class DetailPage extends StatelessWidget {
           border: new Border.all(color: Colors.white),
           borderRadius: BorderRadius.circular(5.0)),
       child: new Text(
-        promo.kode_promo,
+        promo.kodePromo,
         style: TextStyle(color: Colors.white),
       ),
     );
@@ -143,7 +143,7 @@ class DetailPage extends StatelessWidget {
                 child: Padding(
                     padding: EdgeInsets.only(left: 10.0),
                     child: Text(
-                      promo.kode_promo,
+                      promo.kodePromo,
                       style: TextStyle(color: Colors.white),
                     ))),
             Expanded(flex: 1, child: coursePrice)
@@ -194,8 +194,8 @@ class DetailPage extends StatelessWidget {
         width: MediaQuery.of(context).size.width,
         child: RaisedButton(
           onPressed: (){
-            Clipboard.setData(new ClipboardData(text: promo.kode_promo));
-            _scaffoldKey.currentState.showSnackBar(new SnackBar(content: new Text("Copied to Clipboard: ${promo.kode_promo}"),));
+            Clipboard.setData(new ClipboardData(text: promo.kodePromo));
+            _scaffoldKey.currentState.showSnackBar(new SnackBar(content: new Text("Copied to Clipboard: ${promo.kodePromo}"),));
           },
           color: Color.fromRGBO(58, 66, 86, 1.0),
           child:

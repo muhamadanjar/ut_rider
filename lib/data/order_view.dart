@@ -12,7 +12,7 @@ class OrderViewModel extends BaseModel {
 
     
   }
-  Future<Null> OnHandleTapSearch(context,center) async{
+  Future<Null> onHandleTapSearch(context,center) async{
     
   }
   void setDataOrder(name, lat, lng){

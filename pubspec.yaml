@@ -71,6 +71,11 @@ flutter:
     - assets/taxi.png
     - assets/rental.png
     - assets/promo.jpeg
+    - assets/ic_location_black.png
+    - assets/ic_menu.png
+    - assets/ic_notify.png
+    - assets/ic_map_nav.png
+    - assets/ic_remove_x.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

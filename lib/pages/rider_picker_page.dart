@@ -51,7 +51,7 @@ class _RidePickerPageState extends State<RidePickerPage> {
                         width: 40,
                         height: 60,
                         child: Center(
-                          child: Image.asset("ic_location_black.png"),
+                          child: Image.asset("assets/ic_location_black.png"),
                         ),
                       ),
                       Positioned(
@@ -64,7 +64,7 @@ class _RidePickerPageState extends State<RidePickerPage> {
                               onPressed: () {
                                 _addressController.text = "";
                               },
-                              child: Image.asset("ic_remove_x.png")),
+                              child: Image.asset("assets/ic_remove_x.png")),
                         ),
                       ),
                       Padding(

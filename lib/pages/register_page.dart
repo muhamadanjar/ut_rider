@@ -129,7 +129,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 var data = _storeToData();
                                 model.register(data).then((v){
                                   if(v['status']){
-                                    print("Pendaftaran Berhasil");
+                                    Navigator.pushReplacementNamed(context, RoutePaths.Dashboard);
                                   }
 
                                 });
