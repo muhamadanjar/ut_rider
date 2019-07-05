@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:ut_order/models/tipemobil.dart';
 import 'package:ut_order/utils/network_util.dart';
 import 'package:ut_order/models/user.dart';
 import 'package:ut_order/models/order.dart';
@@ -22,6 +23,7 @@ class RestDatasource {
   static final ORDER_CAR =  BASE_URL + "/reguler";
   static final GET_PACKAGE =  BASE_URL + "/rent_package";
   static final GET_PROMO = BASE_URL + "/get_promo";
+  static final GET_TYPEMOBIL = BASE_URL + "/type_car";
   static final POST_RENTAL = BASE_URL + "reguler";
   static final POST_TAXI = BASE_URL + "order";
   static final _API_KEY = "somerandomkey";
@@ -161,9 +163,18 @@ class RestDatasource {
       }
     );
     return listPackage;
-
-
-
+  }
+  Future<List> getTypeMobil() async{
+    var response = await _networkUtil.get("${GET_TYPEMOBIL}");
+    List listType = new List();
+    (response["data"] as List).forEach((f){
+        var data = new Map<String,dynamic>();
+        data["id"] = f["id"];
+        data["name"] = f["type"];
+        data["imgUrl"] = f["path_url"];
+        listType.add(data);
+    });
+    return listType;
   }
   Future<List<Promo>> getPromo() async{
     var response = await _networkUtil.get("${GET_PROMO}");

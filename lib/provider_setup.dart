@@ -1,5 +1,6 @@
 import 'package:provider/provider.dart';
 
+import 'data/app_bloc.dart';
 import 'models/user.dart';
 import 'utils/authentication.dart';
 import 'data/rest_ds.dart';
@@ -16,7 +17,15 @@ List<SingleChildCloneableWidget> providers = [
 ];
 
 List<SingleChildCloneableWidget> independentServices = [
-  Provider.value(value: RestDatasource())
+  Provider.value(value: RestDatasource()),
+  Provider(
+    builder: (_) => AppBloc(),
+    dispose: (_, value){
+      AppBloc().dispose();
+      value.dispose();
+
+    },
+  )
 ];
 
 List<SingleChildCloneableWidget> dependentServices = [

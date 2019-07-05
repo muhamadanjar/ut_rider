@@ -42,6 +42,7 @@ dependencies:
   google_maps_webservice: ^0.0.14
   provider: ^3.0.0+1
   connectivity: ^0.4.3+2
+  cached_network_image: ^1.0.0
 
 
   # The following adds the Cupertino Icons font to your application.

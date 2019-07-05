@@ -1,19 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:ut_order/utils/constans.dart';
-import 'package:ut_order/data/rest_ds.dart';
 import 'package:provider/provider.dart';
-import 'package:ut_order/models/package.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:google_maps_webservice/places.dart';
-import 'package:location/location.dart' as LocationManager;
-import 'package:flutter_google_places/flutter_google_places.dart';
-import 'package:ut_order/models/order.dart';
-import 'package:ut_order/components/base_widget.dart';
-import 'package:ut_order/utils/order.dart';
-import '../data/order_view.dart';
-const kGoogleApiKey = google_web_api;
-GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: kGoogleApiKey);
-
+import 'package:ut_order/models/tipemobil.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import '../utils/constans.dart';
+import '../data/app_bloc.dart';
 class RentalPage extends StatefulWidget {
   static String tag = RoutePaths.Rental;
   @override
@@ -21,255 +11,316 @@ class RentalPage extends StatefulWidget {
 }
 
 class _RentalPageState extends State<RentalPage> {
-  List litems = [];
-  RestDatasource rs = new RestDatasource();
-  String selectedHour;
-  LocationManager.LocationData  _currentLocation;
-  List<PlacesSearchResult> places = [];
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  TextEditingController titikJemputTxt = new TextEditingController();
-//  OrderService _orderService;
-  String origin;
-  double originLat,originLng;
-  BuildContext _context;
+  AppBloc appBloc;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+  @override
+  Widget build(BuildContext context) {
+    appBloc = Provider.of<AppBloc>(context);
+    return Scaffold(
+      appBar: AppBar(title: Text("Rental"),),
+      body: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Column(
+          children: <Widget>[
+
+          Column(
+            children: <Widget>[
+            Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text("Pilih Mobil",
+
+                ),
+                Spacer(),
+
+              ],
+            ),
+          ),
+            Container(
+              height: 240.0,
+              child: StreamBuilder(
+                  stream: appBloc.tipeSnapshotStream,
+                  builder: (context, snapshot) {
+                    print(" has data ${snapshot.hasData}");
+                    return !snapshot.hasData
+                        ? Center(child: CircularProgressIndicator())
+                        : ListView.builder(
+                        itemCount: snapshot.data.length,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, index) {
+                          print(snapshot.data);
+                          return InkWell(
+                              onTap: (){
+                                appBloc.getPackage(index);
+                              },
+                              child: TipeCard(
+                                  tipeMobil: TipeMobil.fromMap(snapshot.data[index])
+                              )
+                          );
+                        });;
+                  }),
+
+            ),
+            Container(
+                width: double.infinity,
+                height: 150.0,
+                padding: const EdgeInsets.only(left: 8.0),
+                child: StreamBuilder(
+                    stream: appBloc.packageSnapshotStream,
+                    builder: (context, snapshots) {
+                      return ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: snapshots.data.length,
+                        itemBuilder: (context,idx){
+                          var packageContainer = Container(
+                            decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                    colors: [
+                                      Color.fromARGB(100, 176, 223, 229),
+                                      Color.fromARGB(100, 0, 142, 204)
+                                    ]),
+                                borderRadius: BorderRadius.circular(8.0),
+                                image: DecorationImage(
+                                    image: NetworkImage(snapshots.data[idx].imgUrl),
+                                    fit: BoxFit.cover
+                                )
+                            ),
+                            margin: EdgeInsets.only(left: 10.0),
+                            height: 150.0,
+                            width: 300.0,
+                          );
+                          return !snapshots.hasData ? Center(child: CircularProgressIndicator()):packageContainer;
+                        },
+
+                      );
+                    }
+                )
+            )
+
+            ]
+        )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget tipeMobil(){
+    return Column(
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text("Pilih Mobil",
+
+              ),
+              Spacer(),
+
+            ],
+          ),
+        ),
+        Container(
+          height: 240.0,
+          child: StreamBuilder(
+              stream: appBloc.tipeSnapshotStream,
+              builder: (context, snapshot) {
+                print(" has data ${snapshot.hasData}");
+                return !snapshot.hasData
+                    ? Center(child: CircularProgressIndicator())
+                    : ListView.builder(
+                    itemCount: snapshot.data.length,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, index) {
+                      print(snapshot.data);
+                      return InkWell(
+                          onTap: (){
+                            appBloc.getPackage(index);
+                          },
+                          child: TipeCard(
+                              tipeMobil: TipeMobil.fromMap(snapshot.data[index])
+                          )
+                      );
+                    });;
+              }),
+
+        ),
+        Container(
+          width: double.infinity,
+          height: 150.0,
+          padding: const EdgeInsets.only(left: 8.0),
+          child: StreamBuilder(
+            stream: appBloc.packageSnapshotStream,
+            builder: (context, snapshots) {
+              return ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: snapshots.data.length,
+                itemBuilder: (context,idx){
+                  var packageContainer = Container(
+                    decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Color.fromARGB(100, 176, 223, 229),
+                              Color.fromARGB(100, 0, 142, 204)
+                            ]),
+                        borderRadius: BorderRadius.circular(8.0),
+                        image: DecorationImage(
+                            image: NetworkImage(snapshots.data[idx].imgUrl),
+                            fit: BoxFit.cover
+                        )
+                    ),
+                    margin: EdgeInsets.only(left: 10.0),
+                    height: 150.0,
+                    width: 300.0,
+                  );
+                  return !snapshots.hasData ? Center(child: CircularProgressIndicator()):packageContainer;
+                },
+
+              );
+            }
+          )
+        )
+
+      ]
+    );
+  }
+
+  Widget _buildTipeList(BuildContext context, List snapshots) {
+    print("Data Tipe Snapshot ${snapshots}");
+    return ListView.builder(
+        itemCount: snapshots.length,
+        scrollDirection: Axis.horizontal,
+        itemBuilder: (context, index) {
+          return InkWell(
+              onTap: (){
+                appBloc.getPackage(index);
+              },
+              child: TipeCard(
+                  tipeMobil: TipeMobil.fromMap(snapshots[index])
+              )
+          );
+        });
+  }
+
+  @override
+  void dispose() {
+    appBloc.dispose();
+    super.dispose();
+
+  }
+}
+
+
+class TipeCard extends StatelessWidget {
+  final TipeMobil tipeMobil;
+
+  TipeCard({this.tipeMobil});
 
   @override
   Widget build(BuildContext context) {
-    _context =context;
-    rs = Provider.of<RestDatasource>(context);
-    SizeConfig().init(context);
-    final mobil = Container(
-            height: SizeConfig.blockHeight * 30,
-            decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage("assets/rental.png"),
-                    fit: BoxFit.contain
-                )
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          ClipRRect(
+            borderRadius: BorderRadius.all(
+              Radius.circular(10.0),
             ),
-    );
-    var base = BaseWidget<OrderViewModel>(
-      model:OrderViewModel(orderService: Provider.of(context)),
-      child: mobil,
-      builder: (context, model, child){
-        return Scaffold(
-            resizeToAvoidBottomPadding: false,
-            key: _scaffoldKey,
-            appBar: AppBar(
-            title: Text('Rental Mobil'),
-          ),
-          body: Column(
-            children: <Widget>[
-              child,
-              Column(
-                children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+            child: Stack(
+              children: <Widget>[
+                Container(
+                  height: 210.0,
+                  width: 160.0,
+                  child: CachedNetworkImage(
+                    imageUrl: '${tipeMobil.imgUrl}',
+                    fit: BoxFit.cover,
+                    fadeInDuration: Duration(milliseconds: 500),
+                    fadeInCurve: Curves.easeIn,
+                    placeholder: (context,url) => Center(child: CircularProgressIndicator()),
+                  ),
+                ),
+                Positioned(
+                  left: 0.0,
+                  bottom: 0.0,
+                  width: 160.0,
+                  height: 60.0,
+                  child: Container(
+                    decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                            begin: Alignment.bottomCenter,
+                            end: Alignment.topCenter,
+                            colors: [
+                              Colors.black,
+                              Colors.black.withOpacity(0.1),
+                            ])),
+                  ),
+                ),
+                Positioned(
+                  left: 10.0,
+                  bottom: 10.0,
+                  right: 10.0,
+                  child: Row(
                     mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                    ],
-                  ),
-                  Container(
-                    padding: EdgeInsets.only(left: 10.0,right: 10.0),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        hintText: 'Titik Jemput ',
-                        contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            '${tipeMobil.name}',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                                fontSize: 18.0),
+                          ),
+                          Text(
+                            '${tipeMobil.name}',
+                            style: TextStyle(
+                                fontWeight: FontWeight.normal,
+                                color: Colors.white,
+                                fontSize: 14.0),
+                          ),
+                        ],
                       ),
-                      controller: titikJemputTxt,
-                      onTap: () async{
-                        var center = await getUserLocation();
-                        Prediction p = await PlacesAutocomplete.show(
-                          context: context,
-                          strictbounds: center == null ? false : true,
-                          apiKey: kGoogleApiKey,
-                          onError: (PlacesAutocompleteResponse response){
-                            print(response);
-                          },
-                          mode: Mode.fullscreen,
-                          language: "en",
-                          location: center == null ? null : Location(center.latitude, center.longitude),
-                          radius: center == null ? null : 10000);
-
-                        PlacesDetailsResponse detail = await _places.getDetailsByPlaceId(p.placeId);
-                        final lat = detail.result.geometry.location.lat;
-                        final lng = detail.result.geometry.location.lng;
-                        final name =  detail.result.name;
-                        titikJemputTxt.text = name;
-                        print(Provider.of<Order>(context));
-
-                      },
-                    ),
-                  ),
-                  Stack(
-                    children: <Widget>[
                       Container(
-
-                        width: SizeConfig.screenWidth,
-                        padding: EdgeInsets.only(left: 10,right: 10,top:20),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.max,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Expanded(
-                              child: Container(
-                                alignment: Alignment(0, 0),
-                                color: Colors.cyan, height: 80,child: InkWell(
-                                  child:Text("Pilih Paket",style: TextStyle(fontSize: 16.0,fontWeight: FontWeight.bold),),
-                                onTap: _showModalSheet,),
-                              ),
-                              flex: 2,
-                            ),
-                            Expanded(
-                              child: Container(
-                                alignment: Alignment(0, 0),
-                                color: Colors.cyan[300], height: 80,child: InkWell(
-                                child:Text("Pesan",style: TextStyle(fontSize: 16.0,fontWeight: FontWeight.bold),),
-                                onTap: () async{
-                                  var data = Order(origin: origin,originLat: originLat,originLng: originLng);
-                                  var result = await rs.orderCar(data);
-                                }
-
-                              ),
-                              ),
-                              flex: 2,
-                            ),
-                          ],
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 6.0, vertical: 2.0),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.rectangle,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10.0),
+                          ),
+                        ),
+                        child: Text(
+                          '${tipeMobil.name}%',
+                          style: TextStyle(fontSize: 14.0, color: Colors.black),
                         ),
                       ),
                     ],
                   ),
-                ],
-              ),
-            ]
-          ),
-        );
-      }
-    );
-    
-    return base;
-  }
-  @override
-  void initState() {
-    super.initState();
-    getPackage();
-  }
-  void _settingModalBottomSheet(context) {
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext bc) {
-          return Container(
-            child: new Wrap(
-              children: <Widget>[
-
-                new ListTile(
-                    leading: new Icon(Icons.music_note),
-                    title: new Text('Music'),
-                    onTap: () => {}
-                ),
-                new ListTile(
-                  leading: new Icon(Icons.videocam),
-                  title: new Text('Video'),
-                  onTap: () => {},
-                ),
+                )
               ],
             ),
-          );
-        }
+          ),
+
+        ],
+      ),
     );
-  }
-  void getPackage() async{
-    var package = await rs.getPackage(1);
-
-    setState(() {
-      litems = package;
-    });
-  }
-
-  void _showModalSheet() {
-    showModalBottomSheet(
-        context: context,
-        builder: (builder) {
-          return new Container(
-              color: Colors.lightBlueAccent,
-              child: new Center(
-                child: new ListView.builder(
-                    itemCount: litems.length,
-                    itemBuilder: (BuildContext ctxt, int idx) {
-
-                      return new ListTile(
-                          leading: new Icon(Icons.hourglass_full),
-                          title: new Text("${litems[idx]['name']} - ${litems[idx]['harga']}K",style: TextStyle(fontSize: 18.0,fontWeight: FontWeight.w500),),
-                          onTap: (){
-                            selectedHour = (litems[idx]['id']).toString();
-                            Navigator.pop(context);
-                          }
-                      );
-                    }
-                ),
-              )
-          );
-        }
-    );
-  }
-
-  void getNearbyPlaces(LatLng center) async {
-    final location = Location(center.latitude, center.longitude);
-    final result = await _places.searchNearbyWithRadius(location, 2500);
-    setState(() {
-      if (result.status == "OK") {
-        this.places = result.results;
-        result.results.forEach((f) {
-          _createLatLng(f.geometry.location.lat, f.geometry.location.lng);
-//          final markerOptions = MarkerOptions(
-//              position:
-//              LatLng(f.geometry.location.lat, f.geometry.location.lng),
-//              infoWindowText: InfoWindowText("${f.name}", "${f.types?.first}"));
-//          mapController.addMarker(markerOptions);
-        });
-      } else {
-
-      }
-    });
-  }
-  LatLng _createLatLng(double lat, double lng) {
-    return LatLng(lat, lng);
-  }
-  Future<void> _handlePressButton(OrderViewModel model) async {
-    try {
-      final center = await getUserLocation();
-      final p =await model.showPrediction(context, center);
-      print(p);
-          
-          // _orderService.displayPrediction(p, 1);
-          // PlacesDetailsResponse detail = await _places.getDetailsByPlaceId(p.placeId);
-          // final lat = detail.result.geometry.location.lat;
-          // final lng = detail.result.geometry.location.lng;
-          // final name =  detail.result.name;
-          // setState(() {
-          //   origin = name;
-          //   originLat = lat;
-          //   originLng = lng;
-          // });
-          // print(" provider ${Provider.of<Order>(_context)} ${origin}");
-
-    } catch (e) {
-      return;
-    }
-  }
-  Future<LatLng> getUserLocation() async {
-    final location = new LocationManager.Location();
-    try {
-      _currentLocation = await location.getLocation();
-      print(_currentLocation);
-      final lat = _currentLocation.latitude;
-      final lng = _currentLocation.longitude;
-      final center = LatLng(lat, lng);
-      return center;
-    } on Exception {
-      _currentLocation = null;
-      return null;
-    }
   }
 }
