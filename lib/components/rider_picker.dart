@@ -43,7 +43,9 @@ class _RidePickerState extends State<RidePicker> {
                         fromAddress == null ? "" : fromAddress.name,
                             (place, isFrom) {
                           widget.onSelected(place, isFrom);
+
                           fromAddress = place;
+                          print(fromAddress.name);
                         }, true)));
               },
               child: SizedBox(
@@ -92,6 +94,7 @@ class _RidePickerState extends State<RidePicker> {
                         RidePickerPage(toAddress == null ? "" : toAddress.name,
                                 (place, isFrom) {
                               widget.onSelected(place, isFrom);
+                              print(place);
                               toAddress = place;
                               setState(() {});
                             }, false)));

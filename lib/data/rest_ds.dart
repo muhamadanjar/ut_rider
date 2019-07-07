@@ -151,6 +151,9 @@ class RestDatasource {
     }
   }
   Future<List> getPackage(type) async{
+    if(type == 0 || type == 'all'){
+      type = "";
+    }
     var response = await _networkUtil.get("${GET_PACKAGE}/${type}");
     List listPackage = new List();
     if(response['status']) {

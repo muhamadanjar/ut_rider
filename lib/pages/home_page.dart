@@ -191,6 +191,7 @@ class _HomePageState extends State<HomePage> {
     _addMarker(mkId, place);
     _moveCamera();
     _checkDrawPolyline();
+
   }
 
   void _addMarker(String mkId, PlaceItemRes place) async {
@@ -204,45 +205,59 @@ class _HomePageState extends State<HomePage> {
       print(markers);
   }
 
-  void _moveCamera() {
-    print("move camera: ${markers.values}");
-    if (markers.values.length > 1) {
-      var fromLatLng = markers["from_address"].position;
-      var toLatLng = markers["to_address"].position;
-      print("dari Halaman ${markers.containsKey("from_address")}");
+  void _moveCamera() async {
+    final GoogleMapController controller = await _controller.future;
+    print("move camera: ${markers.values.elementAt(0).position}");
+    var fromLatLng,toLatLng;
+    markers.forEach((mkid,v){
+      print(mkid.value);
+      if(mkid.value == "from_address"){
+        fromLatLng = v.position;
+      }else{
+        toLatLng = v.position;
+      }
       var sLat, sLng, nLat, nLng;
-      if(fromLatLng.latitude <= toLatLng.latitude) {
-        sLat = fromLatLng.latitude;
-        nLat = toLatLng.latitude;
-      } else {
-        sLat = toLatLng.latitude;
-        nLat = fromLatLng.latitude;
+      print("fromLatLng:${fromLatLng}");
+      print("toLatLng:${toLatLng}");
+      if(fromLatLng != null && toLatLng != null){
+        if(fromLatLng.latitude <= toLatLng.latitude) {
+          sLat = fromLatLng.latitude;
+          nLat = toLatLng.latitude;
+        } else {
+          sLat = toLatLng.latitude;
+          nLat = fromLatLng.latitude;
+        }
+
+        if(fromLatLng.longitude <= toLatLng.longitude) {
+          sLng = fromLatLng.longitude;
+          nLng = toLatLng.longitude;
+        } else {
+          sLng = toLatLng.longitude;
+          nLng = fromLatLng.longitude;
+        }
+        LatLngBounds bounds = LatLngBounds(northeast: LatLng(nLat, nLng), southwest: LatLng(sLat, sLng));
+
+        controller.animateCamera(CameraUpdate.newLatLngBounds(bounds, 50));
+      }else{
+
+        controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+          target: markers.values.elementAt(0).position,
+          zoom: 12.10,
+        )));
       }
 
-      if(fromLatLng.longitude <= toLatLng.longitude) {
-        sLng = fromLatLng.longitude;
-        nLng = toLatLng.longitude;
-      } else {
-        sLng = toLatLng.longitude;
-        nLng = fromLatLng.longitude;
-      }
-      print("sLat : ${sLat}");
+    });
 
-      LatLngBounds bounds = LatLngBounds(northeast: LatLng(nLat, nLng), southwest: LatLng(sLat, sLng));
-
-      mapController.animateCamera(CameraUpdate.newLatLngBounds(bounds, 50));
-    } else {
-      mapController.animateCamera(CameraUpdate.newLatLng(markers.values.elementAt(0).position));
-    }
   }
 
   void _checkDrawPolyline() {
 //  remove old polyline
 //    mapController.clearPolylines();
-
+    print("Draw Polyline");
     if (markers.length > 1) {
       var from = markers["from_address"].position;
       var to = markers["to_address"].position;
+      print("from: ${from}");
       PlaceService.getStep(from.latitude, from.longitude, to.latitude, to.longitude).then((vl) {
         TripInfoRes infoRes = vl;
         _tripDistance = infoRes.distance;
@@ -332,6 +347,7 @@ class _HomePageState extends State<HomePage> {
         this.places = result.results;
         result.results.forEach((f) {
           _createLatLng(f.geometry.location.lat, f.geometry.location.lng);
+
 //          final markerOptions = MarkerOptions(
 //              position:
 //              LatLng(f.geometry.location.lat, f.geometry.location.lng),
@@ -652,53 +668,76 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
-
-              Positioned(left: 20, right: 20, bottom: 40,height: 248,
-                child: Container(
-                  height: SizeConfig.blockHeight * 50,
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Color(0x88999999),
-                          offset: Offset(0, 5),
-                          blurRadius: 5.0,
+              markers != null ?
+                Positioned(left: 20,
+                  right: 20,
+                  bottom: 20,
+                  height: 248,
+                  child: Container(
+                    height: SizeConfig.blockHeight * 50,
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Color(0x88999999),
+                            offset: Offset(0, 5),
+                            blurRadius: 5.0,
+                          ),
+                        ]
+                    ),
+                    child: Column(
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            Expanded(flex: 1,
+                              child: Container(
+                                height: SizeConfig.blockHeight * 15,
+                                color: Colors.transparent,
+                                child: Center(child: Text("Saldo",
+                                  style: TextStyle(fontSize: 20.0,
+                                      fontWeight: FontWeight.w600),)),),),
+                            Expanded(flex: 1,
+                              child: Container(
+                                height: SizeConfig.blockHeight * 15,
+                                color: Colors.blue,
+                                child: Center(child: Text("Promo")),),),
+                            Expanded(flex: 1,
+                              child: Container(
+                                height: SizeConfig.blockHeight * 15,
+                                color: Colors.black,
+                                child: Center(child: Text("Catatan")),),),
+                          ],
                         ),
-                      ]
-                  ),
-                  child: Column(
-                    children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          Expanded(flex: 1,child: Container(height:SizeConfig.blockHeight * 15,color: Colors.transparent,child: Center(child: Text("Saldo",style: TextStyle(fontSize: 20.0,fontWeight: FontWeight.w600),)),),),
-                          Expanded(flex: 1,child: Container(height:SizeConfig.blockHeight * 15,color: Colors.blue,child: Center(child: Text("Promo")),),),
-                          Expanded(flex: 1,child: Container(height:SizeConfig.blockHeight * 15,color: Colors.black,child: Center(child: Text("Catatan")),),),
-                        ],
-                      ),
-                      Divider(),
-                      Container(
-                        height: 50,
-                        child: Text("Harga",style: TextStyle(fontFamily: 'Montserrat',fontSize: 30.0,fontWeight: FontWeight.bold),) ,
-                      ),
-                      Divider(),
-                      Padding(
-                          padding: const EdgeInsets.only(left:8.0,right: 8.0),
+                        Divider(),
+                        Container(
+                          height: 50,
+                          child: Text("Harga", style: TextStyle(
+                              fontFamily: 'Montserrat',
+                              fontSize: 30.0,
+                              fontWeight: FontWeight.bold),),
+                        ),
+                        Divider(),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0, right: 8.0),
                           child: ButtonTheme(
                             height: 50.0,
                             minWidth: SizeConfig.screenWidth,
                             child: RaisedButton(
                               color: Colors.blue[700],
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-                              child: Text('Pesan', style: TextStyle(color: Colors.white)),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12.0)),
+                              child: Text('Pesan',
+                                  style: TextStyle(color: Colors.white)),
                               onPressed: onHandleOrder,
                             ),
                           ),
-                      ),
-                    ],
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ),
+                ):
+                Container(),
 
 //              Positioned(
 //                bottom: 20,

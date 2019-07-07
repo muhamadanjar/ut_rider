@@ -22,7 +22,13 @@ class AppBloc {
       print("Print data ${res}");
       tipeSnapshot.add(res);
     });
+
+    api.getPackage(0).then((List res){
+      packageSnapshot.add(res);
+    });
     _loadSharedPrefs();
+
+
   }
 
   void getType(){

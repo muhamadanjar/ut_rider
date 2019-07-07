@@ -80,8 +80,6 @@ class _RidePickerPageState extends State<RidePickerPage> {
                           controller: _addressController,
                           textInputAction: TextInputAction.search,
                           onChanged: (value){
-                            print("cari str :${value}");
-                            print(_addressController.text);
                             placeBloc.searchPlace(value);
                           },
                           onSubmitted: (String str) {
@@ -124,6 +122,7 @@ class _RidePickerPageState extends State<RidePickerPage> {
                               onTap: () {
                                 print("on tap");
                                 Navigator.of(context).pop();
+                                print(places.elementAt(index));
                                 widget.onSelected(places.elementAt(index),
                                     widget._isFromAddress);
 
