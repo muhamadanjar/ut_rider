@@ -1,6 +1,7 @@
 import 'package:provider/provider.dart';
 
 import 'data/app_bloc.dart';
+import 'data/place_bloc.dart';
 import 'models/user.dart';
 import 'utils/authentication.dart';
 import 'data/rest_ds.dart';
@@ -18,14 +19,6 @@ List<SingleChildCloneableWidget> providers = [
 
 List<SingleChildCloneableWidget> independentServices = [
   Provider.value(value: RestDatasource()),
-  Provider(
-    builder: (_) => AppBloc(),
-    dispose: (_, value){
-      AppBloc().dispose();
-      value.dispose();
-
-    },
-  )
 ];
 
 List<SingleChildCloneableWidget> dependentServices = [
@@ -51,6 +44,17 @@ List<SingleChildCloneableWidget> uiConsumableProviders = [
   StreamProvider<Order>.value(
     value: OrderService().orderController.stream,
   ),
+  Provider(
+    builder: (_) => AppBloc(),
+    dispose: (_, value){
+      value.dispose();
+    },
+  ),
+  Provider(
+    builder: (_) => PlaceBloc(),
+    dispose: (_,v)=>v.dispose(),
+
+  )
   
 ];
   

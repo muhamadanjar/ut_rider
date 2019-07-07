@@ -150,8 +150,9 @@ class RestDatasource {
   Future<List> getPackage(type) async{
     var response = await _networkUtil.get("${GET_PACKAGE}/${type}");
     List listPackage = new List();
-    (response['data'] as List).forEach((f){
-        var data = new Map<String,dynamic>();
+    if(response['status']) {
+      (response['data'] as List).forEach((f) {
+        var data = new Map<String, dynamic>();
         data['id'] = f['rp_id'];
         data['name'] = f['rp_name'];
         data['harga'] = f['rp_total_price'];
@@ -159,10 +160,12 @@ class RestDatasource {
         data['harga_jam'] = f['rp_hour'];
         data['harga_addkm'] = f['rp_add_mile_km'];
         data['harga_addmenit'] = f['rp_add_min'];
+        data["imgUrl"] = f['path_url'];
         listPackage.add(data);
       }
-    );
-    return listPackage;
+      );
+      return listPackage;
+    }
   }
   Future<List> getTypeMobil() async{
     var response = await _networkUtil.get("${GET_TYPEMOBIL}");

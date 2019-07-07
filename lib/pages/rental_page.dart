@@ -16,69 +16,79 @@ class _RentalPageState extends State<RentalPage> {
   @override
   void initState() {
     super.initState();
+    appBloc = new AppBloc();
+    appBloc.getPackage(1);
+  }
+  @override
+  void dispose() {
+    appBloc.dispose();
+    super.dispose();
+
   }
   @override
   Widget build(BuildContext context) {
-    appBloc = Provider.of<AppBloc>(context);
     return Scaffold(
       appBar: AppBar(title: Text("Rental"),),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Column(
           children: <Widget>[
-
-          Column(
-            children: <Widget>[
-            Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Column(
               children: <Widget>[
-                Text("Pilih Mobil",
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text("Pilih Mobil",
 
+                    ),
+                    Spacer(),
+
+                  ],
                 ),
-                Spacer(),
+              ),
+              Container(
+                height: 240.0,
+                child: StreamBuilder(
+                    stream: appBloc.tipeSnapshotStream,
+                    builder: (context, snapshot) {
+                      print(" has data ${snapshot.hasData}");
+                      return !snapshot.hasData
+                          ? Center(child: CircularProgressIndicator())
+                          : ListView.builder(
+                          itemCount: snapshot.data.length,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) {
+                            print(snapshot.data);
+                            return InkWell(
+                                onTap: (){
+                                  appBloc.getPackage(index);
+                                },
+                                child: TipeCard(
+                                    tipeMobil: TipeMobil.fromMap(snapshot.data[index])
+                                )
+                            );
+                          });;
+                    }),
 
-              ],
-            ),
-          ),
-            Container(
-              height: 240.0,
-              child: StreamBuilder(
-                  stream: appBloc.tipeSnapshotStream,
-                  builder: (context, snapshot) {
-                    print(" has data ${snapshot.hasData}");
-                    return !snapshot.hasData
-                        ? Center(child: CircularProgressIndicator())
-                        : ListView.builder(
-                        itemCount: snapshot.data.length,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) {
-                          print(snapshot.data);
-                          return InkWell(
-                              onTap: (){
-                                appBloc.getPackage(index);
-                              },
-                              child: TipeCard(
-                                  tipeMobil: TipeMobil.fromMap(snapshot.data[index])
-                              )
-                          );
-                        });;
-                  }),
-
-            ),
-            Container(
+              ),
+              Container(
                 width: double.infinity,
-                height: 150.0,
-                padding: const EdgeInsets.only(left: 8.0),
+                height: SizeConfig.blockHeight * 45,
+                padding: const EdgeInsets.only(left: 8.0,right: 8.0),
                 child: StreamBuilder(
                     stream: appBloc.packageSnapshotStream,
                     builder: (context, snapshots) {
+                      print("snapshot paket: $snapshots.data");
                       return ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: snapshots.data.length,
                         itemBuilder: (context,idx){
+                          var data = snapshots.data;
+                          print(data[idx]);
+
                           var packageContainer = Container(
                             decoration: BoxDecoration(
                                 gradient: LinearGradient(
@@ -90,13 +100,14 @@ class _RentalPageState extends State<RentalPage> {
                                     ]),
                                 borderRadius: BorderRadius.circular(8.0),
                                 image: DecorationImage(
-                                    image: NetworkImage(snapshots.data[idx].imgUrl),
+                                    image: NetworkImage(data[idx]['imgUrl']),
                                     fit: BoxFit.cover
                                 )
                             ),
                             margin: EdgeInsets.only(left: 10.0),
-                            height: 150.0,
-                            width: 300.0,
+                            height: SizeConfig.blockHeight * 50,
+                            width: SizeConfig.blockWidth * 90,
+
                           );
                           return !snapshots.hasData ? Center(child: CircularProgressIndicator()):packageContainer;
                         },
@@ -104,7 +115,8 @@ class _RentalPageState extends State<RentalPage> {
                       );
                     }
                 )
-            )
+              ),
+
 
             ]
         )
@@ -206,7 +218,7 @@ class _RentalPageState extends State<RentalPage> {
         itemBuilder: (context, index) {
           return InkWell(
               onTap: (){
-                appBloc.getPackage(index);
+                appBloc.getPackage(snapshots[index].id);
               },
               child: TipeCard(
                   tipeMobil: TipeMobil.fromMap(snapshots[index])
@@ -215,12 +227,6 @@ class _RentalPageState extends State<RentalPage> {
         });
   }
 
-  @override
-  void dispose() {
-    appBloc.dispose();
-    super.dispose();
-
-  }
 }
 
 
@@ -297,21 +303,7 @@ class TipeCard extends StatelessWidget {
                           ),
                         ],
                       ),
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 6.0, vertical: 2.0),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.rectangle,
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(10.0),
-                          ),
-                        ),
-                        child: Text(
-                          '${tipeMobil.name}%',
-                          style: TextStyle(fontSize: 14.0, color: Colors.black),
-                        ),
-                      ),
+
                     ],
                   ),
                 )

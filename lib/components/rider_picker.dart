@@ -41,7 +41,6 @@ class _RidePickerState extends State<RidePicker> {
                             (place, isFrom) {
                           widget.onSelected(place, isFrom);
                           fromAddress = place;
-                          setState(() {});
                         }, true)));
               },
               child: SizedBox(
@@ -121,8 +120,7 @@ class _RidePickerState extends State<RidePicker> {
                       child: Text(
                         toAddress == null ? "To" : toAddress.name,
                         overflow: TextOverflow.ellipsis,
-                        style:
-                        TextStyle(fontSize: 16, color: Color(0xff323643)),
+                        style:TextStyle(fontSize: 16, color: Color(0xff323643)),
                       ),
                     )
                   ],

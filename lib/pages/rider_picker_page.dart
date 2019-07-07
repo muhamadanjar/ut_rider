@@ -15,6 +15,7 @@ class RidePickerPage extends StatefulWidget {
 class _RidePickerPageState extends State<RidePickerPage> {
   var _addressController;
   var placeBloc = PlaceBloc();
+  BuildContext _ctx;
 
   @override
   void initState() {
@@ -30,6 +31,7 @@ class _RidePickerPageState extends State<RidePickerPage> {
 
   @override
   Widget build(BuildContext context) {
+    _ctx = context;
     return Scaffold(
       appBar: AppBar(),
       body: Container(
@@ -73,10 +75,10 @@ class _RidePickerPageState extends State<RidePickerPage> {
                           controller: _addressController,
                           textInputAction: TextInputAction.search,
                           onSubmitted: (str) {
+                            print(str);
                             placeBloc.searchPlace(str);
                           },
-                          style:
-                          TextStyle(fontSize: 16, color: Color(0xff323643)),
+                          style:TextStyle(fontSize: 16, color: Color(0xff323643)),
                         ),
                       )
                     ],
@@ -89,6 +91,7 @@ class _RidePickerPageState extends State<RidePickerPage> {
               child: StreamBuilder(
                   stream: placeBloc.placeStream,
                   builder: (context, snapshot) {
+                    print("data snapshot ${snapshot.data}");
                     if (snapshot.hasData) {
                       print(snapshot.data.toString());
                       if (snapshot.data == "start") {
@@ -99,6 +102,7 @@ class _RidePickerPageState extends State<RidePickerPage> {
 
                       print(snapshot.data.toString());
                       List<PlaceItemRes> places = snapshot.data;
+                      print("Jumlah Place :${places.length}");
                       return ListView.separated(
                           shrinkWrap: true,
                           itemBuilder: (context, index) {

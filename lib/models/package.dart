@@ -8,8 +8,9 @@ class Package{
   int hargaAddMenit;
   int type;
   int status;
+  String imgUrl;
 
-  Package({this.id,this.name,this.harga,this.hargaKm,this.hargaJam,this.hargaAddKm,this.hargaAddMenit,this.type,this.status});
+  Package({this.id,this.name,this.harga,this.hargaKm,this.hargaJam,this.hargaAddKm,this.hargaAddMenit,this.type,this.status,this.imgUrl});
 
   factory Package.fromJson(Map<String, dynamic> json){
     return new Package(
@@ -30,6 +31,7 @@ class Package{
     map['harga_jam'] = hargaJam;
     map['harga_addkm'] = hargaAddKm;
     map['harga_addmenit'] =  hargaAddMenit;
+    map["imgUrl"] = imgUrl;
     return map;
   }
 
