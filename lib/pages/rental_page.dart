@@ -82,7 +82,9 @@ class _RentalPageState extends State<RentalPage> {
                     stream: appBloc.packageSnapshotStream,
                     builder: (context, snapshots) {
                       print("snapshot paket: $snapshots.data");
-                      return ListView.builder(
+                      return !snapshots.hasData
+                          ? Center(child: CircularProgressIndicator()):
+                      ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: snapshots.data.length,
                         itemBuilder: (context,idx){
