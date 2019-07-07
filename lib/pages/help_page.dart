@@ -40,7 +40,7 @@ class _HelpViewState extends State<HelpView> {
     final Polyline polyline = Polyline(
       polylineId: polylineId,
       consumeTapEvents: true,
-      color: Colors.black,
+      color: Colors.blue,
       width: 5,
       points: _createTripPoints(),
       onTap: () {},
@@ -70,7 +70,7 @@ class _HelpViewState extends State<HelpView> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.black,
+          backgroundColor: Colors.blue,
           title: Text("Help"),
         ),
         body: ListView(

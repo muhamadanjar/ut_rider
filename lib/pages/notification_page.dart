@@ -21,11 +21,11 @@ class _NotificationPageState extends State<NotificationPage> with SingleTickerPr
       appBar: AppBar(title: Text("Notifikasi"),
         bottom: TabBar(
           unselectedLabelColor: Colors.white,
-          labelColor: Colors.amber,
+          labelColor: Colors.black,
           tabs: [
-            new Tab(icon: new Icon(Icons.call)),
+            new Tab(icon: new Icon(Icons.info)),
             new Tab(
-              icon: new Icon(Icons.chat),
+              icon: new Icon(Icons.transform),
             ),
             new Tab(
               icon: new Icon(Icons.notifications),
@@ -39,8 +39,8 @@ class _NotificationPageState extends State<NotificationPage> with SingleTickerPr
 
       body: TabBarView(
           children: [
-          new Text("This is call Tab View"),
-          new Text("This is chat Tab View"),
+          new Text("Info"),
+          new Text("Promo"),
           new Text("This is notification Tab View"),
           ],
         controller: _tabController,

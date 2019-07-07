@@ -84,8 +84,8 @@ class _RidePickerPageState extends State<RidePickerPage> {
                             print(_addressController.text);
                             placeBloc.searchPlace(value);
                           },
-                          onSubmitted: (str) {
-
+                          onSubmitted: (String str) {
+                            print("onSubmit: ${str}");
                           },
                           style:TextStyle(fontSize: 16, color: Color(0xff323643)),
 

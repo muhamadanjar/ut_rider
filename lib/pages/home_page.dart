@@ -654,26 +654,36 @@ class _HomePageState extends State<HomePage> {
               ),
 
               Positioned(left: 20, right: 20, bottom: 40,height: 248,
-                child: CarPickup(_tripDistance),
-              ),
-
-              Positioned(
-                bottom: 20,
-                left: 20,
-                right: 20,
-                child: Column(
-                  children: <Widget>[
-                    cardWidget(
-                        context,
-                        'assets/taxi.png',
-                        'Medan',
-                        'ID: 123456789',
-                        'Medan To Binjai',
-                        '\Rp. 200 K',
-                        '',
-                        Colors.blue[900]),
-                        Padding(
-                          padding: const EdgeInsets.only(top:8.0),
+                child: Container(
+                  height: SizeConfig.blockHeight * 50,
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Color(0x88999999),
+                          offset: Offset(0, 5),
+                          blurRadius: 5.0,
+                        ),
+                      ]
+                  ),
+                  child: Column(
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          Expanded(flex: 1,child: Container(height:SizeConfig.blockHeight * 15,color: Colors.transparent,child: Center(child: Text("Saldo",style: TextStyle(fontSize: 20.0,fontWeight: FontWeight.w600),)),),),
+                          Expanded(flex: 1,child: Container(height:SizeConfig.blockHeight * 15,color: Colors.blue,child: Center(child: Text("Promo")),),),
+                          Expanded(flex: 1,child: Container(height:SizeConfig.blockHeight * 15,color: Colors.black,child: Center(child: Text("Catatan")),),),
+                        ],
+                      ),
+                      Divider(),
+                      Container(
+                        height: 50,
+                        child: Text("Harga",style: TextStyle(fontFamily: 'Montserrat',fontSize: 30.0,fontWeight: FontWeight.bold),) ,
+                      ),
+                      Divider(),
+                      Padding(
+                          padding: const EdgeInsets.only(left:8.0,right: 8.0),
                           child: ButtonTheme(
                             height: 50.0,
                             minWidth: SizeConfig.screenWidth,
@@ -684,11 +694,44 @@ class _HomePageState extends State<HomePage> {
                               onPressed: onHandleOrder,
                             ),
                           ),
-                        ),
-
-                      ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
+
+//              Positioned(
+//                bottom: 20,
+//                left: 20,
+//                right: 20,
+//                child: Column(
+//                  children: <Widget>[
+//                    cardWidget(
+//                        context,
+//                        'assets/taxi.png',
+//                        'Medan',
+//                        'ID: 123456789',
+//                        'Medan To Binjai',
+//                        '\Rp. 200 K',
+//                        '',
+//                        Colors.blue[900]),
+//                        Padding(
+//                          padding: const EdgeInsets.only(top:8.0),
+//                          child: ButtonTheme(
+//                            height: 50.0,
+//                            minWidth: SizeConfig.screenWidth,
+//                            child: RaisedButton(
+//                              color: Colors.blue[700],
+//                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+//                              child: Text('Pesan', style: TextStyle(color: Colors.white)),
+//                              onPressed: onHandleOrder,
+//                            ),
+//                          ),
+//                        ),
+//
+//                      ],
+//                ),
+//              ),
 
 
             ],
