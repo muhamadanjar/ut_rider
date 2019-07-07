@@ -11,7 +11,7 @@ const String apiURL = "http://192.168.43.110/api";
 const bool devMode = false;
 const double textScaleFactor = 1.0;
 const google_android_api = 'AIzaSyAKl4qWeBABIDPoxo_CHvWuIfgkKoEzS7c';
-const google_web_api = 'AIzaSyAyGT-CSg1nb0YBLihgn8vk9zfbbkk-f1c';
+  const google_web_api = 'AIzaSyAyGT-CSg1nb0YBLihgn8vk9zfbbkk-f1c';
 
 
 class RoutePaths {

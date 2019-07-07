@@ -1,6 +1,7 @@
 import 'package:ut_order/data/place_bloc.dart';
 import 'package:ut_order/models/place_item_res.dart';
 import 'package:flutter/material.dart';
+import '../utils/constans.dart';
 
 class RidePickerPage extends StatefulWidget {
   final String selectedAddress;
@@ -13,12 +14,13 @@ class RidePickerPage extends StatefulWidget {
 }
 
 class _RidePickerPageState extends State<RidePickerPage> {
-  var _addressController;
+  var _addressController = new TextEditingController();
   var placeBloc = PlaceBloc();
   BuildContext _ctx;
 
   @override
   void initState() {
+    print("data alamat : ${widget.selectedAddress}");
     _addressController = TextEditingController(text: widget.selectedAddress);
     super.initState();
   }
@@ -26,13 +28,16 @@ class _RidePickerPageState extends State<RidePickerPage> {
   @override
   void dispose() {
     placeBloc.dispose();
+//    _addressController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     _ctx = context;
+    SizeConfig().init(context);
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(),
       body: Container(
         constraints: BoxConstraints.expand(),
@@ -74,11 +79,16 @@ class _RidePickerPageState extends State<RidePickerPage> {
                         child: TextField(
                           controller: _addressController,
                           textInputAction: TextInputAction.search,
+                          onChanged: (value){
+                            print("cari str :${value}");
+                            print(_addressController.text);
+                            placeBloc.searchPlace(value);
+                          },
                           onSubmitted: (str) {
-                            print(str);
-                            placeBloc.searchPlace(str);
+
                           },
                           style:TextStyle(fontSize: 16, color: Color(0xff323643)),
+
                         ),
                       )
                     ],
@@ -88,6 +98,8 @@ class _RidePickerPageState extends State<RidePickerPage> {
             ),
             Container(
               padding: EdgeInsets.only(top: 20),
+              height: SizeConfig.blockHeight * 77,
+//              color: Colors.amber,
               child: StreamBuilder(
                   stream: placeBloc.placeStream,
                   builder: (context, snapshot) {
@@ -114,6 +126,7 @@ class _RidePickerPageState extends State<RidePickerPage> {
                                 Navigator.of(context).pop();
                                 widget.onSelected(places.elementAt(index),
                                     widget._isFromAddress);
+
                               },
                             );
                           },

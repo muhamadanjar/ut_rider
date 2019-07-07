@@ -187,6 +187,7 @@ class _HomePageState extends State<HomePage> {
 
   void onPlaceSelected(PlaceItemRes place, bool fromAddress) {
     var mkId = fromAddress ? "from_address" : "to_address";
+    print("place selected : ${mkId}");
     _addMarker(mkId, place);
     _moveCamera();
     _checkDrawPolyline();
@@ -195,27 +196,20 @@ class _HomePageState extends State<HomePage> {
   void _addMarker(String mkId, PlaceItemRes place) async {
     // remove old
     markers.remove(mkId);
-//    mapController.clearMarkers();
-
     markers[MarkerId(mkId)] = Marker(
 //        icon: _markerIcon,
         markerId:MarkerId(mkId),
         position: LatLng(place.lat, place.lng),
         infoWindow: InfoWindow(title: place.name,snippet: place.address));
       print(markers);
-//    for (var m in markers.values) {
-//      await _mapController.addMarker(m.options);
-//    }
   }
 
   void _moveCamera() {
-    print("move camera: ");
-    print(markers);
-
+    print("move camera: ${markers.values}");
     if (markers.values.length > 1) {
       var fromLatLng = markers["from_address"].position;
       var toLatLng = markers["to_address"].position;
-
+      print("dari Halaman ${markers.containsKey("from_address")}");
       var sLat, sLng, nLat, nLng;
       if(fromLatLng.latitude <= toLatLng.latitude) {
         sLat = fromLatLng.latitude;
@@ -232,8 +226,10 @@ class _HomePageState extends State<HomePage> {
         sLng = toLatLng.longitude;
         nLng = fromLatLng.longitude;
       }
+      print("sLat : ${sLat}");
 
       LatLngBounds bounds = LatLngBounds(northeast: LatLng(nLat, nLng), southwest: LatLng(sLat, sLng));
+
       mapController.animateCamera(CameraUpdate.newLatLngBounds(bounds, 50));
     } else {
       mapController.animateCamera(CameraUpdate.newLatLng(markers.values.elementAt(0).position));
@@ -636,9 +632,10 @@ class _HomePageState extends State<HomePage> {
                       leading: FlatButton(
                           onPressed: () {
                             print("click menu");
-                            homeScaffoldKey.currentState.openDrawer();
+                            Navigator.pop(context);
                           },
-                          child: Image.asset("assets/ic_menu.png")),
+                          child: Icon(Icons.navigate_before)
+                      ),
                       actions: <Widget>[
                         FlatButton(
                             onPressed: (){

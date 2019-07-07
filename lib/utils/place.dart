@@ -9,12 +9,8 @@ import 'dart:convert';
 
 class PlaceService {
   static Future<List<PlaceItemRes>> searchPlace(String keyword) async {
-    String url =
-        "https://maps.googleapis.com/maps/api/place/textsearch/json?key=" +
-            google_web_api +
-            "&language=vi&region=VN&query=" +
-            Uri.encodeQueryComponent(keyword);
-
+    String url = "https://maps.googleapis.com/maps/api/place/textsearch/json?key=" +
+            google_web_api +"&language=id&region=ID&query=" + Uri.encodeQueryComponent(keyword);
     print("search >>: " + url);
     var res = await http.get(url);
     if (res.statusCode == 200) {
@@ -24,8 +20,7 @@ class PlaceService {
     }
   }
 
-  static Future<dynamic> getStep(
-      double lat, double lng, double tolat, double tolng) async {
+  static Future<dynamic> getStep(double lat, double lng, double tolat, double tolng) async {
     String str_origin = "origin=" + lat.toString() + "," + lng.toString();
     // Destination of route
     String str_dest =
@@ -84,5 +79,19 @@ class PlaceService {
         .toList();
 
     return list;
+  }
+
+  static Future<List> getNearbyPlace(double lat,double lng,double radius) async{
+    var location = "${lat.toString()},${lng.toString()}";
+    var _rad = radius.toString();
+    String nearbyurl ="https://maps.googleapis.com/maps/api/place/nearbysearch/json?key="+ google_web_api+"&location="+location+"&radius="+_rad;
+    var res = await http.get(nearbyurl);
+    if(res.statusCode == 200){
+      print(res.body);
+      return PlaceItemRes.fromJson(json.decode(res.body));
+    }else{
+      return new List();
+    }
+
   }
 }

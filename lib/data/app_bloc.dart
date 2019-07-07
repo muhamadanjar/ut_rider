@@ -13,6 +13,10 @@ class AppBloc {
   StreamSink<List> get packageSnapshot => packageSnapshotController.sink;
   Stream<List> get packageSnapshotStream => packageSnapshotController.stream;
 
+  StreamController<List> serviceSnapshotController = StreamController<List>();
+  StreamSink<List> get serviceSnapshot => serviceSnapshotController.sink;
+  Stream<List> get serviceSnapshotStream => serviceSnapshotController.stream;
+
   AppBloc(){
     api.getTypeMobil().then((List res){
       print("Print data ${res}");
@@ -28,6 +32,7 @@ class AppBloc {
 
     });
 
+
   }
 
   void getPackage(int idx){
@@ -35,6 +40,13 @@ class AppBloc {
       print(res);
       packageSnapshot.add(res);
     });
+  }
+  void getServiceType(){
+    api.getServiceType().then((List res){
+      print(res);
+      serviceSnapshot.add(res);
+    });
+
   }
 
   Future<void> _loadSharedPrefs() async {

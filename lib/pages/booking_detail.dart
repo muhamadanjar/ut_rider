@@ -2,16 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:ut_order/models/trip.dart';
 import 'package:ut_order/components/verticaldivider.dart';
 
-
-
-
-
-
 TripInfo tripInfo = new TripInfo();
 
 class BookingFragment extends StatefulWidget {
-  static const img =
-      "https://flutter.io/tutorials/layout/images/card-flutter-gallery.png";
+  static const img = "https://flutter.io/tutorials/layout/images/card-flutter-gallery.png";
   static const String routeName = '/material/cards';
 
   @override
@@ -55,7 +49,12 @@ class Booking extends State<BookingFragment> {
                             child: tripItem(),
                           )
                           // description and share/explore buttons
-                        ])))));
+                        ]
+                    )
+                )
+            )
+        )
+    );
   }
 
   Container tripItem() {

@@ -26,6 +26,9 @@ class RestDatasource {
   static final GET_TYPEMOBIL = BASE_URL + "/type_car";
   static final POST_RENTAL = BASE_URL + "reguler";
   static final POST_TAXI = BASE_URL + "order";
+  static final GET_SERVICE = BASE_URL + "get_servicetype";
+
+
   static final _API_KEY = "somerandomkey";
   final token = 'token';
   LocationData _currentLocation;
@@ -213,5 +216,17 @@ class RestDatasource {
     return _networkUtil.post(ORDER_CAR,body:data,headers: headers).then((dynamic res){
       return res;
     });
+  }
+
+  Future<List> getServiceType() async{
+    var response = await _networkUtil.get(GET_SERVICE);
+    var listService = new List();
+    if(response['status']==true) {
+      (response["data"] as List).forEach((f) {
+        listService.add(f);
+      });
+    }
+    return listService;
+
   }
 }   

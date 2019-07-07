@@ -16,7 +16,10 @@ class _RidePickerState extends State<RidePicker> {
   PlaceItemRes toAddress;
 
   @override
+
   Widget build(BuildContext context) {
+    print("fromAdrress : ${fromAddress}");
+    print("toAddress : ${toAddress}");
     return Container(
       decoration: BoxDecoration(
           color: Colors.white,

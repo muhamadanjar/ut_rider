@@ -3,21 +3,23 @@ import 'dart:async';
 import 'package:ut_order/utils/place.dart';
 
 class PlaceBloc {
-  var _placeController = StreamController();
+  StreamController _placeController = StreamController();
   Stream get placeStream => _placeController.stream;
+  StreamSink get placeSink => _placeController.sink;
 
   void searchPlace(String keyword) {
     print("place bloc search: " + keyword);
 
-    _placeController.sink.add("start");
+    placeSink.add("start");
     PlaceService.searchPlace(keyword).then((rs) {
-      _placeController.sink.add(rs);
+      placeSink.add(rs);
     }).catchError(() {
-//      _placeController.sink.add("stop");
+      placeSink.add("stop");
     });
   }
 
   void dispose() {
+    print("dispose place controller");
     _placeController.close();
   }
 }
