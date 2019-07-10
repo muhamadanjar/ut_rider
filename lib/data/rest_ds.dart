@@ -58,8 +58,6 @@ class RestDatasource {
   }
 
   Future<dynamic> register(Map mapData){
-    
-    
     var data = {
       "username": mapData['email'],
       "password": (mapData["password"] as String),
