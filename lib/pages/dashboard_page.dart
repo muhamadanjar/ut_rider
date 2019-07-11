@@ -102,7 +102,7 @@ class PromoWidget extends StatelessWidget {
         ),
         Container(
           width: double.infinity,
-          height: 150.0,
+          height: 250.0,
           padding: const EdgeInsets.only(left: 8.0),
           child: ListView.builder(
               scrollDirection: Axis.horizontal,
@@ -176,7 +176,7 @@ class PromoWidget extends StatelessWidget {
                       )
                   ),
                   margin: EdgeInsets.only(left: 10.0),
-                  height: 150.0,
+                  height: 250.0,
                   width: 300.0,
                 );
                 return (idx == 0) ? listCon:listCon;

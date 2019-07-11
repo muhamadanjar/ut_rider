@@ -49,75 +49,8 @@ class _RentalPageState extends State<RentalPage> {
                   ],
                 ),
               ),
-              Container(
-                height: 240.0,
-                child: StreamBuilder(
-                    stream: appBloc.tipeSnapshotStream,
-                    builder: (context, snapshot) {
-                      print(" has data ${snapshot.hasData}");
-                      return !snapshot.hasData
-                          ? Center(child: CircularProgressIndicator())
-                          : ListView.builder(
-                          itemCount: snapshot.data.length,
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (context, index) {
-                            print(snapshot.data);
-                            return InkWell(
-                                onTap: (){
-                                  appBloc.getPackage(index);
-                                },
-                                child: TipeCard(
-                                    tipeMobil: TipeMobil.fromMap(snapshot.data[index])
-                                )
-                            );
-                          });;
-                    }),
-
-              ),
-              Container(
-                width: double.infinity,
-                height: SizeConfig.blockHeight * 45,
-                padding: const EdgeInsets.only(left: 8.0,right: 8.0),
-                child: StreamBuilder(
-                    stream: appBloc.packageSnapshotStream,
-                    builder: (context, snapshots) {
-                      print("snapshot paket: $snapshots.data");
-                      return !snapshots.hasData
-                          ? Center(child: CircularProgressIndicator()):
-                      ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: snapshots.data.length,
-                        itemBuilder: (context,idx){
-                          var data = snapshots.data;
-                          print(data[idx]);
-
-                          var packageContainer = Container(
-                            decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                    colors: [
-                                      Color.fromARGB(100, 176, 223, 229),
-                                      Color.fromARGB(100, 0, 142, 204)
-                                    ]),
-                                borderRadius: BorderRadius.circular(8.0),
-                                image: DecorationImage(
-                                    image: NetworkImage(data[idx]['imgUrl']),
-                                    fit: BoxFit.cover
-                                )
-                            ),
-                            margin: EdgeInsets.only(left: 10.0),
-                            height: SizeConfig.blockHeight * 50,
-                            width: SizeConfig.blockWidth * 90,
-
-                          );
-                          return !snapshots.hasData ? Center(child: CircularProgressIndicator()):packageContainer;
-                        },
-
-                      );
-                    }
-                )
-              ),
+              // tipeMobil(),
+              paketMobil(),
 
 
             ]
@@ -128,90 +61,82 @@ class _RentalPageState extends State<RentalPage> {
     );
   }
 
+  
   Widget tipeMobil(){
-    return Column(
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text("Pilih Mobil",
-
-              ),
-              Spacer(),
-
-            ],
-          ),
-        ),
-        Container(
-          height: 240.0,
-          child: StreamBuilder(
-              stream: appBloc.tipeSnapshotStream,
-              builder: (context, snapshot) {
-                print(" has data ${snapshot.hasData}");
-                return !snapshot.hasData
-                    ? Center(child: CircularProgressIndicator())
-                    : ListView.builder(
-                    itemCount: snapshot.data.length,
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (context, index) {
-                      print(snapshot.data);
-                      return InkWell(
-                          onTap: (){
-                            appBloc.getPackage(index);
-                          },
-                          child: TipeCard(
-                              tipeMobil: TipeMobil.fromMap(snapshot.data[index])
-                          )
-                      );
-                    });;
-              }),
-
-        ),
-        Container(
-          width: double.infinity,
-          height: 150.0,
-          padding: const EdgeInsets.only(left: 8.0),
-          child: StreamBuilder(
-            stream: appBloc.packageSnapshotStream,
-            builder: (context, snapshots) {
-              return ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: snapshots.data.length,
-                itemBuilder: (context,idx){
-                  var packageContainer = Container(
-                    decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              Color.fromARGB(100, 176, 223, 229),
-                              Color.fromARGB(100, 0, 142, 204)
-                            ]),
-                        borderRadius: BorderRadius.circular(8.0),
-                        image: DecorationImage(
-                            image: NetworkImage(snapshots.data[idx].imgUrl),
-                            fit: BoxFit.cover
+    return Container(
+        height: 240.0,
+        child: StreamBuilder(
+            stream: appBloc.tipeSnapshotStream,
+            builder: (context, snapshot) {
+              print(" has data ${snapshot.hasData}");
+              return !snapshot.hasData
+                  ? Center(child: CircularProgressIndicator())
+                  : ListView.builder(
+                  itemCount: snapshot.data.length,
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (context, index) {
+                    print(snapshot.data);
+                    return InkWell(
+                        onTap: (){
+                          appBloc.getPackage(index);
+                        },
+                        child: TipeCard(
+                            tipeMobil: TipeMobil.fromMap(snapshot.data[index])
                         )
-                    ),
-                    margin: EdgeInsets.only(left: 10.0),
-                    height: 150.0,
-                    width: 300.0,
-                  );
-                  return !snapshots.hasData ? Center(child: CircularProgressIndicator()):packageContainer;
-                },
-
-              );
+                    );
+                  });;
             }
-          )
-        )
+        ),
 
-      ]
     );
   }
 
+  Widget paketMobil(){
+    return Container(
+      width: double.infinity,
+      height: SizeConfig.blockHeight * 80,
+      padding: const EdgeInsets.only(left: 8.0,right: 8.0),
+      child: StreamBuilder(
+          stream: appBloc.packageSnapshotStream,
+          builder: (context, snapshots) {
+            print("snapshot paket: $snapshots.data");
+            return !snapshots.hasData
+                ? Center(child: CircularProgressIndicator()):
+            ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: snapshots.data.length,
+              itemBuilder: (context,idx){
+                var data = snapshots.data;
+                print(data[idx]);
+
+                var packageContainer = Container(
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Color.fromARGB(100, 176, 223, 229),
+                            Color.fromARGB(100, 0, 142, 204)
+                          ]),
+                      borderRadius: BorderRadius.circular(8.0),
+                      image: DecorationImage(
+                          image: NetworkImage(data[idx]['imgUrl']),
+                          fit: BoxFit.cover
+                      )
+                  ),
+                  margin: EdgeInsets.only(left: 10.0),
+                  height: SizeConfig.blockHeight * 50,
+                  width: SizeConfig.blockWidth * 90,
+
+                );
+                return !snapshots.hasData ? Center(child: CircularProgressIndicator()):packageContainer;
+              },
+
+            );
+          }
+      )
+    );
+  }
   Widget _buildTipeList(BuildContext context, List snapshots) {
     print("Data Tipe Snapshot ${snapshots}");
     return ListView.builder(

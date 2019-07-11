@@ -41,22 +41,22 @@ class _HomeMenuState extends State<HomeMenu> {
                 linkMenuDrawer('Profil', () {
                   Navigator.pushNamed(context, RoutePaths.Profile);
                 }),
-                linkMenuDrawer('Payment', () {
+                linkMenuDrawer('Bank Transfer', () {
                   Navigator.pushNamed(context, RoutePaths.Payment);
                 }),
                 linkMenuDrawer('Saldo', () {
                   Navigator.pushNamed(context, RoutePaths.TopUp);
                 }),
-                linkMenuDrawer('Your Trips', () {
+                linkMenuDrawer('Histori Perjalanan', () {
                   Navigator.pushNamed(context, RoutePaths.MyTrip);
                 }),
-                linkMenuDrawer('Settings', () {
+                linkMenuDrawer('Pengaturan', () {
                   Navigator.pushNamed(context, RoutePaths.Settings);
                 }),
                 linkMenuDrawer('Pemberitahuan', () {
                   Navigator.pushNamed(context, RoutePaths.Notifications);
                 }),
-                linkMenuDrawer('Help', () {
+                linkMenuDrawer('Bantuan', () {
                   Navigator.pushNamed(context, RoutePaths.Help);
                 }),
 
