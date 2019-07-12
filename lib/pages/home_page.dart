@@ -253,23 +253,50 @@ class _HomePageState extends State<HomePage> {
   void _checkDrawPolyline() {
 //  remove old polyline
 //    mapController.clearPolylines();
+    final String polylineIdVal = 'polyline_id_distance';
     print("Draw Polyline");
+    polylines.remove(polylineIdVal);
     if (markers.length > 1) {
-      var from = markers["from_address"].position;
-      var to = markers["to_address"].position;
-      print("from: ${from}");
+
+      var from;
+      var to;
+
+      markers.forEach((mkid,v){
+        print(mkid.value);
+        if(mkid.value == "from_address"){
+          from = v.position;
+        }else{
+          to = v.position;
+        }
+      });
+      print("checkDrawPolyline from: ${from}");
       PlaceService.getStep(from.latitude, from.longitude, to.latitude, to.longitude).then((vl) {
         TripInfoRes infoRes = vl;
         _tripDistance = infoRes.distance;
         List<StepsRes> rs = infoRes.steps;
         List<LatLng> paths = new List();
         for (var t in rs) {
-          paths
-              .add(LatLng(t.startLocation.latitude, t.startLocation.longitude));
+          paths.add(LatLng(t.startLocation.latitude, t.startLocation.longitude));
           paths.add(LatLng(t.endLocation.latitude, t.endLocation.longitude));
         }
-//        print(paths);
-//        mapController.addPolyline(PolylineOptions(points: paths, color: Color(0xFF3ADF00).value, width: 10));
+        print(paths);
+
+        
+        final PolylineId polylineId = PolylineId(polylineIdVal);
+        final Polyline polyline = Polyline(
+          polylineId: polylineId,
+          consumeTapEvents: true,
+          color: Colors.black,
+          width: 5,
+          points: paths,
+          onTap: () {
+            _onPolylineTapped(polylineId);
+          },
+        );
+
+        setState(() {
+          polylines[polylineId] = polyline;
+        });
       });
     }
   }
