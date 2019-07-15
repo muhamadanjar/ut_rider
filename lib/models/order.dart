@@ -75,9 +75,18 @@ class OrderPemesanan with ChangeNotifier{
 
   setFrom(PlaceItemRes res){
     this.fromAddress = res;
+    notifyListeners();
   }
 
   setTo(PlaceItemRes res){
     this.toAddress = res;
+    notifyListeners();
+  }
+
+  Map<String, dynamic> toJson() {
+    var map = new Map<String, dynamic>();
+    map["origin"] = fromAddress;
+    map["destination"] = toAddress;
+    return map;
   }
 }

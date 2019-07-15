@@ -48,7 +48,7 @@ class _DashboardPageState extends State<DashboardPage> {
       body: ListView(
         children: <Widget>[
           Profile(
-            name: "Customer 1",
+            name: dp.name,
             imgUrl: "https://i.pravatar.cc/200",
           ),
           Divider(),
@@ -88,18 +88,18 @@ class PromoWidget extends StatelessWidget {
 
     return Column(
       children: <Widget>[
-        ListTile(
-          title: Text(
-            '',
-            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 22.0),
-          ),
-          trailing: IconButton(
-            icon: Icon(Icons.keyboard_arrow_right),
-            onPressed: () {
-              Navigator.pushNamed(context, RoutePaths.Promo);
-            },
-          ),
-        ),
+//        ListTile(
+//          title: Text(
+//            '',
+//            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 22.0),
+//          ),
+//          trailing: IconButton(
+//            icon: Icon(Icons.keyboard_arrow_right),
+//            onPressed: () {
+//              Navigator.pushNamed(context, RoutePaths.Promo);
+//            },
+//          ),
+//        ),
         Container(
           width: double.infinity,
           height: 250.0,

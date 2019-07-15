@@ -54,7 +54,7 @@ class _HomePageState extends State<HomePage> {
   String tripOrLatitude,tripOrLongitude,tripDesLatitude,tripDesLongitude;
   int tripTotal,tripDuration,tripDistance;
   Order order;
-  int _tripDistance = 0;
+  double _tripDistance = 0;
 
   Mode _mode = Mode.fullscreen;
 
@@ -132,7 +132,8 @@ class _HomePageState extends State<HomePage> {
 //        icon: _markerIcon,
         markerId:MarkerId(mkId),
         position: LatLng(place.lat, place.lng),
-        infoWindow: InfoWindow(title: place.name,snippet: place.address));
+//        infoWindow: InfoWindow(title: place.name,snippet: place.address)
+        );
       print(markers);
   }
 
@@ -198,7 +199,7 @@ class _HomePageState extends State<HomePage> {
       print("checkDrawPolyline from: ${from}");
       PlaceService.getStep(from.latitude, from.longitude, to.latitude, to.longitude).then((vl) {
         TripInfoRes infoRes = vl;
-        _tripDistance = infoRes.distance;
+        _tripDistance = infoRes.distance * 0.001;
         List<StepsRes> rs = infoRes.steps;
         List<LatLng> paths = new List();
         for (var t in rs) {
@@ -234,8 +235,10 @@ class _HomePageState extends State<HomePage> {
     getNearbyPlaces(center);
   }
 
-  void onHandleOrder() async{
-
+  void onHandleOrder(OrderPemesanan data) async{
+    final res = data.toJson();
+    final order = Order(origin: res['origin'].name,destination: res['destination'].name,originLat: res['origin'].lat,originLng: res['origin'].lng,destinationLat: res['destination'].lat,destinationLng: res['destination'].lng,harga:30,typeOrder: 1,duration: 1,distance: 1);
+    print(order.toString());
   }
 
   Future<LatLng> getUserLocation() async {
@@ -392,6 +395,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final userProvider = Provider.of<User>(context);
     final dataOrder = Provider.of<OrderPemesanan>(context);
+    print(dataOrder);
     final mapScreen = new Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
@@ -452,7 +456,7 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
-              markers != null ?
+              (dataOrder.fromAddress != null && dataOrder.toAddress != null) ?
                 Positioned(left: 20,
                   right: 20,
                   bottom: 20,
@@ -477,20 +481,41 @@ class _HomePageState extends State<HomePage> {
                             Expanded(flex: 1,
                               child: Container(
                                 height: SizeConfig.blockHeight * 15,
-                                color: Colors.transparent,
+
                                 child: Center(child: Text(userProvider.saldo == null ? '0':userProvider.saldo,
-                                  style: TextStyle(fontSize: 20.0,
-                                      fontWeight: FontWeight.w600),)),),),
+                                  style: TextStyle(fontSize: 20.0,fontWeight: FontWeight.w600),)),
+                                decoration: BoxDecoration(
+                                  border: Border(
+                                    left: BorderSide(width: 1.0, color: Colors.grey.shade600),
+                                    right: BorderSide(width: 1.0, color: Colors.grey.shade900),
+                                  ),
+                                  color: Colors.white,
+                                ),
+                              ),),
                             Expanded(flex: 1,
                               child: Container(
                                 height: SizeConfig.blockHeight * 15,
-                                color: Colors.blue,
-                                child: Center(child: Text("Jarak")),),),
+                                child: Center(child: Text("${_tripDistance.toStringAsFixed(2)} Km",style: TextStyle(fontSize: 20.0,fontWeight: FontWeight.w600))),
+                                decoration: BoxDecoration(
+                                  border: Border(
+                                    left: BorderSide(width: 1.0, color: Colors.grey.shade600),
+                                    right: BorderSide(width: 1.0, color: Colors.grey.shade900),
+                                  ),
+                                  color: Colors.white,
+                                )
+                              ),),
                             Expanded(flex: 1,
                               child: Container(
                                 height: SizeConfig.blockHeight * 15,
-                                color: Colors.black,
-                                child: Center(child: Text("Catatan")),),),
+                                child: Center(child: Text("Catatan")),
+                                decoration: BoxDecoration(
+                                  border: Border(
+                                    left: BorderSide(width: 1.0, color: Colors.grey.shade600),
+                                    right: BorderSide(width: 1.0, color: Colors.grey.shade900),
+                                  ),
+                                  color: Colors.white,
+                                )
+                              ),),
                           ],
                         ),
                         Divider(),
@@ -513,7 +538,7 @@ class _HomePageState extends State<HomePage> {
                                   borderRadius: BorderRadius.circular(12.0)),
                               child: Text('Pesan',
                                   style: TextStyle(color: Colors.white)),
-                              onPressed: onHandleOrder,
+                              onPressed: ()=>onHandleOrder(dataOrder),
                             ),
                           ),
                         ),

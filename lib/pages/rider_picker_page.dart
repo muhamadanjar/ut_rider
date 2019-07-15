@@ -1,4 +1,6 @@
+import 'package:provider/provider.dart';
 import 'package:ut_order/data/place_bloc.dart';
+import 'package:ut_order/models/order.dart';
 import 'package:ut_order/models/place_item_res.dart';
 import 'package:flutter/material.dart';
 import '../utils/constans.dart';
@@ -34,6 +36,7 @@ class _RidePickerPageState extends State<RidePickerPage> {
 
   @override
   Widget build(BuildContext context) {
+    final locationPicker = Provider.of<OrderPemesanan>(context);
     _ctx = context;
     SizeConfig().init(context);
     return Scaffold(
@@ -123,6 +126,12 @@ class _RidePickerPageState extends State<RidePickerPage> {
                                 print("on tap");
                                 Navigator.of(context).pop();
                                 print(places.elementAt(index));
+                                if(widget._isFromAddress){
+                                  locationPicker.setFrom(places.elementAt(index));
+                                }else{
+                                  locationPicker.setTo(places.elementAt(index));
+                                }
+
                                 widget.onSelected(places.elementAt(index),
                                     widget._isFromAddress);
 

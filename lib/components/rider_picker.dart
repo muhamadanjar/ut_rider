@@ -1,3 +1,5 @@
+import 'package:provider/provider.dart';
+import 'package:ut_order/models/order.dart';
 import 'package:ut_order/models/place_item_res.dart';
 
 import 'package:ut_order/pages/rider_picker_page.dart';
@@ -18,6 +20,9 @@ class _RidePickerState extends State<RidePicker> {
   @override
 
   Widget build(BuildContext context) {
+    final pickerLokasi = Provider.of<OrderPemesanan>(context);
+    print("picker lokasi : ${pickerLokasi.toJson()}");
+
     print("fromAdrress : ${fromAddress}");
     print("toAddress : ${toAddress}");
     return Container(
@@ -41,12 +46,10 @@ class _RidePickerState extends State<RidePicker> {
               onPressed: () {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => RidePickerPage(
-                        fromAddress == null ? "" : fromAddress.name,
+                        pickerLokasi.fromAddress == null ? "" : pickerLokasi.fromAddress.name,
                             (place, isFrom) {
                           widget.onSelected(place, isFrom);
-
-                          fromAddress = place;
-                          print(fromAddress.name);
+//                          fromAddress = place;
                         }, true)));
               },
               child: SizedBox(
@@ -74,7 +77,7 @@ class _RidePickerState extends State<RidePicker> {
                     Padding(
                       padding: EdgeInsets.only(left: 40, right: 50),
                       child: Text(
-                        fromAddress == null ? "Lokasi Penjemputan" : fromAddress.name,
+                        (pickerLokasi.fromAddress == null || pickerLokasi.fromAddress.name == null) ? "Lokasi Penjemputan" : pickerLokasi.fromAddress.name,
                         overflow: TextOverflow.ellipsis,
                         style:
                         TextStyle(fontSize: 16, color: Color(0xff323643)),
@@ -92,11 +95,12 @@ class _RidePickerState extends State<RidePicker> {
               onPressed: () {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) =>
-                        RidePickerPage(toAddress == null ? "" : toAddress.name,
+                        RidePickerPage(pickerLokasi.toAddress == null ? "" : pickerLokasi.toAddress.name,
                                 (place, isFrom) {
                               widget.onSelected(place, isFrom);
                               print(place);
-                              toAddress = place;
+                              pickerLokasi.setTo(place);
+//                              toAddress = place;
                               setState(() {});
                             }, false)));
               },
@@ -125,7 +129,7 @@ class _RidePickerState extends State<RidePicker> {
                     Padding(
                       padding: EdgeInsets.only(left: 40, right: 50),
                       child: Text(
-                        toAddress == null ? "Lokasi Tujuan" : toAddress.name,
+                        (pickerLokasi.toAddress == null || pickerLokasi.toAddress.name == null) ? "Lokasi Tujuan" : pickerLokasi.toAddress.name,
                         overflow: TextOverflow.ellipsis,
                         style:TextStyle(fontSize: 16, color: Color(0xff323643)),
                       ),
