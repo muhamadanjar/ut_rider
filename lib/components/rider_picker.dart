@@ -30,7 +30,8 @@ class _RidePickerState extends State<RidePicker> {
               offset: Offset(0, 5),
               blurRadius: 5.0,
             ),
-          ]),
+          ]
+      ),
       child: Column(
         children: <Widget>[
           Container(
@@ -73,7 +74,7 @@ class _RidePickerState extends State<RidePicker> {
                     Padding(
                       padding: EdgeInsets.only(left: 40, right: 50),
                       child: Text(
-                        fromAddress == null ? "From" : fromAddress.name,
+                        fromAddress == null ? "Lokasi Penjemputan" : fromAddress.name,
                         overflow: TextOverflow.ellipsis,
                         style:
                         TextStyle(fontSize: 16, color: Color(0xff323643)),
@@ -124,7 +125,7 @@ class _RidePickerState extends State<RidePicker> {
                     Padding(
                       padding: EdgeInsets.only(left: 40, right: 50),
                       child: Text(
-                        toAddress == null ? "To" : toAddress.name,
+                        toAddress == null ? "Lokasi Tujuan" : toAddress.name,
                         overflow: TextOverflow.ellipsis,
                         style:TextStyle(fontSize: 16, color: Color(0xff323643)),
                       ),

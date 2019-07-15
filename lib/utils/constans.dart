@@ -6,6 +6,10 @@ enum AlertAction {
   disagree,
   agree,
 }
+enum pemesananLokasi{
+  from_address,
+  to_address
+}
 
 const bool devMode = false;
 const String apiURL = devMode == true ? "http://192.168.43.110/api":"http://utama-trans.com/new/api";

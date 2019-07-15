@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:ut_order/utils/order.dart';
+import 'package:ut_order/utils/order.service.dart';
 import '../models/base_model.dart';
 
 class OrderViewModel extends BaseModel {
@@ -8,14 +8,5 @@ class OrderViewModel extends BaseModel {
   OrderViewModel({
     @required OrderService orderService,
   }) : _orderService = orderService;
-  Future<Null> showPrediction(context,center) async{
 
-    
-  }
-  Future<Null> onHandleTapSearch(context,center) async{
-    
-  }
-  void setDataOrder(name, lat, lng){
-    _orderService.setDataOrder(name, lat, lng);
-  }
 }

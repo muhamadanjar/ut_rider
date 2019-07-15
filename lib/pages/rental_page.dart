@@ -28,7 +28,7 @@ class _RentalPageState extends State<RentalPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Rental"),),
+      appBar: AppBar(title: Text("Promo"),),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Column(
@@ -41,7 +41,7 @@ class _RentalPageState extends State<RentalPage> {
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Text("Pilih Mobil",
+                    Text("Geser",
 
                     ),
                     Spacer(),

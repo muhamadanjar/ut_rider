@@ -8,8 +8,8 @@ class User {
   String saldo;
   User({this.username, this.password,this.token,this.name,this.rating,this.trip,this.saldo});
 
-//  String get _username => username;
-//  String get _password => password;
+  String get getUsername => username;
+  String get getName => name;
 
   
   factory User.fromJson(Map<String, dynamic> json) {
@@ -24,10 +24,6 @@ class User {
     );
   }
 
-  // User.map(dynamic obj) {
-  //   this._username = obj["username"];
-  //   this._password = obj["password"];
-  // }
 
   Map<String, dynamic> toMap() {
     var map = new Map<String, dynamic>();

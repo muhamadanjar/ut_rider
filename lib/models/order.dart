@@ -1,3 +1,6 @@
+import 'package:flutter/widgets.dart';
+
+import 'place_item_res.dart';
 class Order{
   String origin;
   String destination;
@@ -62,5 +65,19 @@ class Order{
     map["duration"] = duration;
     map["distance"] = distance;
     return map;
+  }
+}
+
+class OrderPemesanan with ChangeNotifier{
+  PlaceItemRes fromAddress;
+  PlaceItemRes toAddress;
+  OrderPemesanan({this.fromAddress,this.toAddress});
+
+  setFrom(PlaceItemRes res){
+    this.fromAddress = res;
+  }
+
+  setTo(PlaceItemRes res){
+    this.toAddress = res;
   }
 }

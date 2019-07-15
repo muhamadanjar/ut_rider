@@ -90,7 +90,7 @@ class PromoWidget extends StatelessWidget {
       children: <Widget>[
         ListTile(
           title: Text(
-            'Promo Saat Ini',
+            '',
             style: TextStyle(fontWeight: FontWeight.w600, fontSize: 22.0),
           ),
           trailing: IconButton(
@@ -207,7 +207,7 @@ class MenuUtama extends StatelessWidget {
 }
 List<MenuUtamaItems> menuUtamaItem = [
   MenuUtamaItems(
-    title: "Rencar",
+    title: "Promo",
     icon: Icons.local_taxi,
     colorBox: Colors.blue,
     colorIcon: Colors.white,

@@ -10,7 +10,7 @@ import 'utils/promoService.dart' as ps;
 import 'enum/connection_status.dart';
 import 'models/order.dart';
 import 'models/promo.dart';
-import 'utils/order.dart';
+import 'utils/order.service.dart';
 List<SingleChildCloneableWidget> providers = [
   ...independentServices,
   ...dependentServices,
@@ -41,9 +41,10 @@ List<SingleChildCloneableWidget> uiConsumableProviders = [
   StreamProvider<List<Promo>>.value(
     value: ps.PromoService().promoController.stream,
   ),
-  StreamProvider<Order>.value(
-    value: OrderService().orderController.stream,
+  ChangeNotifierProvider(
+    builder:(_)=>OrderPemesanan(),
   ),
+
   Provider(
     builder: (_) => AppBloc(),
     dispose: (_, value){

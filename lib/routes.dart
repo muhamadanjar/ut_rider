@@ -20,7 +20,6 @@ final routes = <String, WidgetBuilder>{
     HomePage.tag: (context) => HomePage(),
     SettingsPage.tag:(context) => SettingsPage(),
     PaymentPage.tag:(context) => PaymentPage(),
-    '/search':(context) => CustomSearchScaffold(),
 
 };
 

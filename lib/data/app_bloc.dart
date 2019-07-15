@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'package:flutter/widgets.dart';
+
 import 'rest_ds.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ut_order/models/user.dart';
+
+
 class AppBloc {
   RestDatasource api = new RestDatasource();
-  User _user;
   StreamController<List> tipeSnapshotController = StreamController<List>();
   StreamSink<List> get tipeSnapshot => tipeSnapshotController.sink;
   Stream<List> get tipeSnapshotStream => tipeSnapshotController.stream;
@@ -39,7 +41,6 @@ class AppBloc {
 
     });
 
-
   }
 
   void getPackage(int idx){
@@ -67,4 +68,8 @@ class AppBloc {
     tipeSnapshotController.close();
     packageSnapshotController.close();
   }
+}
+
+class AppState with ChangeNotifier{
+
 }

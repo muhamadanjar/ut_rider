@@ -17,10 +17,12 @@ class RiderPickerBloc extends BaseModel{
     var tm = 0;
     return ta +tm;
   }
-  void setOrigin(){
+  void setOrigin(PlaceItemRes res){
+    this.fromAddress = res;
     notifyListeners();
   }
-  void setDestination(){
+  void setDestination(PlaceItemRes res){
+    this.toAddress = res;
     notifyListeners();
   }
 }

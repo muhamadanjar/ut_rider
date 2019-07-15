@@ -4,7 +4,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ut_order/components/car_pickup.dart';
 import 'package:ut_order/components/menu_drawer.dart';
 import 'package:ut_order/components/network.dart';
-//import 'package:ut_order/components/functionalButton.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:location/location.dart' as LocationManager;
@@ -39,12 +38,11 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   _HomePageState();
 
-  // GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
+
   Completer<GoogleMapController> _controller = Completer();
   Map<PolylineId, Polyline> polylines = <PolylineId, Polyline>{};
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
   BitmapDescriptor _markerIcon;
-  int _polylineIdCounter = 1;
   PolylineId selectedPolyline;
   bool isLoading = false;
   String errorMessage;
@@ -56,7 +54,7 @@ class _HomePageState extends State<HomePage> {
   String tripOrLatitude,tripOrLongitude,tripDesLatitude,tripDesLongitude;
   int tripTotal,tripDuration,tripDistance;
   Order order;
-  var _tripDistance = 0;
+  int _tripDistance = 0;
 
   Mode _mode = Mode.fullscreen;
 
@@ -110,7 +108,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    //_mapController.mar();
     super.initState();
   }
 
@@ -120,78 +117,12 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void _addHomePoly() {
-    _homeCameraPosition();
-    final String polylineIdVal = 'polyline_id_$_polylineIdCounter';
-    _polylineIdCounter++;
-    final PolylineId polylineId = PolylineId(polylineIdVal);
-
-    final Polyline polyline = Polyline(
-      polylineId: polylineId,
-      consumeTapEvents: true,
-      color: Colors.black,
-      width: 5,
-      points: _createHomePoints(),
-      onTap: () {
-        _onPolylineTapped(polylineId);
-      },
-    );
-
-    setState(() {
-      polylines[polylineId] = polyline;
-    });
-  }
-
-  void _addGymPoly() {
-    _gymCameraPosition();
-    final String polylineIdVal = 'polyline_id_$_polylineIdCounter';
-    _polylineIdCounter++;
-    final PolylineId polylineId = PolylineId(polylineIdVal);
-    final Polyline polyline = Polyline(
-      polylineId: polylineId,
-      consumeTapEvents: true,
-      color: Colors.black,
-      width: 5,
-      points: _createGymPoints(),
-      onTap: () {
-        _onPolylineTapped(polylineId);
-      },
-    );
-
-    setState(() {
-      polylines[polylineId] = polyline;
-    });
-  }
-
-  void _addWorkPoly() {
-    _workCameraPosition();
-    final String polylineIdVal = 'polyline_id_$_polylineIdCounter';
-    _polylineIdCounter++;
-    final PolylineId polylineId = PolylineId(polylineIdVal);
-
-    final Polyline polyline = Polyline(
-      polylineId: polylineId,
-      consumeTapEvents: true,
-      color: Colors.black,
-      width: 5,
-      points: _createWorkPoints(),
-      onTap: () {
-        _onPolylineTapped(polylineId);
-      },
-    );
-
-    setState(() {
-      polylines[polylineId] = polyline;
-    });
-  }
-
   void onPlaceSelected(PlaceItemRes place, bool fromAddress) {
     var mkId = fromAddress ? "from_address" : "to_address";
     print("place selected : ${mkId}");
     _addMarker(mkId, place);
     _moveCamera();
     _checkDrawPolyline();
-
   }
 
   void _addMarker(String mkId, PlaceItemRes place) async {
@@ -236,10 +167,8 @@ class _HomePageState extends State<HomePage> {
           nLng = fromLatLng.longitude;
         }
         LatLngBounds bounds = LatLngBounds(northeast: LatLng(nLat, nLng), southwest: LatLng(sLat, sLng));
-
         controller.animateCamera(CameraUpdate.newLatLngBounds(bounds, 50));
       }else{
-
         controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
           target: markers.values.elementAt(0).position,
           zoom: 12.10,
@@ -251,16 +180,12 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _checkDrawPolyline() {
-//  remove old polyline
-//    mapController.clearPolylines();
     final String polylineIdVal = 'polyline_id_distance';
     print("Draw Polyline");
     polylines.remove(polylineIdVal);
     if (markers.length > 1) {
-
       var from;
       var to;
-
       markers.forEach((mkid,v){
         print(mkid.value);
         if(mkid.value == "from_address"){
@@ -269,6 +194,7 @@ class _HomePageState extends State<HomePage> {
           to = v.position;
         }
       });
+
       print("checkDrawPolyline from: ${from}");
       PlaceService.getStep(from.latitude, from.longitude, to.latitude, to.longitude).then((vl) {
         TripInfoRes infoRes = vl;
@@ -279,9 +205,6 @@ class _HomePageState extends State<HomePage> {
           paths.add(LatLng(t.startLocation.latitude, t.startLocation.longitude));
           paths.add(LatLng(t.endLocation.latitude, t.endLocation.longitude));
         }
-        print(paths);
-
-        
         final PolylineId polylineId = PolylineId(polylineIdVal);
         final Polyline polyline = Polyline(
           polylineId: polylineId,
@@ -293,36 +216,14 @@ class _HomePageState extends State<HomePage> {
             _onPolylineTapped(polylineId);
           },
         );
+        var harga = kalkulasiHarga(3700, 2, 6);
 
         setState(() {
+          tripTotal = harga;
           polylines[polylineId] = polyline;
         });
       });
     }
-  }
-
-  Future<void> _homeCameraPosition() async {
-    final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-      target: LatLng(3.6422756, 98.5294038),
-      zoom: 12.10,
-    )));
-  }
-
-  Future<void> _gymCameraPosition() async {
-    final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-      target: LatLng(-8.912014, 13.204197),
-      zoom: 12.5,
-    )));
-  }
-
-  Future<void> _workCameraPosition() async {
-    final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-      target: LatLng(-8.914843, 13.201518),
-      zoom: 18.5,
-    )));
   }
 
   void refresh() async {
@@ -334,9 +235,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void onHandleOrder() async{
-    var data = Order(origin: 'Medan',destination: 'Ayam',originLat: 0,originLng: 0,destinationLat: 0,destinationLng: 0,harga: 0,);
-    var response = await rs.orderCar(data);
-    return response;
+
   }
 
   Future<LatLng> getUserLocation() async {
@@ -373,7 +272,8 @@ class _HomePageState extends State<HomePage> {
       if (result.status == "OK") {
         this.places = result.results;
         result.results.forEach((f) {
-          _createLatLng(f.geometry.location.lat, f.geometry.location.lng);
+          var markers = _createLatLng(f.geometry.location.lat, f.geometry.location.lng);
+
 
 //          final markerOptions = MarkerOptions(
 //              position:
@@ -385,6 +285,12 @@ class _HomePageState extends State<HomePage> {
         this.errorMessage = result.errorMessage;
       }
     });
+  }
+
+  int kalkulasiHarga(base,tempuh_km,tarif_km){
+    var ta = base+(tempuh_km-1)*tarif_km;
+    var tm = 0;
+    return ta +tm;
   }
 
   Future<void> _handlePressButton() async {
@@ -484,158 +390,9 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final dataProvider = Provider.of<User>(context);
-    final dataOrder = Provider.of<Order>(context);
-    final drawer = Drawer(
-      child: HomeMenu(name: "User")
-    );
-    final body = Stack(
-      children: <Widget>[
-        GoogleMap(
-          markers: Set<Marker>.of(markers.values),
-          polylines: Set<Polyline>.of(polylines.values),
-          mapType: MapType.normal,
-          initialCameraPosition: _cameraPosition,
-          onMapCreated: (GoogleMapController controller) {
-            _controller.complete(controller);
-            refresh();
-            //_initCameraPosition();
-          },
-        ),
-        Positioned(
-          top: 100.0,
-          right: 15.0,
-          left: 15.0,
-          child:Container(
-            height: 50.0,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(3.0),
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(color: Colors.grey,offset: Offset(1.0, 5.0),blurRadius: 15,spreadRadius: 3)
-              ],
-            ),
-            child: TextField(
-              decoration: InputDecoration(
-                icon: Container(margin: EdgeInsets.only(left: 20, top: 18), width: 10, height: 10, decoration: BoxDecoration(color: Colors.black)),
-                hintText: "Tujuan ?",
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.only(left: 15.0, top: 16.0),
-
-              ),
-              controller: _destinationText,
-              onTap: _handlePressButton,
-
-            ),
-          ),
-        ),
-        Positioned(
-          top: 160.0,
-          right: 15.0,
-          left: 15.0,
-          child:Container(
-            height: 50.0,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(3.0),
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                    color: Colors.grey,
-                    offset: Offset(1.0, 5.0),
-                    blurRadius: 15,
-                    spreadRadius: 3
-                )
-              ],
-            ),
-            child: TextField(
-              key: Key('jemputTxt'),
-              decoration: InputDecoration(
-                icon: Container(margin: EdgeInsets.only(left: 20, top: 18), width: 10, height: 10, decoration: BoxDecoration(color: Colors.black)),
-                hintText: "Jemput ?",
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.only(left: 15.0, top: 16.0),
-              ),
-              controller: _originText,
-              onTap: _handlePressButton,
-
-            ),
-          ),
-        ),
-        Positioned(
-            top: 30,
-            left: 6,
-            child: IconButton(
-              icon: Icon(Icons.menu),
-              color: Colors.black,
-              onPressed: () {
-                homeScaffoldKey.currentState.openDrawer();
-              },
-            )
-        ),
-
-
-
-      ],
-    );
-    final column = Column(
-      children: <Widget>[
-        Stack(
-          children: <Widget>[
-            Container(
-              height: MediaQuery.of(context).size.height,
-              child: GoogleMap(
-                markers: Set<Marker>.of(markers.values),
-                polylines: Set<Polyline>.of(polylines.values),
-                mapType: MapType.normal,
-                initialCameraPosition: _cameraPosition,
-                onMapCreated: (GoogleMapController controller) {
-                  _controller.complete(controller);
-                  refresh();
-                  //_initCameraPosition();
-                },
-              ),
-            )
-
-          ],
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 8.0),
-          child: Column(
-            children: <Widget>[
-              cardWidget(
-                  context,
-                  'assets/logo.png',
-                  'KenGen Power',
-                  'ID: 123456789',
-                  'Auto Pay on 24th May 18',
-                  '\$1240.00',
-                  '12 Km',
-                  Colors.green),
-
-            ],
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 20.0),
-          child: RaisedButton(
-            color: Colors.indigo[700],
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12.0)
-            ),
-            child: Padding(
-              padding: const EdgeInsets.only(left: 60.0, right: 60.0, top: 15.0,bottom: 15.0),
-              child: Text('Pay all bills', style: TextStyle(color: Colors.white),),
-            ),
-            onPressed: (){
-
-            },
-          ),
-        )
-      ],
-    );
-    final mapscreen = new Column(
+    final userProvider = Provider.of<User>(context);
+    final dataOrder = Provider.of<OrderPemesanan>(context);
+    final mapScreen = new Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         Container(
@@ -721,14 +478,14 @@ class _HomePageState extends State<HomePage> {
                               child: Container(
                                 height: SizeConfig.blockHeight * 15,
                                 color: Colors.transparent,
-                                child: Center(child: Text("Saldo",
+                                child: Center(child: Text(userProvider.saldo == null ? '0':userProvider.saldo,
                                   style: TextStyle(fontSize: 20.0,
                                       fontWeight: FontWeight.w600),)),),),
                             Expanded(flex: 1,
                               child: Container(
                                 height: SizeConfig.blockHeight * 15,
                                 color: Colors.blue,
-                                child: Center(child: Text("Promo")),),),
+                                child: Center(child: Text("Jarak")),),),
                             Expanded(flex: 1,
                               child: Container(
                                 height: SizeConfig.blockHeight * 15,
@@ -739,7 +496,7 @@ class _HomePageState extends State<HomePage> {
                         Divider(),
                         Container(
                           height: 50,
-                          child: Text("Harga", style: TextStyle(
+                          child: Text(tripTotal.toString(), style: TextStyle(
                               fontFamily: 'Montserrat',
                               fontSize: 30.0,
                               fontWeight: FontWeight.bold),),
@@ -805,23 +562,14 @@ class _HomePageState extends State<HomePage> {
         )
       ],
     );
-    final networkwidget = NetworkWidget(
-      child: mapscreen,
+    final networkWidget = NetworkWidget(
+      child: mapScreen,
     );
     print(dataOrder);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       key: homeScaffoldKey,
-//      bottomSheet: Container(
-//        height: 100,
-//        decoration: BoxDecoration(
-//            color: Colors.black
-//        ),
-//        child: Column(
-//        ),
-//      ),
-      drawer: drawer,
-      body: networkwidget,
+      body: networkWidget,
     );
 
   }
@@ -952,40 +700,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  List<LatLng> _createHomePoints() {
-    final List<LatLng> points = <LatLng>[];
-    points.add(_createLatLng(-8.913012, 13.202450));
-    points.add(_createLatLng(-8.913297, 13.202253));
-    points.add(_createLatLng(-8.913752, 13.202803));
-    points.add(_createLatLng(-8.913455, 13.203063));
-    points.add(_createLatLng(-8.913012, 13.202450));
-    return points;
-  }
-
-  List<LatLng> _createGymPoints() {
-    final List<LatLng> points = <LatLng>[];
-    points.add(_createLatLng(-8.911857, 13.203656));
-    points.add(_createLatLng(-8.911580, 13.204369));
-    points.add(_createLatLng(-8.912060, 13.204649));
-    points.add(_createLatLng(-8.912406, 13.204128));
-    points.add(_createLatLng(-8.911857, 13.203656));
-    return points;
-  }
-
-  List<LatLng> _createWorkPoints() {
-    final List<LatLng> points = <LatLng>[];
-    points.add(_createLatLng(-8.914580, 13.202106));
-    points.add(_createLatLng(-8.915066, 13.201708));
-    points.add(_createLatLng(-8.915269, 13.201441));
-    points.add(_createLatLng(-8.915345, 13.201232));
-    points.add(_createLatLng(-8.915301, 13.201075));
-    points.add(_createLatLng(-8.915058, 13.200855));
-    points.add(_createLatLng(-8.914824, 13.201195));
-    points.add(_createLatLng(-8.914180, 13.201826));
-    points.add(_createLatLng(-8.914580, 13.202106));
-
-    return points;
-  }
 }
 
 Widget linkMenuDrawer(String title, Function onPressed) {
@@ -1016,55 +730,6 @@ Future<Null> displayPrediction(Prediction p, ScaffoldState scaffold) async {
   }
 }
 
-class CustomSearchScaffold extends PlacesAutocompleteWidget {
-  CustomSearchScaffold()
-      : super(
-    apiKey: google_web_api,
-    sessionToken: Uuid().generateV4(),
-    language: "en",
-    components: [Component(Component.country, "id")],
-  );
-
-  @override
-  _CustomSearchScaffoldState createState() => _CustomSearchScaffoldState();
-}
-class _CustomSearchScaffoldState extends PlacesAutocompleteState {
-  @override
-  Widget build(BuildContext context) {
-    final appBar = AppBar(title: AppBarPlacesAutoCompleteTextField());
-    final body = PlacesAutocompleteResult(
-      onTap: (p) {
-        displayPrediction(p, searchScaffoldKey.currentState);
-      },
-      logo: Row(
-        children: [FlutterLogo()],
-        mainAxisAlignment: MainAxisAlignment.center,
-      ),
-    );
-    return Container(
-      child: body,
-    );
-//    return Scaffold(key: searchScaffoldKey, appBar: appBar, body: body);
-  }
-
-  @override
-  void onResponseError(PlacesAutocompleteResponse response) {
-    super.onResponseError(response);
-    searchScaffoldKey.currentState.showSnackBar(
-      SnackBar(content: Text(response.errorMessage)),
-    );
-  }
-
-  @override
-  void onResponse(PlacesAutocompleteResponse response) {
-    super.onResponse(response);
-    if (response != null && response.predictions.isNotEmpty) {
-      searchScaffoldKey.currentState.showSnackBar(
-        SnackBar(content: Text(response.toString())),
-      );
-    }
-  }
-}
 class Uuid {
   final Random _random = Random();
 
@@ -1077,13 +742,11 @@ class Uuid {
         '${_bitsDigits(16, 4)}${_bitsDigits(16, 4)}${_bitsDigits(16, 4)}';
   }
 
-  String _bitsDigits(int bitCount, int digitCount) =>
-      _printDigits(_generateBits(bitCount), digitCount);
+  String _bitsDigits(int bitCount, int digitCount) => _printDigits(_generateBits(bitCount), digitCount);
 
   int _generateBits(int bitCount) => _random.nextInt(1 << bitCount);
 
-  String _printDigits(int value, int count) =>
-      value.toRadixString(16).padLeft(count, '0');
+  String _printDigits(int value, int count) => value.toRadixString(16).padLeft(count, '0');
 }
 class OrangeClipper extends CustomClipper<Path> {
   @override
@@ -1094,8 +757,7 @@ class OrangeClipper extends CustomClipper<Path> {
 
     var firstControlPoint = Offset(size.width / 2 + 140.0, size.height - 105.0);
     var firstEndPoint = Offset(size.width - 1.0, size.height);
-    path.quadraticBezierTo(firstControlPoint.dx, firstControlPoint.dy,
-        firstEndPoint.dx, firstEndPoint.dy);
+    path.quadraticBezierTo(firstControlPoint.dx, firstControlPoint.dy,firstEndPoint.dx, firstEndPoint.dy);
 
     path.lineTo(size.width, 0.0);
     path.close();
@@ -1116,11 +778,8 @@ class BlackClipper extends CustomClipper<Path> {
     var firstControlPoint =
     Offset(size.width / 2 + 175.0, size.height / 2 - 30.0);
     var firstEndPoint = Offset(size.width / 2, 0.0);
-    path.quadraticBezierTo(firstControlPoint.dx, firstControlPoint.dy,
-        firstEndPoint.dx, firstEndPoint.dy);
-
+    path.quadraticBezierTo(firstControlPoint.dx, firstControlPoint.dy,firstEndPoint.dx, firstEndPoint.dy);
     path.lineTo(size.width / 2 + 75.0, size.height / 2 - 30.0);
-
     path.lineTo(size.width / 2, 0.0);
     path.close();
     return path;
