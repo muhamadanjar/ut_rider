@@ -1,5 +1,6 @@
 import 'dart:async';
-import 'package:ut_order/models/tipemobil.dart';
+
+
 import 'package:ut_order/utils/network_util.dart';
 import 'package:ut_order/models/user.dart';
 import 'package:ut_order/models/order.dart';
@@ -24,9 +25,11 @@ class RestDatasource {
   static final GET_PACKAGE =  BASE_URL + "/rent_package";
   static final GET_PROMO = BASE_URL + "/get_promo";
   static final GET_TYPEMOBIL = BASE_URL + "/type_car";
-  static final POST_RENTAL = BASE_URL + "reguler";
-  static final POST_TAXI = BASE_URL + "order";
-  static final GET_SERVICE = BASE_URL + "get_servicetype";
+  static final POST_RENTAL = BASE_URL + "/reguler";
+  static final POST_TAXI = BASE_URL + "/order";
+  static final GET_SERVICE = BASE_URL + "/get_servicetype";
+  static final GET_BANK = BASE_URL + "/get_bank";
+  static final POST_REQUEST_SALDO = BASE_URL + "/post_request_saldo";
 
 
   static final _API_KEY = "somerandomkey";
@@ -229,5 +232,31 @@ class RestDatasource {
     }
     return listService;
 
+  }
+
+  Future<List> getBank() async{
+    var response = await _networkUtil.get(GET_BANK);
+//    var listBank = new List<Bank>();
+    var listBank = new List();
+    if(response['status']==true) {
+      (response["data"] as List).forEach((f) {
+//        var data = Bank(bankCode: f['bank_code'],bankName: f["bank_name"]);
+        listBank.add(f);
+      });
+    }
+    return listBank;
+  }
+
+  Future postRequestSaldo(saldo,token) async{
+    var _data = {
+      "req_saldo": saldo,
+      "token": _API_KEY,
+    };
+    var headers ={
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
+    var response = await _networkUtil.post(POST_REQUEST_SALDO,body: _data,headers: headers);
+    return response;
   }
 }   

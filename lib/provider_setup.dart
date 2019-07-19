@@ -1,4 +1,5 @@
 import 'package:provider/provider.dart';
+import 'package:ut_order/utils/prefs.dart';
 
 import 'data/app_bloc.dart';
 import 'data/place_bloc.dart';
@@ -44,7 +45,7 @@ List<SingleChildCloneableWidget> uiConsumableProviders = [
   ChangeNotifierProvider(
     builder:(_)=>OrderPemesanan(),
   ),
-
+  ChangeNotifierProvider(builder: (_) => PrefsNotifier()),
   Provider(
     builder: (_) => AppBloc(),
     dispose: (_, value){
