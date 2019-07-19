@@ -64,7 +64,7 @@ class _HomeMenuState extends State<HomeMenu> {
                     color: Colors.black45,
                 ),
 
-                linkMenuDrawer('Legal', () => Navigator.pushNamed(context, RoutePaths.Legal)),
+                linkMenuDrawer('Logout', () => Navigator.pushReplacementNamed(context, RoutePaths.Login)),
               ]),
         ],
       );

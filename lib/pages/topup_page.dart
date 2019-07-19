@@ -57,23 +57,93 @@ class _TopupPageState extends State<TopupPage> {
                   child: Text("Konfirm Topup"),
                   onPressed: (){
                     var saldo = saldoCtrl.text;
-                    rs.postRequestSaldo(saldo,"eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6ImI3MDk1YmM1N2Y3MTA0YjY0NmE3N2FlNjM4NWUwZDk4NGVkZWUwY2QzYWJkZmFkMWQ3ZmQwYWIyZDE2NTBhODc3Yjk1NTQ4YjBkZjYyNjY3In0.eyJhdWQiOiIzIiwianRpIjoiYjcwOTViYzU3ZjcxMDRiNjQ2YTc3YWU2Mzg1ZTBkOTg0ZWRlZTBjZDNhYmRmYWQxZDdmZDBhYjJkMTY1MGE4NzdiOTU1NDhiMGRmNjI2NjciLCJpYXQiOjE1NjM1MTc0MzYsIm5iZiI6MTU2MzUxNzQzNiwiZXhwIjoxNTk1MTM5ODM2LCJzdWIiOiIzIiwic2NvcGVzIjpbXX0.gokyIBnG3SwmFPn9NqTiuRwmQ2BkHgvalRFD7ye3BCEqLRcKMlZYltzJMhaFKmmYIRRo8ubw7MynqFjqB3nQihMxDHrwdFDnIfOu-iWp0e0fjUSEAsxpzmWZW10kv5oFHoDK5EdTYZN7d2HsThLAqYoFLN0kIAdAB6-baZZGU5UQG27hJ4iVgaTZTZvgXVz0s_RHH7F99SP__4cRdUpXOvssWTe6FZzp1PUSoh6bvyuugj5j17wO4fqIh3v5JjDdfIyw-A2indUfs34Tyzc-s-UmH0cAL1xg3yP7aIBQVEekoesDTl3ctchGhGszeC08IetSz_54cPlYSwEFZrKMp90rdmAc1biNTYAPBq0C7-eSzdd1et_z55MhGXyiWCr_fVT1pbgH2YbVH528bNmqzHL3pU71OLMSH45TBOsr__WKshMCqP5knUN2k0ITlfq4Bz7oOERQydtmBbypxiWtgEyZEFa89Jt9oioYc0DnNkCoS7ecTvtW6BJ1gy-kq--39QWQg_9e3qY6IjOOVhC3ete-LXuSVQIGmJZ2i0o44gBhqUPiBnFRUrzsAi_KUwReVGKg7Ppn9UHaCpdQ-_OHoHwg-1f67GruCK3BmSx6-vuGUMyByHNC6byByoFvyN3u25c6jeI8mSTw_icx-xiuOp2d-OqmvwXRkoDOh2rdslo").then((v){
-                      print(v);
-                      return showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            content: Text(saldo),
-                          );
-                        },
-                      );
+                    rs.postRequestSaldo(saldo,up.token).then((v){
+
+
                     }).catchError((e){
                       print(e);
                     });
 
                   },
                 )
-              )
+              ),
+              Card(
+                  margin:EdgeInsets.symmetric(horizontal: 15.0, vertical: 15.0),
+                  elevation: 5.0,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(15.0))),
+                  child:  Card(
+                    shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(15.0))),
+                  margin: EdgeInsets.all(15.0),
+                  color: Colors.cyan,
+                  child: Container(
+                    height: 180,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+
+                        Container(
+                          //color: Colors.black,
+                          width: MediaQuery.of(context).size.width,
+                          // height: 200,
+                          child: Center(
+                            //padding: EdgeInsets.all(10),
+                            child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              padding: EdgeInsets.all(5),
+                              //color: Colors.grey,
+                              child: Text("Rudy",textAlign: TextAlign.left,style: TextStyle(color: Colors.white, fontSize: 20),),
+                            ),
+                          ),
+                        ),
+                        Container(
+                          //color: Colors.green,
+                          //margin: EdgeInsets.only(top: 10),
+                          width: MediaQuery.of(context).size.width,
+                          child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          padding: EdgeInsets.all(5),
+                          child: Text(
+                          "BRI",
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                          fontFamily: "SemiBoldFont",
+                          fontSize: 15.0,
+                          color: Colors.white),
+                          ),
+                          ),
+                        ),
+                        Container(
+                          // color: Colors.red,
+                          child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          padding: EdgeInsets.all(5),
+                          child: Text(
+                          "736501005821534",
+                          textAlign: TextAlign.left,
+                          style: TextStyle(color: Colors.white, fontSize: 15),
+                          ),
+                          ),
+                        ),
+                        Container(
+                          // color: Colors.red,
+                          child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          padding: EdgeInsets.all(5),
+                          child: Text(
+                          "",
+                          textAlign: TextAlign.left,
+                          style: TextStyle(color: Colors.white, fontSize: 15),
+                          ),
+                          ),
+                        ),
+                    ],
+                    )
+                  ),
+                  )
+              ),
             ],
           ),
       ),
@@ -84,4 +154,6 @@ class _TopupPageState extends State<TopupPage> {
     saldoCtrl.dispose();
     super.dispose();
   }
+
+
 }

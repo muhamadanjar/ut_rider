@@ -11,7 +11,7 @@ enum pemesananLokasi{
   to_address
 }
 
-const bool devMode = true;
+const bool devMode = false;
 const String apiURL = devMode == true ? "http://192.168.100.45/api":"http://utama-trans.com/new/api";
 const double textScaleFactor = 1.0;
 const google_android_api = 'AIzaSyAKl4qWeBABIDPoxo_CHvWuIfgkKoEzS7c';
