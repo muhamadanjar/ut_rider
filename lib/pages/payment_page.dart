@@ -144,10 +144,7 @@ class _PaymentViewState extends State<PaymentView> {
               child: RaisedButton(
                 color: Colors.blue,
                 child: Text("Konfirmasi Pembayaran",style: TextStyle(color: Colors.white),),
-                onPressed: (){
-
-
-                },
+                onPressed: startUpload,
               ),
             )
 
@@ -217,10 +214,19 @@ class _PaymentViewState extends State<PaymentView> {
   }
 
   upload(String fileName) {
+
     var data ={
         "image": base64Image,
         "name": fileName,
     };
+    print(fileName);
+    rs.uploadbukti(data).then((result) {
+      print(result);
+      setStatus(result.statusCode == 200 ? result.body : errMessage);
+    }).catchError((error) {
+      print(error);
+      setStatus(error);
+    });
   }
   Widget showImage() {
     return FutureBuilder<File>(
@@ -250,6 +256,10 @@ class _PaymentViewState extends State<PaymentView> {
       },
     );
   }
+
+
+
+
 
 
 

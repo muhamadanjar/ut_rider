@@ -30,6 +30,7 @@ class RestDatasource {
   static final GET_SERVICE = BASE_URL + "/get_servicetype";
   static final GET_BANK = BASE_URL + "/get_bank";
   static final POST_REQUEST_SALDO = BASE_URL + "/post_request_saldo";
+  static final POST_UPLOAD_BUKTI = BASE_URL + "/post_upload_bukti";
 
 
   static final _API_KEY = "somerandomkey";
@@ -257,6 +258,15 @@ class RestDatasource {
       'Authorization': 'Bearer $token',
     };
     var response = await _networkUtil.post(POST_REQUEST_SALDO,body: _data,headers: headers);
+    return response;
+  }
+
+  Future uploadbukti(data) async{
+    var headers ={
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
+    var response = await _networkUtil.post(POST_UPLOAD_BUKTI,body: data,headers: headers);
     return response;
   }
 }   

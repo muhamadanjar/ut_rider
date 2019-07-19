@@ -12,6 +12,7 @@ class TopupPage extends StatefulWidget {
 class _TopupPageState extends State<TopupPage> {
   final saldoCtrl = TextEditingController();
   RestDatasource rs = new RestDatasource();
+  String reqCode;
   @override
   Widget build(BuildContext context) {
     final up = Provider.of<User>(context);
@@ -58,7 +59,13 @@ class _TopupPageState extends State<TopupPage> {
                   onPressed: (){
                     var saldo = saldoCtrl.text;
                     rs.postRequestSaldo(saldo,up.token).then((v){
-
+                      if(v['status']){
+                        setState(() {
+                          reqCode = v['data']['req_code'];
+                        });
+                      }
+                      print(v);
+                      saldoCtrl.text = "";
 
                     }).catchError((e){
                       print(e);
@@ -76,13 +83,24 @@ class _TopupPageState extends State<TopupPage> {
                     shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(15.0))),
                   margin: EdgeInsets.all(15.0),
-                  color: Colors.cyan,
+                  color: Colors.blueAccent,
                   child: Container(
                     height: 180,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: <Widget>[
+                            Container(
+                                padding: EdgeInsets.all(10),
+                                height: 60,
+                            ),
+                          ],
+                          //color: Colors.black,
+                        ),
 
                         Container(
                           //color: Colors.black,
@@ -127,18 +145,7 @@ class _TopupPageState extends State<TopupPage> {
                           ),
                           ),
                         ),
-                        Container(
-                          // color: Colors.red,
-                          child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          padding: EdgeInsets.all(5),
-                          child: Text(
-                          "",
-                          textAlign: TextAlign.left,
-                          style: TextStyle(color: Colors.white, fontSize: 15),
-                          ),
-                          ),
-                        ),
+
                     ],
                     )
                   ),
@@ -154,6 +161,36 @@ class _TopupPageState extends State<TopupPage> {
     saldoCtrl.dispose();
     super.dispose();
   }
+
+//  Widget cardImage() {
+//    if (cardtype == CardType.visa) {
+//      return Image.asset(
+//        "images/visa.png",
+//        fit: BoxFit.scaleDown,
+//      );
+//    } else if (cardtype == CardType.mastercard) {
+//      return Image.asset(
+//        "images/mastercard.png",
+//        fit: BoxFit.scaleDown,
+//      );
+//    } else if (cardtype == CardType.discover) {
+//      return Image.asset(
+//        "images/discover.png",
+//        fit: BoxFit.scaleDown,
+//      );
+//    } else if (cardtype == CardType.dinnerClub) {
+//      return Image.asset(
+//        "images/diners_club.png",
+//        fit: BoxFit.scaleDown,
+//      );
+//    } else if (cardtype == CardType.americanExpress) {
+//      return Image.asset(
+//        "images/amex.png",
+//        fit: BoxFit.scaleDown,
+//      );
+//    }
+//    return null;
+//  }
 
 
 }
