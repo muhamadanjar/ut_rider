@@ -50,7 +50,7 @@ class _DashboardPageState extends State<DashboardPage> {
           Profile(
             name: dp.name,
             imgUrl: "https://i.pravatar.cc/200",
-            saldo: dp.saldo != null ? dp.saldo : '0',
+            saldo: dp.saldo != null ? dp.saldo.toString() : '0',
           ),
           Divider(),
           MenuUtama(

@@ -5,7 +5,7 @@ class User {
   String token;
   final double rating;
   final int trip;
-  String saldo;
+  int saldo;
   User({this.username, this.password,this.token,this.name,this.rating,this.trip,this.saldo});
 
   String get getUsername => username;

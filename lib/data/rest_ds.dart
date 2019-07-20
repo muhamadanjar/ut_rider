@@ -202,18 +202,19 @@ class RestDatasource {
   }
   Future<dynamic> orderCar(Order order){
     var data = {
-      'trip_address_origin': order.origin,
-      'trip_or_origin':order.originLat,
-      'trip_or_longitude':order.originLng,
+      'trip_address_origin': order.origin.toString(),
+      'trip_or_origin':order.originLat.toString(),
+      'trip_or_longitude':order.originLng.toString(),
       'trip_address_destination':order.destination,
-      'trip_des_latitude':order.originLat,
-      'trip_des_longitude':order.originLng,
+      'trip_des_latitude':order.originLat.toString(),
+      'trip_des_longitude':order.originLng.toString(),
       'trip_bookby':'24',
       'trip_job':'4',
       'trip_total':'1910',
       'duration':'5145',
       'distance':'39720',
     };
+    print("print data rest $data");
     var token = getPrefs('token');
     var headers = {
       'Accept': 'application/json',
