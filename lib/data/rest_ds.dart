@@ -75,8 +75,10 @@ class RestDatasource {
     };
 
     return _networkUtil.post(REGISTER_URL,body:data,headers: headers).then((dynamic res){
-      return res;
-    });  
+      if(res["error"] == true) throw new Exception(res["message"]);
+      print("res ${res["data"]["user"]}");
+      return new User.fromJson(res["data"]['user']);
+    }).catchError((res){ return res;});
     
 
   }
@@ -261,7 +263,7 @@ class RestDatasource {
     return response;
   }
 
-  Future uploadbukti(data) async{
+  Future uploadbukti(data,token) async{
     var headers ={
       'Accept': 'application/json',
       'Authorization': 'Bearer $token',

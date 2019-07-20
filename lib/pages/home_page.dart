@@ -8,6 +8,7 @@ import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:location/location.dart' as LocationManager;
 import 'package:ut_order/components/rider_picker.dart';
+import 'package:ut_order/data/app_bloc.dart';
 import 'package:ut_order/models/step_res.dart';
 import 'package:ut_order/models/trip_info_res.dart';
 import 'package:ut_order/utils/place.dart';
@@ -200,6 +201,7 @@ class _HomePageState extends State<HomePage> {
       PlaceService.getStep(from.latitude, from.longitude, to.latitude, to.longitude).then((vl) {
         TripInfoRes infoRes = vl;
         _tripDistance = infoRes.distance * 0.001;
+        var harga = kalkulasiHarga(3700, 0, 6);
         List<StepsRes> rs = infoRes.steps;
         List<LatLng> paths = new List();
         for (var t in rs) {
@@ -217,7 +219,7 @@ class _HomePageState extends State<HomePage> {
             _onPolylineTapped(polylineId);
           },
         );
-        var harga = kalkulasiHarga(3700, 2, 6);
+
 
         setState(() {
           tripTotal = harga;
@@ -395,6 +397,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final userProvider = Provider.of<User>(context);
     final dataOrder = Provider.of<OrderPemesanan>(context);
+    final dataType = Provider.of<AppBloc>(context);
     print(dataOrder);
     final mapScreen = new Column(
       mainAxisAlignment: MainAxisAlignment.start,

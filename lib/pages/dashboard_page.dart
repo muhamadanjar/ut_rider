@@ -50,6 +50,7 @@ class _DashboardPageState extends State<DashboardPage> {
           Profile(
             name: dp.name,
             imgUrl: "https://i.pravatar.cc/200",
+            saldo: dp.saldo != null ? dp.saldo : '0',
           ),
           Divider(),
           MenuUtama(
@@ -279,7 +280,8 @@ class MenuUtamaItems extends StatelessWidget {
 class Profile extends StatelessWidget {
   String imgUrl;
   String name;
-  Profile({this.name,this.imgUrl});
+  String saldo;
+  Profile({this.name,this.imgUrl,this.saldo});
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -306,7 +308,7 @@ class Profile extends StatelessWidget {
             ),
             RaisedButton.icon(
               icon: Icon(Icons.attach_money),
-              label: Text("Saldo"),
+              label: Text(saldo),
               onPressed: () {
                 Navigator.pushNamed(context, RoutePaths.TopUp);
               },

@@ -23,7 +23,7 @@ class AuthenticationService {
 
   Future<User> login(String username,String password) async{
     var fetchUser = await _api.login(username, password);
-    
+    print("data login : ${fetchUser}");
     var hasUser = fetchUser != null;
     if(hasUser){
       _userController.add(fetchUser);
@@ -31,14 +31,14 @@ class AuthenticationService {
     return fetchUser;
   }
 
-  Future<Map> register(Map mapData) async{
+  Future<User> register(Map mapData) async{
     var dataUser = await _api.register(mapData);
-    
+    print("data register : ${dataUser}");
     var hasUser = dataUser != null;
-    if(hasUser && dataUser['status']){
+    if(hasUser){
       _userController.add(dataUser);
     }else{
-      print("Print user ${dataUser['error']}");
+      print("Print user error ${dataUser['error']}");
     }
     return dataUser;
     

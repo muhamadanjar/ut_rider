@@ -41,10 +41,10 @@ class _HomeMenuState extends State<HomeMenu> {
                 linkMenuDrawer('Profil', () {
                   Navigator.pushNamed(context, RoutePaths.Profile);
                 }),
-                linkMenuDrawer('Bank Transfer', () {
+                linkMenuDrawer('Konfirmasi Top Up', () {
                   Navigator.pushNamed(context, RoutePaths.Payment);
                 }),
-                linkMenuDrawer('Saldo', () {
+                linkMenuDrawer('Bank Top Up saldo', () {
                   Navigator.pushNamed(context, RoutePaths.TopUp);
                 }),
                 linkMenuDrawer('Histori Perjalanan', () {

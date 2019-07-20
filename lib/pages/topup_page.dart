@@ -29,51 +29,51 @@ class _TopupPageState extends State<TopupPage> {
           child: ListView(
             padding: EdgeInsets.only(left: 20,right: 20),
             children: <Widget>[
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 26),
-                child: Text(
-                  "Top Up Saldo",
-                  style: TextStyle(color: Colors.grey),
-                ),
-              ),
-              Wrap(
-                children: <Widget>[
-                  TextField(
-                    controller: saldoCtrl,
-                    autofocus: true,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      hintText: 'Isi Disini ',
-                      contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 20,),
-              Padding(
-                padding: EdgeInsets.only(left: 10,right: 10),
-                child:RaisedButton(
-                  color: Colors.lightBlueAccent,
-                  child: Text("Konfirm Topup"),
-                  onPressed: (){
-                    var saldo = saldoCtrl.text;
-                    rs.postRequestSaldo(saldo,up.token).then((v){
-                      if(v['status']){
-                        setState(() {
-                          reqCode = v['data']['req_code'];
-                        });
-                      }
-                      print(v);
-                      saldoCtrl.text = "";
-
-                    }).catchError((e){
-                      print(e);
-                    });
-
-                  },
-                )
-              ),
+//              Padding(
+//                padding: EdgeInsets.symmetric(vertical: 26),
+//                child: Text(
+//                  "Top Up Saldo",
+//                  style: TextStyle(color: Colors.grey),
+//                ),
+//              ),
+//              Wrap(
+//                children: <Widget>[
+//                  TextField(
+//                    controller: saldoCtrl,
+//                    autofocus: true,
+//                    keyboardType: TextInputType.number,
+//                    decoration: InputDecoration(
+//                      hintText: 'Isi Disini ',
+//                      contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+//                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+//                    ),
+//                  ),
+//                ],
+//              ),
+//              SizedBox(height: 20,),
+//              Padding(
+//                padding: EdgeInsets.only(left: 10,right: 10),
+//                child:RaisedButton(
+//                  color: Colors.lightBlueAccent,
+//                  child: Text("Konfirm Topup"),
+//                  onPressed: (){
+//                    var saldo = saldoCtrl.text;
+//                    rs.postRequestSaldo(saldo,up.token).then((v){
+//                      if(v['status']){
+//                        setState(() {
+//                          reqCode = v['data']['req_code'];
+//                        });
+//                      }
+//                      print(v);
+//                      saldoCtrl.text = "";
+//
+//                    }).catchError((e){
+//                      print(e);
+//                    });
+//
+//                  },
+//                )
+//              ),
               Card(
                   margin:EdgeInsets.symmetric(horizontal: 15.0, vertical: 15.0),
                   elevation: 5.0,
