@@ -37,8 +37,6 @@ class _PaymentViewState extends State<PaymentView> {
   final formKey = new GlobalKey<FormState>();
 
   String page = 'konfirmasi';
-
-
   Future<File> _imageFile;
   String status = '';
   String base64Image;

@@ -16,6 +16,7 @@ class _TopupPageState extends State<TopupPage> {
   @override
   Widget build(BuildContext context) {
     final up = Provider.of<User>(context);
+    print(up.token);
     SizeConfig().init(context);
     return Scaffold(
         appBar: AppBar(
