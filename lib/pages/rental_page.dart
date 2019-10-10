@@ -125,7 +125,7 @@ class _RentalPageState extends State<RentalPage> {
                       )
                   ),
                   margin: EdgeInsets.only(left: 10.0),
-                  height: SizeConfig.blockHeight * 50,
+                  height: (SizeConfig.blockHeight * 50),
                   width: SizeConfig.blockWidth * 90,
 
                 );

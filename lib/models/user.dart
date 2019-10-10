@@ -1,4 +1,5 @@
 class User {
+  final String email;
   final String username;
   final String password;
   final String name;
@@ -6,7 +7,8 @@ class User {
   final double rating;
   final int trip;
   String saldo;
-  User({this.username, this.password,this.token,this.name,this.rating,this.trip,this.saldo});
+  final String photoUrl;
+  User({this.email,this.username, this.password,this.token,this.name,this.rating,this.trip,this.saldo,this.photoUrl});
 
   String get getUsername => username;
   String get getName => name;

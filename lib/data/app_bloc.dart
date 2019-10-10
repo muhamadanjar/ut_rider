@@ -36,9 +36,7 @@ class AppBloc {
 
   void getType(){
     api.getTypeMobil().then((List res){
-//      print(res);
       tipeSnapshot.add(res);
-
     });
 
   }

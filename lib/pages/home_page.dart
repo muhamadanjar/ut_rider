@@ -462,7 +462,7 @@ class _HomePageState extends State<HomePage> {
                   bottom: 20,
                   height: 248,
                   child: Container(
-                    height: SizeConfig.blockHeight * 50,
+                    height: (SizeConfig.blockHeight * 50),
                     decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.all(Radius.circular(10.0)),
@@ -754,7 +754,6 @@ Future<Null> displayPrediction(Prediction p, ScaffoldState scaffold) async {
     );
   }
 }
-
 class Uuid {
   final Random _random = Random();
 

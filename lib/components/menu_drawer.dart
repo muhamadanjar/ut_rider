@@ -1,21 +1,15 @@
 import 'package:flutter/material.dart';
-import '../utils/constans.dart';
-class HomeMenu extends StatefulWidget {
 
+import '../utils/constans.dart';
+class HomeMenu extends StatelessWidget {
   String name;
   HomeMenu({this.name});
-  _HomeMenuState createState() => _HomeMenuState();
-}
-
-class _HomeMenuState extends State<HomeMenu> {
-  @override
-  
   Widget build(BuildContext context) {
     return ListView(
         children: <Widget>[
           UserAccountsDrawerHeader(
             decoration: BoxDecoration(color: Colors.lightBlue),
-            accountName: Text(widget.name),
+            accountName: Text(name),
             accountEmail: Row(
               children: <Widget>[
                 Text("5.0"),

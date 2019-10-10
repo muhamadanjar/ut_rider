@@ -3,6 +3,7 @@ import 'package:ut_order/utils/prefs.dart';
 
 import 'data/app_bloc.dart';
 import 'data/place_bloc.dart';
+import 'models/auth.dart';
 import 'models/user.dart';
 import 'utils/authentication.dart';
 import 'data/rest_ds.dart';
@@ -20,6 +21,9 @@ List<SingleChildCloneableWidget> providers = [
 
 List<SingleChildCloneableWidget> independentServices = [
   Provider.value(value: RestDatasource()),
+  ChangeNotifierProvider.value(
+    value: AuthBloc(),
+  ),
 ];
 
 List<SingleChildCloneableWidget> dependentServices = [

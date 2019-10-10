@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:ut_order/pages/dashboard_page.dart';
+import 'package:ut_order/models/auth.dart';
 import 'package:ut_order/utils/constans.dart';
-import 'home_page.dart';
 import 'package:ut_order/data/rest_ds.dart';
 import '../models/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
-import 'package:ut_order/components/base_widget.dart';
-import 'package:ut_order/models/loginview_model.dart';
+
+import '../models/auth.dart';
+import '../models/http_exception.dart';
+
+enum AuthMode { Signup, Login }
 
 class LoginPage extends StatefulWidget {
   static String tag = 'login-page';
@@ -24,7 +26,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void initState(){
-    // TODO: implement initState
     super.initState();
     SharedPreferences.getInstance().then((SharedPreferences sp){
       _sp = sp;
@@ -36,187 +37,68 @@ class _LoginPageState extends State<LoginPage> {
   }
   @override
   Widget build(BuildContext context) {
-    rs = Provider.of<RestDatasource>(context);
-    final logo = Hero(
-      tag: 'hero',
-      child: CircleAvatar(
-        backgroundColor: Colors.transparent,
-        radius: 48.0,
-        child: Image.asset('assets/logo.png'),
-      ),
-    );
-    final email = TextFormField(
-      keyboardType: TextInputType.emailAddress,
-      autofocus: false,
-      initialValue: 'admin@example.com',
-      decoration: InputDecoration(
-        hintText: 'Email',
-        contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
-      ),
-      onSaved: (value) => _username = value,
-    );
-    final password = TextFormField(
-      autofocus: false,
-      initialValue: 'password',
-      obscureText: true,
-      decoration: InputDecoration(
-        hintText: 'Password',
-        contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
-      ),
-      onSaved: (value) => _password = value,
-    );
-    final loginButton = Padding(
-      padding: EdgeInsets.symmetric(vertical: 16.0),
-      child: Material(
-        borderRadius: BorderRadius.circular(30.0),
-        shadowColor: Colors.lightBlueAccent.shade100,
-        elevation: 5.0,
-        child: MaterialButton(
-          minWidth: 200.0,
-          height: 42.0,
-          onPressed: _submit,
-          color: Colors.lightBlueAccent,
-          child: Text('Log In', style: TextStyle(color: Colors.white)),
-        ),
-      ),
-    );
-    final forgotLabel = FlatButton(
-      child: Text(
-        'Forgot password?',
-        style: TextStyle(color: Colors.black54),
-      ),
-      onPressed: () {},
-    );
-    final form = Center(
-          child:
-          Form(
-            key: formKey,
-            child:ListView(
-              shrinkWrap: true,
-              padding: EdgeInsets.only(left: 24.0, right: 24.0),
-              children: <Widget>[
-                logo,
-                SizedBox(height: 48.0),
-                email,
-                SizedBox(height: 8.0),
-                password,
-                SizedBox(height: 24.0),
+    SizeConfig().init(context);
+    final deviceSize = MediaQuery.of(context).size;
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Driver Utama Trans'),
+        elevation: 8.0,
+        centerTitle: true,
+        backgroundColor: Colors.blue,
 
-              ],
+      ),
+      body: Stack(
+        children: <Widget>[
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Color.fromRGBO(100, 50, 210, 1).withOpacity(0.5),
+                  Color.fromRGBO(150, 50, 117, 1).withOpacity(0.9),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                stops: [0, 1],
+              ),
             ),
-          )
-
-    );
-    final scal = Scaffold(
-      key: scaffoldKey,
-      backgroundColor: Colors.white,
-      body: Center(
-          child:
-          Form(
-            key: formKey,
-            child:ListView(
-              shrinkWrap: true,
-              padding: EdgeInsets.only(left: 24.0, right: 24.0),
-              children: <Widget>[
-                logo,
-                SizedBox(height: 48.0),
-                email,
-                SizedBox(height: 8.0),
-                password,
-                SizedBox(height: 24.0),
-                loginButton,
-                forgotLabel
-              ],
-            ),
-          )
-      ),
-
-    );
-    final wraplogin = BaseWidget<LoginViewModel>(
-        model: LoginViewModel(authenticationService: Provider.of(context)),
-        child: form,
-        builder: (context, model, child){
-          return Scaffold(
-            key: scaffoldKey,
-            body: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                  child,
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: 16.0),
-                    child: Material(
-                      borderRadius: BorderRadius.circular(30.0),
-                      shadowColor: Colors.lightBlueAccent.shade100,
-                      elevation: 5.0,
-                      child: model.busy ? CircularProgressIndicator():MaterialButton(
-                        minWidth: 350.0,
-                        height: 42.0,
-                        onPressed: (){
-                          final form = formKey.currentState;
-                          if (form.validate()) {
-
-                            form.save();
-                            print("data $_username $_password");
-
-                            model.login(_username, _password).then((user){
-                              Navigator.of(context).pushReplacementNamed(DashboardPage.tag);
-                            });
-
-
-                          }
-                        },
-                        color: Colors.lightBlueAccent,
-                        child: Text('Log In', style: TextStyle(color: Colors.white)),
-                      ),
-                    ),
-                ),
-                SizedBox(height: 15.0),
-                Row(
-                  children: <Widget>[
-                    Text("New to Utama Trans ?"),
-                    SizedBox(width: 5.0,),
-                    InkWell(
-                      onTap: (){
-                        Navigator.of(context).pushNamed(RoutePaths.Register);
-                      },
-                      child: Text("Register",
-                        style: TextStyle(
-                          color: Colors.blue,
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.bold,
-                          decoration: TextDecoration.underline
+          ),
+          SingleChildScrollView(
+            child: Container(
+              height: SizeConfig.screenHeight,
+              width: SizeConfig.screenWidth,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Flexible(
+                    child: Container(
+                      margin: EdgeInsets.only(bottom: 20.0),
+                      padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 94.0),
+                      height: 220.0,
+                      width: 220.0,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(image: AssetImage('assets/avatar5.png'),fit: BoxFit.cover),
+                        borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(300.0),
+                            bottomRight: Radius.circular(300.0)
                         ),
                       ),
-                    )
-
-                  ],
-                )
-              ],
+                      
+                    ),
+                  ),
+                  Flexible(
+                    flex: deviceSize.width > 600 ? 2 : 1,
+                    child: AuthCard(),
+                  ),
+                ],
+              ),
             ),
-          );
-        },
+          ),
+        ],
+      ),
     );
-    return wraplogin;
-
   }
-  void _submit() {
-    final form = formKey.currentState;
-    if (form.validate()) {
-
-      form.save();
-      print("data $_username $_password");
-
-      rs.login(_username, _password).then((user){
-        var te = user.toMap();
-        print("calling user : $te");
-        Navigator.of(context).pushNamed(HomePage.tag);
-      });
-
-    }
-
-  }
+ 
   void _showSnackBar(String text) {
     scaffoldKey.currentState
         .showSnackBar(new SnackBar(content: new Text(text)));
@@ -234,4 +116,251 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
+}
+
+
+class AuthCard extends StatefulWidget {
+  const AuthCard({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  _AuthCardState createState() => _AuthCardState();
+}
+
+class _AuthCardState extends State<AuthCard>
+    with SingleTickerProviderStateMixin {
+  final GlobalKey<FormState> _formKey = GlobalKey();
+  AuthMode _authMode = AuthMode.Login;
+  Map<String, String> _authData = {
+    'email': '',
+    'password': '',
+  };
+  var _isLoading = false;
+  final _passwordController = TextEditingController();
+  AnimationController _controller;
+  Animation<Offset> _slideAnimation;
+  Animation<double> _opacityAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(
+        milliseconds: 300,
+      ),
+    );
+    _slideAnimation = Tween<Offset>(
+      begin: Offset(0, -1.5),
+      end: Offset(0, 0),
+    ).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.fastOutSlowIn,
+      ),
+    );
+    _opacityAnimation = Tween(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeIn,
+      ),
+    );
+    // _heightAnimation.addListener(() => setState(() {}));
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _controller.dispose();
+  }
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+            title: Text('An Error Occurred!'),
+            content: Text(message),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('Okay'),
+                onPressed: () {
+                  Navigator.of(ctx).pop();
+                },
+              )
+            ],
+          ),
+    );
+  }
+
+  Future<void> _submit() async {
+    if (!_formKey.currentState.validate()) {
+      // Invalid!
+      return;
+    }
+    _formKey.currentState.save();
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      if (_authMode == AuthMode.Login) {
+        // Log user in
+        await Provider.of<AuthBloc>(context, listen: false).login(
+          _authData['email'],
+          _authData['password'],
+        );
+      } else {
+        // Sign user up
+        await Provider.of<AuthBloc>(context, listen: false).signup(
+          _authData['email'],
+          _authData['password'],
+        );
+      }
+    } on HttpException catch (error) {
+      var errorMessage = 'Authentication failed';
+      if (error.toString().contains('EMAIL_EXISTS')) {
+        errorMessage = 'This email address is already in use.';
+      } else if (error.toString().contains('INVALID_EMAIL')) {
+        errorMessage = 'This is not a valid email address';
+      } else if (error.toString().contains('WEAK_PASSWORD')) {
+        errorMessage = 'This password is too weak.';
+      } else if (error.toString().contains('EMAIL_NOT_FOUND')) {
+        errorMessage = 'Could not find a user with that email.';
+      } else if (error.toString().contains('INVALID_PASSWORD')) {
+        errorMessage = 'Invalid password.';
+      }
+      _showErrorDialog(errorMessage);
+    } catch (error) {
+      const errorMessage =
+          'Could not authenticate you. Please try again later.';
+      _showErrorDialog(errorMessage);
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  void _switchAuthMode() {
+    if (_authMode == AuthMode.Login) {
+      setState(() {
+        _authMode = AuthMode.Signup;
+      });
+      _controller.forward();
+    } else {
+      setState(() {
+        _authMode = AuthMode.Login;
+      });
+      _controller.reverse();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final deviceSize = MediaQuery.of(context).size;
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      elevation: 8.0,
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeIn,
+        height: _authMode == AuthMode.Signup ? 320 : 260,
+        // height: _heightAnimation.value.height,
+        constraints:
+            BoxConstraints(minHeight: _authMode == AuthMode.Signup ? 320 : 260),
+        width: deviceSize.width * 0.75,
+        padding: EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                TextFormField(
+                  decoration: InputDecoration(labelText: 'E-Mail'),
+                  keyboardType: TextInputType.emailAddress,
+                  validator: (value) {
+                    if (value.isEmpty || !value.contains('@')) {
+                      return 'Invalid email!';
+                    }
+                  },
+                  onSaved: (value) {
+                    _authData['email'] = value;
+                  },
+                ),
+                TextFormField(
+                  decoration: InputDecoration(labelText: 'Password'),
+                  obscureText: true,
+                  controller: _passwordController,
+                  validator: (value) {
+                    if (value.isEmpty || value.length < 5) {
+                      return 'Password is too short!';
+                    }
+                  },
+                  onSaved: (value) {
+                    _authData['password'] = value;
+                  },
+                ),
+                AnimatedContainer(
+                  constraints: BoxConstraints(
+                    minHeight: _authMode == AuthMode.Signup ? 60 : 0,
+                    maxHeight: _authMode == AuthMode.Signup ? 120 : 0,
+                  ),
+                  duration: Duration(milliseconds: 300),
+                  curve: Curves.easeIn,
+                  child: FadeTransition(
+                    opacity: _opacityAnimation,
+                    child: SlideTransition(
+                      position: _slideAnimation,
+                      child: TextFormField(
+                        enabled: _authMode == AuthMode.Signup,
+                        decoration:
+                            InputDecoration(labelText: 'Confirm Password'),
+                        obscureText: true,
+                        validator: _authMode == AuthMode.Signup
+                            ? (value) {
+                                if (value != _passwordController.text) {
+                                  return 'Passwords do not match!';
+                                }
+                              }
+                            : null,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                if (_isLoading)
+                  CircularProgressIndicator()
+                else
+                  RaisedButton(
+                    child:
+                        Text(_authMode == AuthMode.Login ? 'LOGIN' : 'SIGN UP'),
+                    onPressed: _submit,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 30.0, vertical: 8.0),
+                    color: Theme.of(context).primaryColor,
+                    textColor: Theme.of(context).primaryTextTheme.button.color,
+                  ),
+                FlatButton(
+                  child: Text(
+                      '${_authMode == AuthMode.Login ? 'SIGNUP' : 'LOGIN'} INSTEAD'),
+                  onPressed: _switchAuthMode,
+                  padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  textColor: Theme.of(context).primaryColor,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
