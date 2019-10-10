@@ -191,9 +191,8 @@ class AuthBloc with ChangeNotifier {
   }
 
   String get token {
-    if (_expiryDate != null &&
-        _expiryDate.isAfter(DateTime.now()) &&
-        _token != null) {
+    // print("getting token $_expiryDate $_token");
+    if (_expiryDate != null && _expiryDate.isAfter(DateTime.now()) && _token != null) {
       return _token;
     }
     return null;
@@ -219,7 +218,7 @@ class AuthBloc with ChangeNotifier {
         headers: {'Content-Type': 'application/json'},
       );
       final responseData = json.decode(response.body);
-      print(responseData);
+      print("response data user $responseData");
       if (responseData['status'] == false) {
         throw HttpException(responseData['message']);
       }
@@ -240,6 +239,7 @@ class AuthBloc with ChangeNotifier {
           'expiryDate': _expiryDate.toIso8601String(),
         },
       );
+      print("userData $_expiryDate");
       prefs.setString('userData', userData);
     } catch (error) {
       throw error;
@@ -297,29 +297,39 @@ class AuthBloc with ChangeNotifier {
   }
 
   Future getUser() async {
+    try{
         final prefs = await SharedPreferences.getInstance();
         if (!prefs.containsKey('userData')) {
           return false;
         }
         final extractedUserData = json.decode(prefs.getString('userData')) as Map<String, Object>;
         final expiryDate = DateTime.parse(extractedUserData['expiryDate']);
-
+        // print("extract $extractedUserData");
         if (expiryDate.isBefore(DateTime.now())) {
           return false;
         }
         _token = extractedUserData['token'];
         _userId = extractedUserData['userId'];
 
-        var data = {'token':token};
         var headers = {
           'Accept': 'application/json',
           'Authorization': 'Bearer ${_token}',
         };
-        final response = await http.post("${apiURL}/user/details",body: json.encode(data),headers:headers);
+        
+        final response = await http.post("${apiURL}/user/details",body: json.encode({}),headers:headers);
+        final int statusCode = response.statusCode;
+        // if(statusCode < 200 || statusCode > 400){
+        //   throw new Exception("Error while fetching data from ${response.body}");
+        // }
+        
         final responseData = json.decode(response.body);
-        _authenticatedUser= User(name:responseData['data']['name'],email: responseData['data']['email'],photoUrl: responseData['data']['foto'],saldo: responseData['data']['wallet'],rating: responseData['data']['rate']);
+        // print("print response data ${responseData}");
+        _authenticatedUser = User(name:responseData['data']['name'],email: responseData['data']['email'],photoUrl: responseData['data']['foto'],saldo: responseData['data']['wallet'],rating: responseData['data']['rate']);
+        print("${_authenticatedUser}");
         notifyListeners();
-        print("print response data ${responseData['data']}");
+    }catch(e){
+      // throw new Exception(response
+    }
   }
   Future updatePosition(Position position) async{
       try {

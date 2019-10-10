@@ -21,7 +21,7 @@ class User {
       name: json['name'],
       rating: json['rating'],
       trip: json['trip'],
-      token: json['api_token'],
+      token: json['token'],
       saldo: json['wallet'],
 
     );

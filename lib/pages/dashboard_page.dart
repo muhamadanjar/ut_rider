@@ -1,10 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:ut_order/components/base_widget.dart';
+import 'package:ut_order/models/auth.dart';
 import 'package:ut_order/utils/constans.dart';
 import 'package:ut_order/components/menu_drawer.dart';
 import 'package:provider/provider.dart';
-import 'package:ut_order/utils/promoService.dart';
+
 import '../models/promo.dart';
-import '../models/user.dart';
 import '../data/rest_ds.dart';
 BuildContext _ctx;
 class DashboardPage extends StatefulWidget {
@@ -25,14 +28,25 @@ class _DashboardPageState extends State<DashboardPage> {
       lPromo = data;
     });
     super.initState();
+
+  }
+  Future<Null> _reload(model) async{
+
+    Completer<Null> completer = new Completer<Null>();
+    await model.getUser();
+    Timer timer = new Timer(new Duration(seconds: 3), () {
+      completer.complete();
+    });
+    return completer.future;
   }
   @override
   Widget build(BuildContext context) {
-    final dp = Provider.of<User>(context);
-    print(dp);
     _ctx = context;
     final drawer = Drawer(
-        child: HomeMenu(name: dp.name)
+        child: BaseWidget(
+          model: AuthBloc(),
+          builder :(context,dp,_) => HomeMenu(name: dp.user.toString())
+        )
     );
     return Scaffold(
       drawer: drawer,
@@ -45,36 +59,31 @@ class _DashboardPageState extends State<DashboardPage> {
           )
         ],
       ),
-      body: ListView(
-        children: <Widget>[
-          Profile(
-            name: dp.name,
-            imgUrl: "https://i.pravatar.cc/200",
-            saldo: dp.saldo != null ? dp.saldo.toString() : '0',
-          ),
-          Divider(),
-          MenuUtama(
-            menuList: menuUtamaItem,
-          ),
-//          StreamBuilder<List<Promo>>(
-//            stream: StreamP,
-//            builder: (BuildContext context,AsyncSnapshot<List<Promo>> snapshot){
-//              if (snapshot.hasError) {
-//                return Text('Error: ${snapshot.error}');
-//              }
-//              switch (snapshot.connectionState) {
-//                case ConnectionState.waiting:
-//                  return const Text('Loading...');
-//                default:
-//                  if (snapshot.data.isEmpty) {
-//                    return const Text("Data tidak ada");
-//                  }
-//                  return PromoWidget(list_promo: snapshot.data,);
-//              }
-//            }
-//          ),
-          PromoWidget(list_promo: lPromo,),
-        ],
+      body:  BaseWidget(
+              onModelReady: (model){
+                model.getUser();
+                print("checking token ${model.token}");
+              },
+              model: AuthBloc(),
+              builder:(context,model,_) =>
+              RefreshIndicator(
+                onRefresh: ()=>_reload(model),
+                child: ListView(
+                  children: <Widget>[
+                    Profile(
+                      name: model.user != null ? model.user.name:"User Sample",
+                      imgUrl: "https://i.pravatar.cc/200",
+                      saldo: model.user != null ? model.user.saldo.toString() : '0',
+                    ),
+                  
+                    Divider(),
+                    MenuUtama(
+                      menuList: menuUtamaItem,
+                    ),
+                    PromoWidget(listPromo: lPromo,),
+                ],
+                ),
+              ),
       ),
     );
   }
@@ -82,32 +91,20 @@ class _DashboardPageState extends State<DashboardPage> {
 
 
 class PromoWidget extends StatelessWidget {
-  List<Promo> list_promo = [];
-  PromoWidget({this.list_promo});
+  final List<Promo> listPromo;
+  PromoWidget({this.listPromo});
   @override
   Widget build(BuildContext context) {
 
     return Column(
       children: <Widget>[
-//        ListTile(
-//          title: Text(
-//            '',
-//            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 22.0),
-//          ),
-//          trailing: IconButton(
-//            icon: Icon(Icons.keyboard_arrow_right),
-//            onPressed: () {
-//              Navigator.pushNamed(context, RoutePaths.Promo);
-//            },
-//          ),
-//        ),
         Container(
           width: double.infinity,
           height: 250.0,
           padding: const EdgeInsets.only(left: 8.0),
           child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              itemCount: list_promo.length,
+              itemCount: listPromo.length,
               itemBuilder: (context,idx){
                 var allcon = Container(
                   decoration: BoxDecoration(
@@ -172,7 +169,7 @@ class PromoWidget extends StatelessWidget {
                           ]),
                       borderRadius: BorderRadius.circular(8.0),
                       image: DecorationImage(
-                          image: NetworkImage(list_promo[idx].imgUrl),
+                          image: NetworkImage(listPromo[idx].imgUrl),
                           fit: BoxFit.cover
                       )
                   ),

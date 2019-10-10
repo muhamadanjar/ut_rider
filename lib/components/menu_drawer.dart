@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:ut_order/models/auth.dart';
 
 import '../utils/constans.dart';
 class HomeMenu extends StatelessWidget {
-  String name;
+  final String name;
   HomeMenu({this.name});
   Widget build(BuildContext context) {
     return ListView(
@@ -58,7 +60,10 @@ class HomeMenu extends StatelessWidget {
                     color: Colors.black45,
                 ),
 
-                linkMenuDrawer('Logout', () => Navigator.pushReplacementNamed(context, RoutePaths.Login)),
+                linkMenuDrawer('Logout', () {
+                  Provider.of<AuthBloc>(context, listen: false).logout();
+                  Navigator.pushReplacementNamed(context, RoutePaths.Login);
+                }),
               ]),
         ],
       );

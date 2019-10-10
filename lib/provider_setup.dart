@@ -37,9 +37,6 @@ List<SingleChildCloneableWidget> dependentServices = [
 
 List<SingleChildCloneableWidget> uiConsumableProviders = [
   
-  StreamProvider<User>(
-    builder: (context) => Provider.of<AuthenticationService>(context, listen: false).user,
-  ),
   StreamProvider<ConnectivityStatus>.value(
     value: ConnectivityService().connectivityController.stream,
   ),
