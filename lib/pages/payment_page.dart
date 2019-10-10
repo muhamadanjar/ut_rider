@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:ut_order/utils/constans.dart';
 import 'package:provider/provider.dart';
+import 'package:ut_order/components/profile_tile.dart';
+import 'package:ut_order/components/success.dart';
+import 'package:ut_order/models/user.dart';
+import 'package:ut_order/pages/notfound.dart';
 import '../data/rest_ds.dart';
 import 'package:ut_order/models/global_model.dart';
 import 'package:image_picker/image_picker.dart';
@@ -29,22 +32,170 @@ class _PaymentViewState extends State<PaymentView> {
   static const menuItems = ['Pilih'];
   String _dateValue;
   RestDatasource rs = new RestDatasource();
+  final noRekCtrl = TextEditingController();
+  final transferCtrl = TextEditingController();
+  final formKey = new GlobalKey<FormState>();
 
-
+  String page = 'konfirmasi';
   Future<File> _imageFile;
   String status = '';
   String base64Image;
   File tmpFile;
   String errMessage = 'Error Uploading Image';
 
+
   @override
   Widget build(BuildContext context) {
     print("list: ${_bank.length}");
     print("selectted bank :${selectedBank}");
+    final up = Provider.of<User>(context);
+    var wrapFrom;
+    if(page == 'konfirmasi'){
+      wrapFrom = Column(
+        children: <Widget>[
+//          Container(
+//            color: Colors.white,
+//            child: new Center(
+//                child: new Column(
+//                  crossAxisAlignment: CrossAxisAlignment.center,
+//                  mainAxisAlignment: MainAxisAlignment.center,
+//                  children: <Widget>[
+//                    new Text("Bank Anda: ",style: TextStyle(fontSize: 20,fontWeight: FontWeight.w800),),
+//                    new Container(
+//                      padding: new EdgeInsets.all(16.0),
+//                    ),
+//
+//                    DropdownButtonHideUnderline(
+//                      child: DropdownButton<String>(
+//                        hint: Text("Pilih Bank Anda"),
+//                        value: null,
+//
+//                        onChanged: (String newValue) {
+//                          setState(() {
+//                            selectedBank = newValue;
+//                          });
+//                          print(selectedBank);
+//                        },
+//                        items: _bank.map((Bank map) {
+//                          return new DropdownMenuItem<String>(
+//                            value: map.bankCode,
+//                            child: new Text(map.bankName,style: new TextStyle(color: Colors.black)),
+//                          );
+//                        }).toList(),
+//                      ),
+//                    ),
+//
+//                  ],
+//                )
+//            ),
+//          ),
+          SizedBox(height: 20,),
+          Container(
+            padding: new EdgeInsets.all(16.0),
+            child: Column(
+              children: <Widget>[
+                new Text("No Rekening: ",style: TextStyle(fontSize: 20,fontWeight: FontWeight.w800),),
+                new Container(
+                  padding: new EdgeInsets.all(16.0),
+                ),
+                TextField(
+                  controller: noRekCtrl,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                      hintText: 'No Rekening & Atas Nama Transfer',
+                      contentPadding: EdgeInsets.all(10.0)
+
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            padding: new EdgeInsets.all(16.0),
+            child: Column(
+              children: <Widget>[
+                new Text("Jumlah Transfer: ",style: TextStyle(fontSize: 20,fontWeight: FontWeight.w800),),
+                new Container(
+                  padding: new EdgeInsets.all(16.0),
+                ),
+                TextField(
+                  controller: transferCtrl,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                      hintText: 'Nominal ',
+                      contentPadding: EdgeInsets.all(10.0)
+
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: 10,),
+          Container(
+            padding: new EdgeInsets.all(10.0),
+            child: Column(
+              children: <Widget>[
+                ButtonBar(
+                  children: <Widget>[
+
+                    IconButton(
+                      icon: Icon(Icons.photo),
+                      onPressed: chooseImage,
+                      tooltip: "Ambil dari Kamera",
+                    ),
+
+                  ],
+                )
+              ],
+            ),
+          ),
+          SizedBox(height: 20,),
+          Container(
+            padding: EdgeInsets.all(15.0),
+            child: showImage(),
+          ),
+          SizedBox(height: 15,),
+          Container(
+            padding: EdgeInsets.only(left: 10,right: 26.0),
+            child: RaisedButton(
+              color: Colors.blue,
+              child: Text("Konfirmasi Pembayaran",style: TextStyle(color: Colors.white),),
+              onPressed: (){
+
+                startUpload(up.token);
+              },
+            ),
+          ),
+        ],
+      );
+    }else if(page == 'success'){
+      Container(
+
+        child: wrapFrom = Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+
+          children: <Widget>[
+            Icon(
+              Icons.info,
+              size: 100.0,
+              color: Colors.blue,
+            ),
+            SizedBox(
+              height: 20.0,
+            ),
+            ProfileTile(
+              title: "Pembayaran Berhasil",
+              subtitle: "Mohon tunggu proses oleh CS Kami",
+            )
+          ],
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.lightBlue,
-        title: Text("Bank Transfer"),
+        title: Text("Konfirmasi Top Up"),
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -56,100 +207,7 @@ class _PaymentViewState extends State<PaymentView> {
             SizedBox(
               height: 20,
             ),
-
-            Container(
-              color: Colors.white,
-              child: new Center(
-                child: new Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    new Text("Bank Anda: ",style: TextStyle(fontSize: 20,fontWeight: FontWeight.w800),),
-                    new Container(
-                      padding: new EdgeInsets.all(16.0),
-                    ),
-
-                    DropdownButtonHideUnderline(
-                      child: DropdownButton<String>(
-                        hint: Text("Pilih Bank Anda"),
-                        value: null,
-
-                        onChanged: (String newValue) {
-                          setState(() {
-                            selectedBank = newValue;
-                          });
-                          print(selectedBank);
-                        },
-                        items: _bank.map((Bank map) {
-                          return new DropdownMenuItem<String>(
-                            value: map.bankCode,
-                            child: new Text(map.bankName,style: new TextStyle(color: Colors.black)),
-                          );
-                        }).toList(),
-                      ),
-                    ),
-
-                  ],
-                )
-              ),
-            ),
-            SizedBox(height: 20,),
-            Container(
-              padding: new EdgeInsets.all(16.0),
-              child: Column(
-                children: <Widget>[
-                  new Text("No Rekening: ",style: TextStyle(fontSize: 20,fontWeight: FontWeight.w800),),
-                  new Container(
-                    padding: new EdgeInsets.all(16.0),
-                  ),
-                  TextField(
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                        hintText: 'No Rekening ',
-                        contentPadding: EdgeInsets.all(10.0)
-
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            SizedBox(height: 10,),
-            Container(
-              padding: new EdgeInsets.all(10.0),
-              child: Column(
-                children: <Widget>[
-                  ButtonBar(
-                    children: <Widget>[
-
-                      IconButton(
-                        icon: Icon(Icons.photo),
-                        onPressed: chooseImage,
-                        tooltip: "Ambil dari Kamera",
-                      ),
-
-                    ],
-                  )
-                ],
-              ),
-            ),
-            SizedBox(height: 20,),
-            Container(
-              padding: EdgeInsets.all(15.0),
-              child: showImage(),
-            ),
-            SizedBox(height: 15,),
-            Container(
-              padding: EdgeInsets.only(left: 10,right: 26.0),
-              child: RaisedButton(
-                color: Colors.blue,
-                child: Text("Konfirmasi Pembayaran",style: TextStyle(color: Colors.white),),
-                onPressed: (){
-
-
-                },
-              ),
-            )
+            wrapFrom,
 
           ],
         ),
@@ -206,21 +264,42 @@ class _PaymentViewState extends State<PaymentView> {
       status = message;
     });
   }
-  startUpload() {
+  startUpload(token) {
+
     setStatus('Uploading Image...');
     if (null == tmpFile) {
       setStatus(errMessage);
       return;
     }
     String fileName = tmpFile.path.split('/').last;
-    upload(fileName);
+    upload(fileName,token);
   }
 
-  upload(String fileName) {
+  upload(String fileName, String token) {
+    var noRek = noRekCtrl.text;
+    var totTrans = transferCtrl.text;
     var data ={
         "image": base64Image,
         "name": fileName,
+        "req_file": fileName,
+        "req_saldo": totTrans,
+        "req_norek": noRek,
+        "req_bank": noRek,
+
     };
+    print(token);
+    rs.uploadbukti(data,token).then((result) {
+      print(result);
+      if(result['status']){
+        setState(() {
+          page = 'success';
+        });
+      }
+      setStatus(result.message);
+    }).catchError((error) {
+      print(error);
+      setStatus(error);
+    });
   }
   Widget showImage() {
     return FutureBuilder<File>(
@@ -250,6 +329,10 @@ class _PaymentViewState extends State<PaymentView> {
       },
     );
   }
+
+
+
+
 
 
 

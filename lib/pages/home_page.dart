@@ -1,24 +1,26 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:ut_order/components/car_pickup.dart';
-import 'package:ut_order/components/menu_drawer.dart';
+import '../utils/network_util.dart';
 import 'package:ut_order/components/network.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:location/location.dart' as LocationManager;
 import 'package:ut_order/components/rider_picker.dart';
+import 'package:ut_order/data/app_bloc.dart';
 import 'package:ut_order/models/step_res.dart';
 import 'package:ut_order/models/trip_info_res.dart';
 import 'package:ut_order/utils/place.dart';
 import '../data/rest_ds.dart';
 import '../utils/constans.dart';
 import 'place_detail.dart';
-import '../models/user.dart';
-import '../models/place_item_res.dart';
+import 'package:provider/provider.dart';
 import 'dart:math';
 import 'package:ut_order/models/order.dart';
-import 'package:provider/provider.dart';
+import 'package:ut_order/models/place_item_res.dart';
+import 'package:ut_order/models/user.dart';
+
+
 const kGoogleApiKey = google_web_api;
 GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: kGoogleApiKey);
 final homeScaffoldKey = GlobalKey<ScaffoldState>();
@@ -55,6 +57,8 @@ class _HomePageState extends State<HomePage> {
   int tripTotal,tripDuration,tripDistance;
   Order order;
   double _tripDistance = 0;
+  StreamSink _typeMobil;
+  NetworkUtil _networkUtil = new NetworkUtil();
 
   Mode _mode = Mode.fullscreen;
 
@@ -180,7 +184,7 @@ class _HomePageState extends State<HomePage> {
 
   }
 
-  void _checkDrawPolyline() {
+  void _checkDrawPolyline() async {
     final String polylineIdVal = 'polyline_id_distance';
     print("Draw Polyline");
     polylines.remove(polylineIdVal);
@@ -195,11 +199,15 @@ class _HomePageState extends State<HomePage> {
           to = v.position;
         }
       });
+      Map resTypecar = await _networkUtil.get("http://utama-trans.com/new/api/type_car");
+      var basicCar = resTypecar['data'][0];
 
       print("checkDrawPolyline from: ${from}");
       PlaceService.getStep(from.latitude, from.longitude, to.latitude, to.longitude).then((vl) {
         TripInfoRes infoRes = vl;
         _tripDistance = infoRes.distance * 0.001;
+
+        var harga = kalkulasiHarga(int.parse(basicCar['per_miles']), _tripDistance.toInt(), int.parse(basicCar['per_min']));
         List<StepsRes> rs = infoRes.steps;
         List<LatLng> paths = new List();
         for (var t in rs) {
@@ -217,7 +225,7 @@ class _HomePageState extends State<HomePage> {
             _onPolylineTapped(polylineId);
           },
         );
-        var harga = kalkulasiHarga(3700, 2, 6);
+
 
         setState(() {
           tripTotal = harga;
@@ -237,8 +245,12 @@ class _HomePageState extends State<HomePage> {
 
   void onHandleOrder(OrderPemesanan data) async{
     final res = data.toJson();
-    final order = Order(origin: res['origin'].name,destination: res['destination'].name,originLat: res['origin'].lat,originLng: res['origin'].lng,destinationLat: res['destination'].lat,destinationLng: res['destination'].lng,harga:30,typeOrder: 1,duration: 1,distance: 1);
-    print(order.toString());
+    final order = Order(origin: res['origin'].name,
+        destination: res['destination'].name,originLat: res['origin'].lat,originLng: res['origin'].lng,
+        destinationLat: res['destination'].lat,destinationLng: res['destination'].lng,
+        harga:30,typeOrder: 1,duration: 1,distance: 1);
+    final _response = await rs.orderCar(order);
+    print(_response);
   }
 
   Future<LatLng> getUserLocation() async {
@@ -291,7 +303,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   int kalkulasiHarga(base,tempuh_km,tarif_km){
-    var ta = base+(tempuh_km-1)*tarif_km;
+    var ta = base+(tempuh_km-(tempuh_km*0.01))*tarif_km;
     var tm = 0;
     return ta +tm;
   }
@@ -395,7 +407,11 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final userProvider = Provider.of<User>(context);
     final dataOrder = Provider.of<OrderPemesanan>(context);
-    print(dataOrder);
+    final dataType = Provider.of<AppBloc>(context);
+    setState(() {
+      _typeMobil = dataType.tipeSnapshot;
+    });
+    print("tipe mobil $_typeMobil");
     final mapScreen = new Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
@@ -482,7 +498,7 @@ class _HomePageState extends State<HomePage> {
                               child: Container(
                                 height: SizeConfig.blockHeight * 15,
 
-                                child: Center(child: Text(userProvider.saldo == null ? '0':userProvider.saldo,
+                                child: Center(child: Text(userProvider.saldo == null ? '0':userProvider.saldo.toString(),
                                   style: TextStyle(fontSize: 20.0,fontWeight: FontWeight.w600),)),
                                 decoration: BoxDecoration(
                                   border: Border(

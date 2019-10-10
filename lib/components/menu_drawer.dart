@@ -35,10 +35,10 @@ class HomeMenu extends StatelessWidget {
                 linkMenuDrawer('Profil', () {
                   Navigator.pushNamed(context, RoutePaths.Profile);
                 }),
-                linkMenuDrawer('Bank Transfer', () {
+                linkMenuDrawer('Konfirmasi Top Up', () {
                   Navigator.pushNamed(context, RoutePaths.Payment);
                 }),
-                linkMenuDrawer('Saldo', () {
+                linkMenuDrawer('Bank Top Up saldo', () {
                   Navigator.pushNamed(context, RoutePaths.TopUp);
                 }),
                 linkMenuDrawer('Histori Perjalanan', () {
@@ -58,7 +58,7 @@ class HomeMenu extends StatelessWidget {
                     color: Colors.black45,
                 ),
 
-                linkMenuDrawer('Legal', () => Navigator.pushNamed(context, RoutePaths.Legal)),
+                linkMenuDrawer('Logout', () => Navigator.pushReplacementNamed(context, RoutePaths.Login)),
               ]),
         ],
       );

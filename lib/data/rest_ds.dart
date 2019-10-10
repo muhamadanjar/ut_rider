@@ -30,6 +30,7 @@ class RestDatasource {
   static final GET_SERVICE = BASE_URL + "/get_servicetype";
   static final GET_BANK = BASE_URL + "/get_bank";
   static final POST_REQUEST_SALDO = BASE_URL + "/post_request_saldo";
+  static final POST_UPLOAD_BUKTI = BASE_URL + "/post_upload_bukti";
 
 
   static final _API_KEY = "somerandomkey";
@@ -74,8 +75,10 @@ class RestDatasource {
     };
 
     return _networkUtil.post(REGISTER_URL,body:data,headers: headers).then((dynamic res){
-      return res;
-    });  
+      if(res["error"] == true) throw new Exception(res["message"]);
+      print("res ${res["data"]["user"]}");
+      return new User.fromJson(res["data"]['user']);
+    }).catchError((res){ return res;});
     
 
   }
@@ -199,18 +202,19 @@ class RestDatasource {
   }
   Future<dynamic> orderCar(Order order){
     var data = {
-      'trip_address_origin': order.origin,
-      'trip_or_origin':order.originLat,
-      'trip_or_longitude':order.originLng,
+      'trip_address_origin': order.origin.toString(),
+      'trip_or_origin':order.originLat.toString(),
+      'trip_or_longitude':order.originLng.toString(),
       'trip_address_destination':order.destination,
-      'trip_des_latitude':order.originLat,
-      'trip_des_longitude':order.originLng,
+      'trip_des_latitude':order.originLat.toString(),
+      'trip_des_longitude':order.originLng.toString(),
       'trip_bookby':'24',
       'trip_job':'4',
       'trip_total':'1910',
       'duration':'5145',
       'distance':'39720',
     };
+    print("print data rest $data");
     var token = getPrefs('token');
     var headers = {
       'Accept': 'application/json',
@@ -257,6 +261,15 @@ class RestDatasource {
       'Authorization': 'Bearer $token',
     };
     var response = await _networkUtil.post(POST_REQUEST_SALDO,body: _data,headers: headers);
+    return response;
+  }
+
+  Future uploadbukti(data,token) async{
+    var headers ={
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
+    var response = await _networkUtil.post(POST_UPLOAD_BUKTI,body: data,headers: headers);
     return response;
   }
 }   
