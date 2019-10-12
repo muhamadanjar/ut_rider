@@ -41,7 +41,7 @@ class _LoginPageState extends State<LoginPage> {
     final deviceSize = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Driver Utama Trans'),
+        title: Text('Customer Utama Trans'),
         elevation: 8.0,
         centerTitle: true,
         backgroundColor: Colors.blue,

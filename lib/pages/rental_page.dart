@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:ut_order/models/tipemobil.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../utils/constans.dart';
@@ -21,8 +20,8 @@ class _RentalPageState extends State<RentalPage> {
   }
   @override
   void dispose() {
-    appBloc.dispose();
-    super.dispose();
+    // appBloc.dispose();
+    // super.dispose();
 
   }
   @override
@@ -42,7 +41,6 @@ class _RentalPageState extends State<RentalPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Text("Geser",
-
                     ),
                     Spacer(),
 

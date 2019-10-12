@@ -25,10 +25,10 @@ class AppBloc {
       tipeSnapshot.add(res);
     });
 
-    api.getPackage(0).then((List res){
-      print("Print data ${res}");
-      packageSnapshot.add(res);
-    });
+    // api.getPackage(0).then((List res){
+    //   print("Print data ${res}");
+    //   packageSnapshot.add(res);
+    // });
     _loadSharedPrefs();
 
 

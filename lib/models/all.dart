@@ -1,5 +1,5 @@
-import 'user.dart';
-import 'order.dart';
-import 'promo.dart';
-import 'trip.dart';
-import 'place_item_res.dart';
+export 'user.dart';
+export 'order.dart';
+export 'promo.dart';
+export 'trip.dart';
+export 'place_item_res.dart';

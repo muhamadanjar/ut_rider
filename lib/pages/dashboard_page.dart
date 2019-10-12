@@ -5,10 +5,8 @@ import 'package:ut_order/components/base_widget.dart';
 import 'package:ut_order/models/auth.dart';
 import 'package:ut_order/utils/constans.dart';
 import 'package:ut_order/components/menu_drawer.dart';
-import 'package:provider/provider.dart';
 
 import '../models/promo.dart';
-import '../data/rest_ds.dart';
 BuildContext _ctx;
 class DashboardPage extends StatefulWidget {
   static String tag = RoutePaths.Dashboard;
@@ -20,13 +18,13 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
-  RestDatasource _rd =  new RestDatasource();
+  
   List<Promo> lPromo = [];
   @override
   void initState() {
-    _rd.getPromo().then((data){
-      lPromo = data;
-    });
+    // _rd.getPromo().then((data){
+    //   lPromo = data;
+    // });
     super.initState();
 
   }
@@ -81,6 +79,7 @@ class _DashboardPageState extends State<DashboardPage> {
                       menuList: menuUtamaItem,
                     ),
                     PromoWidget(listPromo: lPromo,),
+                    
                 ],
                 ),
               ),
@@ -188,7 +187,7 @@ class PromoWidget extends StatelessWidget {
 
 
 class MenuUtama extends StatelessWidget {
-  List menuList;
+  final List menuList;
   MenuUtama({this.menuList});
   @override
   Widget build(BuildContext context) {
@@ -275,9 +274,9 @@ class MenuUtamaItems extends StatelessWidget {
 }
 
 class Profile extends StatelessWidget {
-  String imgUrl;
-  String name;
-  String saldo;
+  final String imgUrl;
+  final String name;
+  final String saldo;
   Profile({this.name,this.imgUrl,this.saldo});
   @override
   Widget build(BuildContext context) {

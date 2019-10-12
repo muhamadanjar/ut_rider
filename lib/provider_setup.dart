@@ -36,7 +36,9 @@ List<SingleChildCloneableWidget> dependentServices = [
 ];
 
 List<SingleChildCloneableWidget> uiConsumableProviders = [
-  
+  StreamProvider<User>(
+    builder: (context) => Provider.of<AuthenticationService>(context, listen: false).user,
+  ),
   StreamProvider<ConnectivityStatus>.value(
     value: ConnectivityService().connectivityController.stream,
   ),
@@ -49,13 +51,13 @@ List<SingleChildCloneableWidget> uiConsumableProviders = [
   ChangeNotifierProvider(builder: (_) => PrefsNotifier()),
   Provider(
     builder: (_) => AppBloc(),
-    dispose: (_, value){
-      value.dispose();
-    },
+    // dispose: (_, value){
+    //   value.dispose();
+    // },
   ),
   Provider(
     builder: (_) => PlaceBloc(),
-    dispose: (_,v)=>v.dispose(),
+    // dispose: (_,v)=>v.dispose(),
 
   )
   
