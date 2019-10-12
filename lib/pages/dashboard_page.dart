@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:ut_order/components/base_widget.dart';
+import 'package:ut_order/data/app_bloc.dart';
 import 'package:ut_order/models/auth.dart';
 import 'package:ut_order/utils/constans.dart';
 import 'package:ut_order/components/menu_drawer.dart';
@@ -29,7 +31,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
   }
   Future<Null> _reload(model) async{
-
+    print(model.user);
     Completer<Null> completer = new Completer<Null>();
     await model.getUser();
     Timer timer = new Timer(new Duration(seconds: 3), () {
@@ -58,31 +60,45 @@ class _DashboardPageState extends State<DashboardPage> {
         ],
       ),
       body:  BaseWidget(
-              onModelReady: (model){
-                model.getUser();
-                print("checking token ${model.token}");
-              },
-              model: AuthBloc(),
-              builder:(context,model,_) =>
-              RefreshIndicator(
-                onRefresh: ()=>_reload(model),
-                child: ListView(
-                  children: <Widget>[
-                    Profile(
-                      name: model.user != null ? model.user.name:"User Sample",
-                      imgUrl: "https://i.pravatar.cc/200",
-                      saldo: model.user != null ? model.user.saldo.toString() : '0',
-                    ),
-                  
-                    Divider(),
-                    MenuUtama(
-                      menuList: menuUtamaItem,
-                    ),
-                    PromoWidget(listPromo: lPromo,),
-                    
-                ],
-                ),
+        onModelReady: (AuthBloc model){
+          model.getUser();
+          print("checking token ${model.isAuth}");
+          print("df");
+        },
+        model: AuthBloc(),
+        builder:(context,model,_) => RefreshIndicator(
+          onRefresh: ()=>_reload(model),
+          child: ListView(
+            children: <Widget>[
+              Profile(
+                name: model.user != null ? model.user.name:"User Sample",
+                imgUrl: "https://i.pravatar.cc/200",
+                saldo: model.user != null ? model.user.saldo.toString() : '0',
               ),
+              Divider(),
+              MenuUtama(
+                menuList: menuUtamaItem,
+              ),
+              StreamBuilder(
+                stream: Provider.of<AppBloc>(context).promoSubject,
+                builder: (context,asyncSnapshot){
+                  if (asyncSnapshot.hasError) {
+                    return new Text("Error!");
+                  } else if (asyncSnapshot.data == null) {
+                    print("data kosong");
+                  }else{
+                    print(asyncSnapshot.data);
+
+                    return PromoWidget(listPromo: asyncSnapshot.data,);
+
+                  }
+                },
+              ),
+
+
+          ],
+          ),
+        ),
       ),
     );
   }

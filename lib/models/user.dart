@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class User {
   final String email;
   final String username;
@@ -8,7 +10,18 @@ class User {
   final int trip;
   String saldo;
   final String photoUrl;
-  User({this.email,this.username, this.password,this.token,this.name,this.rating,this.trip,this.saldo,this.photoUrl});
+  String randomUrl = 'https://i.pravatar.cc/200';
+  User({
+    @required this.email,
+    this.username,
+    this.password,
+    this.token,
+    @required this.name,
+    this.rating,
+    this.trip,
+    this.saldo,
+    this.photoUrl,
+    this.randomUrl});
 
   String get getUsername => username;
   String get getName => name;
@@ -23,8 +36,13 @@ class User {
       trip: json['trip'],
       token: json['token'],
       saldo: json['wallet'],
+      randomUrl: 'https://i.pravatar.cc/200'
 
     );
+  }
+
+  factory User.initialData(Map<String,dynamic> json){
+    return User(randomUrl: 'https://i.pravatar.cc/200');
   }
 
 

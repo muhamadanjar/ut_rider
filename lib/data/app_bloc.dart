@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/widgets.dart';
-
+import 'package:ut_order/models/promo.dart';
 import 'rest_ds.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-
+import 'package:rxdart/subjects.dart';
+import 'package:http/http.dart' as http;
+import 'package:ut_order/utils/constans.dart';
 class AppBloc {
   RestDatasource api = new RestDatasource();
   StreamController<List> tipeSnapshotController = StreamController<List>();
@@ -19,6 +21,9 @@ class AppBloc {
   StreamSink<List> get serviceSnapshot => serviceSnapshotController.sink;
   Stream<List> get serviceSnapshotStream => serviceSnapshotController.stream;
 
+  PublishSubject<List<Promo>> _promoSubject = PublishSubject<List<Promo>>();
+  PublishSubject<List<Promo>> get promoSubject => _promoSubject;
+
   AppBloc(){
     api.getTypeMobil().then((List res){
       print("Print data ${res}");
@@ -30,6 +35,8 @@ class AppBloc {
     //   packageSnapshot.add(res);
     // });
     _loadSharedPrefs();
+    _loadPromo();
+
 
 
   }
@@ -59,6 +66,37 @@ class AppBloc {
     var sharedPrefs = await SharedPreferences.getInstance();
     var showWebView = sharedPrefs.getBool('showWebView') ?? false;
 
+  }
+
+  Future<void> _loadPromo(){
+    final JsonDecoder _decoder = new JsonDecoder();
+    http.get("${apiURL}/get_promo").then((http.Response response){
+      var res = response.body;
+      int statusCode = response.statusCode;
+      if (statusCode < 200 || statusCode > 400 || json == null) {
+        res = "{\"status\":" +
+            statusCode.toString() +
+            ",\"message\":\"error\",\"response\":" +
+            res +
+            "}";
+        throw new Exception(res);
+      }
+      try{
+        var json = _decoder.convert(res);
+        var listPromo = new List<Promo>();
+        (json['data'] as List).forEach((f) {
+          var data = Promo(name: f["name"],
+              kodePromo: f["kode_promo"],
+              discount: (f["discount"]),
+              imgUrl: f["image_path"]);
+          listPromo.add(data);
+        });
+        _promoSubject.sink.add(listPromo);
+      }catch(err){
+        print(err);
+      }
+
+    });
   }
 
   void dispose() {

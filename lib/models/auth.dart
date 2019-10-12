@@ -191,7 +191,7 @@ class AuthBloc with ChangeNotifier {
   }
 
   String get token {
-    // print("getting token $_expiryDate $_token");
+    print("getting token and expire date $_expiryDate $_token");
     if (_expiryDate != null && _expiryDate.isAfter(DateTime.now()) && _token != null) {
       return _token;
     }
@@ -206,41 +206,46 @@ class AuthBloc with ChangeNotifier {
   Future<void> _authenticate(String email, String password, String urlSegment) async {
     final url = '${apiURL}/login';
     try {
-      final response = await http.post(
-        url,
-        body: json.encode(
-          {
-            'username': email,
-            'password': password,
-            'returnSecureToken': true,
+      if(urlSegment != 'signupNewUser') {
+        final response = await http.post(
+          url,
+          body: json.encode(
+            {
+              'username': email,
+              'password': password,
+              'returnSecureToken': true,
+            },
+          ),
+          headers: {'Content-Type': 'application/json'},
+        );
+        final responseData = json.decode(response.body);
+        print("response data user $responseData");
+        if (responseData['status'] == false) {
+          throw HttpException(responseData['message']);
+        }
+        _token = responseData['data']['token'];
+        _userId = responseData['data']['user']['id'].toString();
+        _expiryDate = DateTime.now().add(
+          Duration(
+            seconds: responseData['expiresIn'] != null
+                ? responseData['expiresIn']
+                : int.parse("3600"),
+          ),
+        );
+        _autoLogout();
+        notifyListeners();
+        final prefs = await SharedPreferences.getInstance();
+        final userData = json.encode({
+            'token': _token,
+            'userId': _userId,
+            'expiryDate': _expiryDate.toIso8601String(),
           },
-        ),
-        headers: {'Content-Type': 'application/json'},
-      );
-      final responseData = json.decode(response.body);
-      print("response data user $responseData");
-      if (responseData['status'] == false) {
-        throw HttpException(responseData['message']);
+        );
+        print("userData $userData");
+        prefs.setString('userData', userData);
+      }else{
+        print("register");
       }
-      _token = responseData['data']['token'];
-      _userId = "responseData['localId']";
-      _expiryDate = DateTime.now().add(
-        Duration(
-          seconds: responseData['expiresIn'] != null ? responseData['expiresIn']:int.parse("3600"),
-        ),
-      );
-      _autoLogout();
-      notifyListeners();
-      final prefs = await SharedPreferences.getInstance();
-      final userData = json.encode(
-        {
-          'token': _token,
-          'userId': _userId,
-          'expiryDate': _expiryDate.toIso8601String(),
-        },
-      );
-      print("userData $userData");
-      prefs.setString('userData', userData);
     } catch (error) {
       throw error;
     }
@@ -266,7 +271,7 @@ class AuthBloc with ChangeNotifier {
       return false;
     }
     _token = extractedUserData['token'];
-    _userId = extractedUserData['userId'];
+    _userId = extractedUserData['userId'].toString();
     _expiryDate = expiryDate;
     notifyListeners();
     _autoLogout();
@@ -321,11 +326,13 @@ class AuthBloc with ChangeNotifier {
         // if(statusCode < 200 || statusCode > 400){
         //   throw new Exception("Error while fetching data from ${response.body}");
         // }
-        
+        _userSubject.sink.add(true);
+        print(statusCode);
         final responseData = json.decode(response.body);
-        // print("print response data ${responseData}");
-        _authenticatedUser = User(name:responseData['data']['name'],email: responseData['data']['email'],photoUrl: responseData['data']['foto'],saldo: responseData['data']['wallet'],rating: responseData['data']['rate']);
-        print("${_authenticatedUser}");
+//        print("print response data ${responseData['data']['name']}");
+        _authenticatedUser = User(name: responseData['data']['name'],email: responseData['data']['email'], saldo:responseData['data']['wallet'].toString(),photoUrl: responseData['data']['foto']);
+//        _authenticatedUser = new User(name:responseData['data']['name'],email: responseData['data']['email'],photoUrl: responseData['data']['foto'],saldo: responseData['data']['wallet'],rating: responseData['data']['rate']);
+        print("data auth $_authenticatedUser");
         notifyListeners();
     }catch(e){
       // throw new Exception(response
