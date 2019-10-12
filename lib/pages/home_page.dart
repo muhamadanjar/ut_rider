@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:ut_order/components/base_widget.dart';
+import 'package:ut_order/models/auth.dart';
 import '../utils/network_util.dart';
 import 'package:ut_order/components/network.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
@@ -492,47 +494,53 @@ class _HomePageState extends State<HomePage> {
                     ),
                     child: Column(
                       children: <Widget>[
-                        Row(
-                          children: <Widget>[
-                            Expanded(flex: 1,
-                              child: Container(
-                                height: SizeConfig.blockHeight * 15,
+                        BaseWidget(
+                          model: AuthBloc(),
+                          onModelReady: (model)=>model.getUser,
+                          builder: (context,auth,_)=>
+                          Row(
+                            children: <Widget>[
+                              Expanded(flex: 1,
+                                child: Container(
+                                  height: SizeConfig.blockHeight * 15,
 
-                                child: Center(child: Text(userProvider.saldo == null ? '0':userProvider.saldo.toString(),
-                                  style: TextStyle(fontSize: 20.0,fontWeight: FontWeight.w600),)),
-                                decoration: BoxDecoration(
-                                  border: Border(
-                                    left: BorderSide(width: 1.0, color: Colors.grey.shade600),
-                                    right: BorderSide(width: 1.0, color: Colors.grey.shade900),
+                                  child: Center(child: Text(auth.token == null ? '0':auth.user.name.toString(),
+                                    style: TextStyle(fontSize: 20.0,fontWeight: FontWeight.w600),)),
+                                  decoration: BoxDecoration(
+                                    border: Border(
+                                      left: BorderSide(width: 1.0, color: Colors.grey.shade600),
+                                      right: BorderSide(width: 1.0, color: Colors.grey.shade900),
+                                    ),
+                                    color: Colors.white,
                                   ),
-                                  color: Colors.white,
+                                ),),
+                              Expanded(flex: 1,
+                                child: Container(
+                                  height: SizeConfig.blockHeight * 15,
+                                  child: Center(child: Text("${_tripDistance.toStringAsFixed(2)} Km",style: TextStyle(fontSize: 20.0,fontWeight: FontWeight.w600))),
+                                  decoration: BoxDecoration(
+                                    border: Border(
+                                      left: BorderSide(width: 1.0, color: Colors.grey.shade600),
+                                      right: BorderSide(width: 1.0, color: Colors.grey.shade900),
+                                    ),
+                                    color: Colors.white,
+                                  )
+                                ),),
+                              Expanded(flex: 1,
+                                child: Container(
+                                  height: SizeConfig.blockHeight * 15,
+                                  child: Center(child: Text("Catatan")),
+                                  decoration: BoxDecoration(
+                                    border: Border(
+                                      left: BorderSide(width: 1.0, color: Colors.grey.shade600),
+                                      right: BorderSide(width: 1.0, color: Colors.grey.shade900),
+                                    ),
+                                    color: Colors.white,
+                                  )
                                 ),
-                              ),),
-                            Expanded(flex: 1,
-                              child: Container(
-                                height: SizeConfig.blockHeight * 15,
-                                child: Center(child: Text("${_tripDistance.toStringAsFixed(2)} Km",style: TextStyle(fontSize: 20.0,fontWeight: FontWeight.w600))),
-                                decoration: BoxDecoration(
-                                  border: Border(
-                                    left: BorderSide(width: 1.0, color: Colors.grey.shade600),
-                                    right: BorderSide(width: 1.0, color: Colors.grey.shade900),
-                                  ),
-                                  color: Colors.white,
-                                )
-                              ),),
-                            Expanded(flex: 1,
-                              child: Container(
-                                height: SizeConfig.blockHeight * 15,
-                                child: Center(child: Text("Catatan")),
-                                decoration: BoxDecoration(
-                                  border: Border(
-                                    left: BorderSide(width: 1.0, color: Colors.grey.shade600),
-                                    right: BorderSide(width: 1.0, color: Colors.grey.shade900),
-                                  ),
-                                  color: Colors.white,
-                                )
-                              ),),
-                          ],
+                              ),
+                            ],
+                          ),
                         ),
                         Divider(),
                         Container(

@@ -9,19 +9,24 @@ class User {
   final double rating;
   final int trip;
   String saldo;
+  String address;
+  String phoneNumber;
   final String photoUrl;
   String randomUrl = 'https://i.pravatar.cc/200';
   User({
     @required this.email,
     this.username,
     this.password,
-    this.token,
+    @required this.token,
     @required this.name,
     this.rating,
     this.trip,
     this.saldo,
     this.photoUrl,
-    this.randomUrl});
+    this.randomUrl,
+    this.phoneNumber,
+    this.address
+  });
 
   String get getUsername => username;
   String get getName => name;

@@ -1,4 +1,5 @@
 import 'package:provider/provider.dart';
+import 'package:ut_order/utils/network_util.dart';
 import 'package:ut_order/utils/prefs.dart';
 
 import 'data/app_bloc.dart';
@@ -20,17 +21,17 @@ List<SingleChildCloneableWidget> providers = [
 ];
 
 List<SingleChildCloneableWidget> independentServices = [
-  Provider.value(value: RestDatasource()),
+  Provider.value(value: NetworkUtil()),
   ChangeNotifierProvider.value(
     value: AuthBloc(),
   ),
 ];
 
 List<SingleChildCloneableWidget> dependentServices = [
-  ProxyProvider<RestDatasource, AuthenticationService>(
+  ProxyProvider<NetworkUtil, AuthenticationService>(
     builder: (context, api, authenticationService) => AuthenticationService(api: api),
   ),
-  ProxyProvider<RestDatasource, OrderService>(
+  ProxyProvider<NetworkUtil, OrderService>(
      builder: (context, api, orderService) => OrderService(api: api),
   )
 ];

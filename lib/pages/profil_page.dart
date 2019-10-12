@@ -17,7 +17,8 @@ class _ProfilPageState extends State<ProfilPage> {
     return Scaffold(
       key: _spKey,
       appBar: AppBar(
-        title: Text("Profile"),
+        title: Text("Profile",style: new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w500,letterSpacing: 2.0),),
+        centerTitle: true,
         elevation: 8.0,
         actions: <Widget>[
           PopupMenuButton<Choice>(
@@ -80,7 +81,12 @@ class _ProfilPageState extends State<ProfilPage> {
                 ],
               ),
             ),
-          )
+          ),
+          RaisedButton(
+            onPressed: (){
+              Navigator.pushNamed(context, RoutePaths.EditProfile);
+            },
+          ),
         ],
       ),
     );

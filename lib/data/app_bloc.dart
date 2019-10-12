@@ -91,6 +91,7 @@ class AppBloc {
               imgUrl: f["image_path"]);
           listPromo.add(data);
         });
+        print(listPromo);
         _promoSubject.sink.add(listPromo);
       }catch(err){
         print(err);

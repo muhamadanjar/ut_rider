@@ -78,6 +78,7 @@ flutter:
     - assets/ic_notify.png
     - assets/ic_map_nav.png
     - assets/ic_remove_x.png
+    - assets/ic_menu_user.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

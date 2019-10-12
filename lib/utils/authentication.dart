@@ -1,42 +1,51 @@
 import 'dart:async';
+import 'dart:convert';
 
 import '../models/user.dart';
-import '../data/rest_ds.dart';
+import 'constans.dart';
+import 'network_util.dart';
 
 class AuthenticationService {
-  final RestDatasource _api;
+  final NetworkUtil _api;
 
-  AuthenticationService({RestDatasource api}) : _api = api;
+  AuthenticationService({NetworkUtil api}) : _api = api;
 
   StreamController<User> _userController = StreamController<User>();
 
   Stream<User> get user => _userController.stream;
 
   Future<bool> getUser(String userId) async {
-    var fetchedUser = await _api.getUser(userId);
+    var fetchedUser = await _api.get("$apiURL/user/details");
+
     var hasUser = fetchedUser != null;
     if (hasUser) {
-      _userController.add(fetchedUser);
+      _userController.add(fetchedUser['data']);
     }
     return hasUser;
   }
 
   Future<User> login(String username,String password) async{
-    var fetchUser = await _api.login(username, password);
-    print("data login : ${fetchUser}");
+    var fetchUser = await _api.post("$apiURL/login",body: json.encode(
+      {
+        'username': username,
+        'password': password,
+        'returnSecureToken': true,
+      },
+    ),headers: {'Content-Type': 'application/json'});
+    print("data login : $fetchUser");
     var hasUser = fetchUser != null;
     if(hasUser){
-      _userController.add(fetchUser);
+      _userController.add(fetchUser['data']);
     }
     return fetchUser;
   }
 
   Future<User> register(Map mapData) async{
-    var dataUser = await _api.register(mapData);
+    var dataUser = await _api.post("$apiURL/register",body: mapData,headers: {'Content-Type': 'application/json'});
     print("data register : ${dataUser}");
     var hasUser = dataUser != null;
     if(hasUser){
-      _userController.add(dataUser);
+      _userController.add(dataUser['data']);
     }else{
       print("Print user error ${dataUser['error']}");
     }

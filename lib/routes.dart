@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:ut_order/pages/edit_profile_page.dart';
+import 'package:ut_order/pages/index.dart';
 import 'package:ut_order/pages/topup_page.dart';
 import 'pages/home_page.dart';
 import 'pages/login_page.dart';
@@ -26,6 +28,8 @@ final routes = <String, WidgetBuilder>{
 class Router {
     static Route<dynamic> generateRoute(RouteSettings settings) {
         switch (settings.name) {
+            case RoutePaths.Index:
+                return MaterialPageRoute(builder: (_) => Index());
             case RoutePaths.Dashboard:
                 return MaterialPageRoute(builder: (_) => DashboardPage());
             case RoutePaths.Profile:
@@ -54,6 +58,8 @@ class Router {
                 return MaterialPageRoute(builder: (_) => PromoPage());
             case RoutePaths.Notifications:
                 return MaterialPageRoute(builder: (_) => NotificationPage());
+            case RoutePaths.EditProfile:
+                return MaterialPageRoute(builder: (_) => EditProfilePage());
             default:
                 return MaterialPageRoute(builder: (_) => NotFoundPage());
         }

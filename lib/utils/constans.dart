@@ -19,6 +19,7 @@ const google_android_api = 'AIzaSyAKl4qWeBABIDPoxo_CHvWuIfgkKoEzS7c';
 
 
 class RoutePaths {
+  static const String Index = '/';
   static const String Login = 'login';
   static const String Register = 'register';
   static const String Help = 'help';
@@ -34,9 +35,11 @@ class RoutePaths {
   static const String Forgot = 'forgot';
   static const String Legal = 'legal';
   static const String Profile = 'profile';
+  static const String EditProfile = 'edit_profile';
   static const String Notifications = 'notifications';
   static const String ChangePassword = 'change_password';
   static const String ChangeProfile = 'change_profile';
+
 
 }
 

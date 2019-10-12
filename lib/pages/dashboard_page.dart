@@ -51,7 +51,8 @@ class _DashboardPageState extends State<DashboardPage> {
     return Scaffold(
       drawer: drawer,
       appBar: AppBar(
-        title: Text("Dashboard"),
+        title: Text("Dashboard",style: TextStyle(letterSpacing: 2.0),),
+        centerTitle: true,
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.more_vert),
@@ -85,7 +86,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   if (asyncSnapshot.hasError) {
                     return new Text("Error!");
                   } else if (asyncSnapshot.data == null) {
-                    print("data kosong");
+                    return new Container();
                   }else{
                     print(asyncSnapshot.data);
 
@@ -212,8 +213,7 @@ class MenuUtama extends StatelessWidget {
       crossAxisCount: 2,
       crossAxisSpacing: 4.0,
       mainAxisSpacing: 4.0,
-      childAspectRatio: MediaQuery.of(context).size.width /
-              (MediaQuery.of(context).size.height / 2),
+      childAspectRatio: MediaQuery.of(context).size.width / (MediaQuery.of(context).size.height / 2),
       children: menuList,
     );
   }

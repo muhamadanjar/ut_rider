@@ -232,6 +232,7 @@ class AuthBloc with ChangeNotifier {
                 : int.parse("3600"),
           ),
         );
+        _userSubject.add(true);
         _autoLogout();
         notifyListeners();
         final prefs = await SharedPreferences.getInstance();
@@ -268,20 +269,24 @@ class AuthBloc with ChangeNotifier {
     final expiryDate = DateTime.parse(extractedUserData['expiryDate']);
 
     if (expiryDate.isBefore(DateTime.now())) {
+      _userSubject.add(false);
       return false;
     }
     _token = extractedUserData['token'];
     _userId = extractedUserData['userId'].toString();
     _expiryDate = expiryDate;
+    _userSubject.add(true);
     notifyListeners();
     _autoLogout();
     return true;
   }
 
   Future<void> logout() async {
+    print("request logout");
     _token = null;
     _userId = null;
     _expiryDate = null;
+    _userSubject.add(false);
     if (_authTimer != null) {
       _authTimer.cancel();
       _authTimer = null;
@@ -323,15 +328,17 @@ class AuthBloc with ChangeNotifier {
         
         final response = await http.post("${apiURL}/user/details",body: json.encode({}),headers:headers);
         final int statusCode = response.statusCode;
-        // if(statusCode < 200 || statusCode > 400){
-        //   throw new Exception("Error while fetching data from ${response.body}");
-        // }
-        _userSubject.sink.add(true);
+
+        _userSubject.add(true);
         print(statusCode);
         final responseData = json.decode(response.body);
-//        print("print response data ${responseData['data']['name']}");
-        _authenticatedUser = User(name: responseData['data']['name'],email: responseData['data']['email'], saldo:responseData['data']['wallet'].toString(),photoUrl: responseData['data']['foto']);
-//        _authenticatedUser = new User(name:responseData['data']['name'],email: responseData['data']['email'],photoUrl: responseData['data']['foto'],saldo: responseData['data']['wallet'],rating: responseData['data']['rate']);
+        _authenticatedUser = User(name: responseData['data']['name'],
+            email: responseData['data']['email'],
+            saldo:responseData['data']['wallet'].toString(),
+            photoUrl: responseData['data']['foto'],
+            phoneNumber:responseData['data']['no_telepon'].toString(),
+          token: responseData['data']['api_token']
+        );
         print("data auth $_authenticatedUser");
         notifyListeners();
     }catch(e){

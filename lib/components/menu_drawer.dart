@@ -60,9 +60,13 @@ class HomeMenu extends StatelessWidget {
                     color: Colors.black45,
                 ),
 
-                linkMenuDrawer('Logout', () {
+                linkMenuDrawer('Logout', () async{
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pushReplacementNamed('/');
+
+                  // Navigator.of(context)
+                  //     .pushReplacementNamed(UserProductsScreen.routeName);
                   Provider.of<AuthBloc>(context, listen: false).logout();
-                  Navigator.pushReplacementNamed(context, RoutePaths.Login);
                 }),
               ]),
         ],
