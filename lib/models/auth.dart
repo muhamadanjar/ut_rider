@@ -114,7 +114,7 @@ class AuthModel extends Model {
 
   Future<User> getInfo(String token) async {
     try {
-      var _data = await WebClient(User(token: token)).get(apiURL);
+      var _data = await WebClient(User(token: token,name: "A",email: 'd')).get(apiURL);
       // var _json = json.decode(json.encode(_data));
       var _newUser = User.fromJson(_data["data"]);
       _newUser?.token = token;
@@ -204,7 +204,7 @@ class AuthBloc with ChangeNotifier {
   // User get user{ return _authenticatedUser;}
 
   Future<void> _authenticate(String email, String password, String urlSegment) async {
-    final url = '${apiURL}/login';
+    final url = '$apiURL/login';
     try {
       if(urlSegment != 'signupNewUser') {
         final response = await http.post(

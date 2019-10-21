@@ -41,13 +41,14 @@ class User {
       trip: json['trip'],
       token: json['token'],
       saldo: json['wallet'],
-      randomUrl: 'https://i.pravatar.cc/200'
+      randomUrl: 'https://i.pravatar.cc/200', 
+      email: json['email']
 
     );
   }
 
   factory User.initialData(Map<String,dynamic> json){
-    return User(randomUrl: 'https://i.pravatar.cc/200');
+    return User(name: 'A',token: 'A',email: 'A', randomUrl: 'https://i.pravatar.cc/200');
   }
 
 

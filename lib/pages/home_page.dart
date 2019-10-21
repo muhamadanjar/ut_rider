@@ -5,11 +5,9 @@ import 'package:ut_order/components/base_widget.dart';
 import 'package:ut_order/models/auth.dart';
 import '../utils/network_util.dart';
 import 'package:ut_order/components/network.dart';
-import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:location/location.dart' as LocationManager;
 import 'package:ut_order/components/rider_picker.dart';
-import 'package:ut_order/data/app_bloc.dart';
 import 'package:ut_order/models/step_res.dart';
 import 'package:ut_order/models/trip_info_res.dart';
 import 'package:ut_order/utils/place.dart';
@@ -20,7 +18,7 @@ import 'package:provider/provider.dart';
 import 'dart:math';
 import 'package:ut_order/models/order.dart';
 import 'package:ut_order/models/place_item_res.dart';
-import 'package:ut_order/models/user.dart';
+import '../data/order_view.dart';
 
 
 const kGoogleApiKey = google_web_api;
@@ -59,10 +57,8 @@ class _HomePageState extends State<HomePage> {
   int tripTotal,tripDuration,tripDistance;
   Order order;
   double _tripDistance = 0;
-  StreamSink _typeMobil;
   NetworkUtil _networkUtil = new NetworkUtil();
 
-  Mode _mode = Mode.fullscreen;
 
   // Values when toggling polyline color
   int colorsIndex = 0;
@@ -83,29 +79,6 @@ class _HomePageState extends State<HomePage> {
     JointType.bevel,
     JointType.round
   ];
-
-  // Values when toggling polyline end cap type
-  int endCapsIndex = 0;
-  List<Cap> endCaps = <Cap>[Cap.buttCap, Cap.squareCap, Cap.roundCap];
-
-  // Values when toggling polyline start cap type
-  int startCapsIndex = 0;
-  List<Cap> startCaps = <Cap>[Cap.buttCap, Cap.squareCap, Cap.roundCap];
-
-  // Values when toggling polyline pattern
-  int patternsIndex = 0;
-  List<List<PatternItem>> patterns = <List<PatternItem>>[
-    <PatternItem>[],
-    <PatternItem>[
-      PatternItem.dash(30.0),
-      PatternItem.gap(20.0),
-      PatternItem.dot,
-      PatternItem.gap(20.0)
-    ],
-    <PatternItem>[PatternItem.dash(30.0), PatternItem.gap(20.0)],
-    <PatternItem>[PatternItem.dot, PatternItem.gap(10.0)],
-  ];
-
 
   static final CameraPosition _cameraPosition = CameraPosition(
     target: LatLng(3.6422756, 98.5294038),
@@ -139,8 +112,8 @@ class _HomePageState extends State<HomePage> {
         markerId:MarkerId(mkId),
         position: LatLng(place.lat, place.lng),
 //        infoWindow: InfoWindow(title: place.name,snippet: place.address)
-        );
-      print(markers);
+    );
+    print(markers);
   }
 
   void _moveCamera() async {
@@ -165,7 +138,6 @@ class _HomePageState extends State<HomePage> {
           sLat = toLatLng.latitude;
           nLat = fromLatLng.latitude;
         }
-
         if(fromLatLng.longitude <= toLatLng.longitude) {
           sLng = fromLatLng.longitude;
           nLng = toLatLng.longitude;
@@ -209,7 +181,8 @@ class _HomePageState extends State<HomePage> {
         TripInfoRes infoRes = vl;
         _tripDistance = infoRes.distance * 0.001;
 
-        var harga = kalkulasiHarga(int.parse(basicCar['per_miles']), _tripDistance.toInt(), int.parse(basicCar['per_min']));
+        // var harga = kalkulasiHarga(int.parse(basicCar['per_miles']), _tripDistance.toInt(), int.parse(basicCar['per_min']));
+        var harga = 100;
         List<StepsRes> rs = infoRes.steps;
         List<LatLng> paths = new List();
         for (var t in rs) {
@@ -227,8 +200,6 @@ class _HomePageState extends State<HomePage> {
             _onPolylineTapped(polylineId);
           },
         );
-
-
         setState(() {
           tripTotal = harga;
           polylines[polylineId] = polyline;
@@ -237,12 +208,12 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void refresh() async {
+  void refresh(model) async {
     final center = await getUserLocation();
     final GoogleMapController controller = await _controller.future;
     controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
         target: center == null ? LatLng(0, 0) : center, zoom: 15.0)));
-    getNearbyPlaces(center);
+    model.getNearbyPlaces(center);
   }
 
   void onHandleOrder(OrderPemesanan data) async{
@@ -276,58 +247,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void getNearbyPlaces(LatLng center) async {
-    setState(() {
-      this.isLoading = true;
-      this.errorMessage = null;
-    });
-
-    final location = Location(center.latitude, center.longitude);
-    final result = await _places.searchNearbyWithRadius(location, 2500);
-    setState(() {
-      this.isLoading = false;
-      if (result.status == "OK") {
-        this.places = result.results;
-        result.results.forEach((f) {
-          var markers = _createLatLng(f.geometry.location.lat, f.geometry.location.lng);
-
-
-//          final markerOptions = MarkerOptions(
-//              position:
-//              LatLng(f.geometry.location.lat, f.geometry.location.lng),
-//              infoWindowText: InfoWindowText("${f.name}", "${f.types?.first}"));
-//          mapController.addMarker(markerOptions);
-        });
-      } else {
-        this.errorMessage = result.errorMessage;
-      }
-    });
-  }
-
-  int kalkulasiHarga(base,tempuh_km,tarif_km){
-    var ta = base+(tempuh_km-(tempuh_km*0.01))*tarif_km;
-    var tm = 0;
-    return ta +tm;
-  }
-
-  Future<void> _handlePressButton() async {
-    try {
-      final center = await getUserLocation();
-      Prediction p = await PlacesAutocomplete.show(
-          context: context,
-          strictbounds: center == null ? false : true,
-          apiKey: kGoogleApiKey,
-          onError: onError,
-          mode: _mode,
-          language: "en",
-          location: center == null ? null : Location(center.latitude, center.longitude),
-          radius: center == null ? null : 10000);
-      displayPrediction(p, homeScaffoldKey.currentState);
-
-    } catch (e) {
-      return;
-    }
-  }
 
 
   Future<Null> showDetailPlace(String placeId) async {
@@ -407,13 +326,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final userProvider = Provider.of<User>(context);
     final dataOrder = Provider.of<OrderPemesanan>(context);
-    final dataType = Provider.of<AppBloc>(context);
-    setState(() {
-      _typeMobil = dataType.tipeSnapshot;
-    });
-    print("tipe mobil $_typeMobil");
     final mapScreen = new Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
@@ -422,22 +335,25 @@ class _HomePageState extends State<HomePage> {
           child: Stack(
             children: <Widget>[
               Container(
-                  child: GoogleMap(
-                    markers: Set<Marker>.of(markers.values),
-                    polylines: Set<Polyline>.of(polylines.values),
-                    mapType: MapType.normal,
-                    initialCameraPosition: _cameraPosition,
-                    onMapCreated: (GoogleMapController controller) {
-                      _controller.complete(controller);
-                      refresh();
-                      //_initCameraPosition();
+                  child: BaseWidget(
+                    model: OrderViewModel(token: Provider.of<AuthBloc>(context).token),
+                    onModelReady: (model){},
+                    builder: (context,mOrder,child){
+                      return GoogleMap(
+                        markers: Set<Marker>.of(markers.values),
+                        polylines: Set<Polyline>.of(polylines.values),
+                        mapType: MapType.normal,
+                        initialCameraPosition: _cameraPosition,
+                        onMapCreated: (GoogleMapController controller) {
+                          _controller.complete(controller);
+                          refresh(mOrder);
+                          //_initCameraPosition();
+                        },
+                      );  
                     },
                   ),
                   padding: EdgeInsets.all(1.0),
                ),
-
-
-
               Positioned(
                 left: 0,
                 top: 0,
@@ -474,138 +390,73 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
-              (dataOrder.fromAddress != null && dataOrder.toAddress != null) ?
-                Positioned(left: 20,
-                  right: 20,
-                  bottom: 20,
-                  height: 248,
-                  child: Container(
-                    height: (SizeConfig.blockHeight * 50),
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Color(0x88999999),
-                            offset: Offset(0, 5),
-                            blurRadius: 5.0,
-                          ),
-                        ]
-                    ),
-                    child: Column(
-                      children: <Widget>[
-                        BaseWidget(
-                          model: AuthBloc(),
-                          onModelReady: (model)=>model.getUser,
-                          builder: (context,auth,_)=>
-                          Row(
-                            children: <Widget>[
-                              Expanded(flex: 1,
-                                child: Container(
-                                  height: SizeConfig.blockHeight * 15,
-
-                                  child: Center(child: Text(auth.token == null ? '0':auth.user.name.toString(),
-                                    style: TextStyle(fontSize: 20.0,fontWeight: FontWeight.w600),)),
-                                  decoration: BoxDecoration(
-                                    border: Border(
-                                      left: BorderSide(width: 1.0, color: Colors.grey.shade600),
-                                      right: BorderSide(width: 1.0, color: Colors.grey.shade900),
-                                    ),
-                                    color: Colors.white,
-                                  ),
-                                ),),
-                              Expanded(flex: 1,
-                                child: Container(
-                                  height: SizeConfig.blockHeight * 15,
-                                  child: Center(child: Text("${_tripDistance.toStringAsFixed(2)} Km",style: TextStyle(fontSize: 20.0,fontWeight: FontWeight.w600))),
-                                  decoration: BoxDecoration(
-                                    border: Border(
-                                      left: BorderSide(width: 1.0, color: Colors.grey.shade600),
-                                      right: BorderSide(width: 1.0, color: Colors.grey.shade900),
-                                    ),
-                                    color: Colors.white,
-                                  )
-                                ),),
-                              Expanded(flex: 1,
-                                child: Container(
-                                  height: SizeConfig.blockHeight * 15,
-                                  child: Center(child: Text("Catatan")),
-                                  decoration: BoxDecoration(
-                                    border: Border(
-                                      left: BorderSide(width: 1.0, color: Colors.grey.shade600),
-                                      right: BorderSide(width: 1.0, color: Colors.grey.shade900),
-                                    ),
-                                    color: Colors.white,
-                                  )
+              BaseWidget(
+                model:OrderViewModel(token: Provider.of<AuthBloc>(context).token),
+                onModelReady: (model){},
+                builder:(context,mOrder,child){
+                  if (mOrder.fromAddress != null && dataOrder.toAddress != null) {
+                    return Positioned(
+                      left: 20,
+                      right: 20,
+                      bottom: 20,
+                      height: 248,
+                      child: Container(
+                        height: (SizeConfig.blockHeight * 50),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color(0x88999999),
+                                offset: Offset(0, 5),
+                                blurRadius: 5.0,
+                              ),
+                            ]
+                        ),
+                        child: Column(
+                          children: <Widget>[
+                            Row(
+                              children: <Widget>[
+                                Kotak(name: 'A',),
+                                Kotak(name:'Jarak'),
+                              ],
+                            ),
+                            Divider(),
+                            Container(
+                              height: 50,
+                              child: Text(tripTotal.toString(), style: TextStyle(
+                                fontSize: 30.0,
+                                fontWeight: FontWeight.bold),),
+                            ),
+                            Divider(),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                              child: ButtonTheme(
+                                height: 50.0,
+                                minWidth: SizeConfig.screenWidth,
+                                child: RaisedButton(
+                                  color: Colors.blue[700],
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12.0)),
+                                  child: Text('Pesan',
+                                      style: TextStyle(color: Colors.white)),
+                                  onPressed: ()=>onHandleOrder(dataOrder),
                                 ),
                               ),
-                            ],
-                          ),
-                        ),
-                        Divider(),
-                        Container(
-                          height: 50,
-                          child: Text(tripTotal.toString(), style: TextStyle(
-                              fontFamily: 'Montserrat',
-                              fontSize: 30.0,
-                              fontWeight: FontWeight.bold),),
-                        ),
-                        Divider(),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-                          child: ButtonTheme(
-                            height: 50.0,
-                            minWidth: SizeConfig.screenWidth,
-                            child: RaisedButton(
-                              color: Colors.blue[700],
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12.0)),
-                              child: Text('Pesan',
-                                  style: TextStyle(color: Colors.white)),
-                              onPressed: ()=>onHandleOrder(dataOrder),
                             ),
-                          ),
+                            
+                            
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
-                ):
-                Container(),
+                      )
+                    );
 
-//              Positioned(
-//                bottom: 20,
-//                left: 20,
-//                right: 20,
-//                child: Column(
-//                  children: <Widget>[
-//                    cardWidget(
-//                        context,
-//                        'assets/taxi.png',
-//                        'Medan',
-//                        'ID: 123456789',
-//                        'Medan To Binjai',
-//                        '\Rp. 200 K',
-//                        '',
-//                        Colors.blue[900]),
-//                        Padding(
-//                          padding: const EdgeInsets.only(top:8.0),
-//                          child: ButtonTheme(
-//                            height: 50.0,
-//                            minWidth: SizeConfig.screenWidth,
-//                            child: RaisedButton(
-//                              color: Colors.blue[700],
-//                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-//                              child: Text('Pesan', style: TextStyle(color: Colors.white)),
-//                              onPressed: onHandleOrder,
-//                            ),
-//                          ),
-//                        ),
-//
-//                      ],
-//                ),
-//              ),
-
-
+                  }else{
+                    return Container();
+                  }
+                }
+              ),
+                             
             ],
           ),
         )
@@ -614,7 +465,6 @@ class _HomePageState extends State<HomePage> {
     final networkWidget = NetworkWidget(
       child: mapScreen,
     );
-    print(dataOrder);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       key: homeScaffoldKey,
@@ -623,131 +473,11 @@ class _HomePageState extends State<HomePage> {
 
   }
 
-  Widget _buildDropdownMenu() => DropdownButton(
-    value: _mode,
-    items: <DropdownMenuItem<Mode>>[
-      DropdownMenuItem<Mode>(
-        child: Text("Overlay"),
-        value: Mode.overlay,
-      ),
-      DropdownMenuItem<Mode>(
-        child: Text("Fullscreen"),
-        value: Mode.fullscreen,
-      ),
-    ],
-    onChanged: (m) {
-      setState(() {
-        _mode = m;
-      });
-    },
-  );
+  
   LatLng _createLatLng(double lat, double lng) {
     return LatLng(lat, lng);
   }
-  Widget cardWidget(BuildContext context, String image, String title,String subtitle, String desc, String amount, String days, Color color) {
-    return Material(
-      elevation: 2.0,
-      borderRadius: BorderRadius.circular(18.0),
-      child: Container(
-        width: MediaQuery.of(context).size.width - 30.0,
-        height: 130.0,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(18.0),
-          color: Colors.white,
-        ),
-        child: Padding(
-          padding: const EdgeInsets.only(top: 8.0),
-          child: Row(
-            children: <Widget>[
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    ListTile(
-                      title: Text(
-                        title,
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15.0),
-                      ),
-                      leading: Container(
-                        width: 40.0,
-                        height: 40.0,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10.0),
-                            border: Border.all(color: Colors.black, width: 1),
-                            image: DecorationImage(image: AssetImage(image))),
-                      ),
-                      subtitle: Text(
-                        subtitle,
-                        style: TextStyle(color: Colors.grey, fontSize: 12.0),
-                      ),
-                      trailing: Container(
-                        width: 80.0,
-                        height: 25.0,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20.0),
-                            color: Colors.grey[300]),
-                        child: Center(
-                          child: Text(
-                            'Cek Driver',
-                            style: TextStyle(color: Colors.black, fontSize: 12.0),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 12.0, right: 12.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text(
-                            desc, style: TextStyle(
-                              decoration: TextDecoration.underline,
-                              color: color,
-                              fontSize: 14.0,
-                              fontWeight: FontWeight.bold
-                          ),
-                          ),
-                          Column(
-                            children: <Widget>[
-                              Text(
-                                amount, style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 16.0,
-                                  fontWeight: FontWeight.bold
-                                ),
-                              ),
-                              Text(
-                                days, style: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 13.0,
-                                  fontWeight: FontWeight.bold
-                                ),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              Container(
-                width: 5.0,
-                height: 45.0,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12.0),
-                  color: Colors.grey,
-                ),
-              )
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+  
 
 }
 
@@ -763,21 +493,7 @@ Widget linkMenuDrawer(String title, Function onPressed) {
   );
 }
 
-Future<Null> displayPrediction(Prediction p, ScaffoldState scaffold) async {
-  if (p != null) {
-    // get detail (lat/lng)
-    PlacesDetailsResponse detail = await _places.getDetailsByPlaceId(p.placeId);
-    final lat = detail.result.geometry.location.lat;
-    final lng = detail.result.geometry.location.lng;
 
-    _destinationText.text = p.description;
-    _originText.text = p.description;
-
-    scaffold.showSnackBar(
-      SnackBar(content: Text("${p.description} - $lat/$lng")),
-    );
-  }
-}
 class Uuid {
   final Random _random = Random();
 
@@ -835,4 +551,27 @@ class BlackClipper extends CustomClipper<Path> {
 
   @override
   bool shouldReclip(CustomClipper<Path> oldClipper) => false;
+}
+
+class Kotak extends StatelessWidget {
+  final String name;
+  Kotak({this.name});
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      flex: 1,
+      child: Container(
+            height: SizeConfig.blockHeight * 15,
+            child: Center(child: Text(name,
+              style: TextStyle(fontSize: 20.0,fontWeight: FontWeight.w600),)),
+            decoration: BoxDecoration(
+              border: Border(
+                left: BorderSide(width: 1.0, color: Colors.grey.shade600),
+                right: BorderSide(width: 1.0, color: Colors.grey.shade900),
+              ),
+              color: Colors.white,
+            ),
+      ),
+    );
+  }
 }

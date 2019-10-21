@@ -1,4 +1,5 @@
 import 'package:provider/provider.dart';
+import 'package:ut_order/data/order_view.dart';
 import 'package:ut_order/utils/network_util.dart';
 import 'package:ut_order/utils/prefs.dart';
 
@@ -7,7 +8,6 @@ import 'data/place_bloc.dart';
 import 'models/auth.dart';
 import 'models/user.dart';
 import 'utils/authentication.dart';
-import 'data/rest_ds.dart';
 import 'utils/connectivity.dart';
 import 'utils/promoService.dart' as ps;
 import 'enum/connection_status.dart';
@@ -33,6 +33,9 @@ List<SingleChildCloneableWidget> dependentServices = [
   ),
   ProxyProvider<NetworkUtil, OrderService>(
      builder: (context, api, orderService) => OrderService(api: api),
+  ),
+  ChangeNotifierProxyProvider<AuthBloc,OrderViewModel>(
+    builder: (context,auth,prev) => OrderViewModel(token: auth.token),
   )
 ];
 

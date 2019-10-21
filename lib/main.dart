@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:ut_order/models/auth.dart';
-import 'package:ut_order/pages/dashboard_page.dart';
-import 'package:ut_order/pages/login_page.dart';
-import 'package:ut_order/pages/splash_page.dart';
 import 'package:ut_order/utils/constans.dart';
 import 'package:ut_order/utils/custom_route.dart';
 import 'routes.dart';

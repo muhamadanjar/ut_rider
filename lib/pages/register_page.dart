@@ -3,7 +3,6 @@ import 'package:ut_order/components/base_widget.dart';
 import 'package:ut_order/components/profile_tile.dart';
 import 'package:ut_order/models/loginview_model.dart';
 import 'package:ut_order/utils/constans.dart';
-import 'package:ut_order/utils/authentication.dart';
 import 'package:provider/provider.dart';
 class RegisterPage extends StatefulWidget {
   String tag = RoutePaths.Register;
@@ -230,7 +229,7 @@ class _RegisterPageState extends State<RegisterPage> {
     
     print('Form submitted');
   }
-  bool _submittable() {
+  Future<bool> _submittable() async {
     return _agreedToTOS;
   }
 }

@@ -64,11 +64,11 @@ class AppBloc {
 
   Future<void> _loadSharedPrefs() async {
     var sharedPrefs = await SharedPreferences.getInstance();
-    var showWebView = sharedPrefs.getBool('showWebView') ?? false;
+    bool showWebView = sharedPrefs.getBool('showWebView') ?? false;
 
   }
 
-  Future<void> _loadPromo(){
+  Future<void> _loadPromo() async {
     final JsonDecoder _decoder = new JsonDecoder();
     http.get("${apiURL}/get_promo").then((http.Response response){
       var res = response.body;
