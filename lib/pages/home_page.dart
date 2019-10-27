@@ -394,6 +394,7 @@ class _HomePageState extends State<HomePage> {
                 model:OrderViewModel(token: Provider.of<AuthBloc>(context).token),
                 onModelReady: (model){},
                 builder:(context,mOrder,child){
+                  print("address ${mOrder.fromAddress}");
                   if (mOrder.fromAddress != null && dataOrder.toAddress != null) {
                     return Positioned(
                       left: 20,
@@ -473,7 +474,6 @@ class _HomePageState extends State<HomePage> {
 
   }
 
-  
   LatLng _createLatLng(double lat, double lng) {
     return LatLng(lat, lng);
   }

@@ -195,6 +195,7 @@ class AuthBloc with ChangeNotifier {
     if (_expiryDate != null && _expiryDate.isAfter(DateTime.now()) && _token != null) {
       return _token;
     }
+    print("anda sudah expire di $_expiryDate");
     return null;
   }
 
