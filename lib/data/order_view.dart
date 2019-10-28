@@ -12,7 +12,7 @@ import 'package:google_maps_webservice/places.dart';
 import 'package:rxdart/subjects.dart';
 
 class OrderViewModel extends BaseModel {
-  double _tripDistance = 0;
+  double distance = 0;
   PlaceItemRes fromAddress;
   PlaceItemRes toAddress;
   String token;
@@ -23,18 +23,17 @@ class OrderViewModel extends BaseModel {
   PublishSubject placeSubject;
 
   OrderViewModel({
-    @required String token,
-    this.fromAddress,
-    this.toAddress
+    @required String token
   }) : token = token;
 
   setFrom(PlaceItemRes res){
-    this.fromAddress = res;
+    fromAddress = res;
+
     notifyListeners();
   }
 
   setTo(PlaceItemRes res){
-    this.toAddress = res;
+    toAddress = res;
     notifyListeners();
   }
   postPesanan() async{

@@ -2,28 +2,12 @@ import 'package:provider/provider.dart';
 import 'package:ut_order/components/base_widget.dart';
 import 'package:ut_order/data/order_view.dart';
 import 'package:ut_order/models/auth.dart';
-import 'package:ut_order/models/place_item_res.dart';
-
 import 'package:ut_order/pages/rider_picker_page.dart';
 import 'package:flutter/material.dart';
 
-class RidePicker extends StatefulWidget {
-  final Function(PlaceItemRes, bool) onSelected;
-  RidePicker(this.onSelected);
-
-  @override
-  _RidePickerState createState() => _RidePickerState();
-}
-
-class _RidePickerState extends State<RidePicker> {
-  PlaceItemRes fromAddress;
-  PlaceItemRes toAddress;
-
-  @override
+class RidePicker extends StatelessWidget{
 
   Widget build(BuildContext context) {
-    print("fromAdrress : $fromAddress");
-    print("toAddress : $toAddress");
     return Container(
       decoration: BoxDecoration(
           color: Colors.white,
@@ -36,10 +20,10 @@ class _RidePickerState extends State<RidePicker> {
             ),
           ]
       ),
-      child: BaseWidget(
+      child: BaseWidget<OrderViewModel>(
         onModelReady: (model){},
         model: OrderViewModel(token: Provider.of<AuthBloc>(context).token),
-        builder: (context,picker,_){
+        builder: (context,OrderViewModel picker,_){
           return Column(
             children: <Widget>[
               TextPlaceSearch(typeCari:'origin',placeholder: picker.fromAddress == null ? 'Lokasi Penjemputan':picker.fromAddress.address,
@@ -48,7 +32,10 @@ class _RidePickerState extends State<RidePicker> {
                     builder: (context) => RidePickerPage(
                         picker.fromAddress == null ? "" : picker.fromAddress.name,
                             (place, isFrom) {
+                          picker.setBusy(true);
                           picker.setFrom(place);
+                          picker.setBusy(false);
+                          print("pilih data origin ${picker.fromAddress.name}");
                         }, true)));
               },
               ),
@@ -58,7 +45,7 @@ class _RidePickerState extends State<RidePicker> {
                         picker.toAddress == null ? "" : picker.toAddress.name,
                             (place, isFrom) {
                           picker.setTo(place);
-                        }, true)));
+                        }, false)));
               },),
             ],
           ); 

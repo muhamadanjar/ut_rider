@@ -1,4 +1,5 @@
 import 'package:provider/provider.dart';
+import 'package:ut_order/data/order_view.dart';
 import 'package:ut_order/data/place_bloc.dart';
 import 'package:ut_order/models/order.dart';
 import 'package:ut_order/models/place_item_res.dart';
@@ -36,7 +37,7 @@ class _RidePickerPageState extends State<RidePickerPage> {
 
   @override
   Widget build(BuildContext context) {
-    final locationPicker = Provider.of<OrderPemesanan>(context);
+    final locationPicker = Provider.of<OrderViewModel>(context);
     _ctx = context;
     SizeConfig().init(context);
     return Scaffold(
@@ -100,11 +101,12 @@ class _RidePickerPageState extends State<RidePickerPage> {
             Container(
               padding: EdgeInsets.only(top: 20),
               height: SizeConfig.blockHeight * 77,
-//              color: Colors.amber,
+              color: Colors.amber,
               child: StreamBuilder(
                   stream: placeBloc.placeStream,
                   builder: (context, snapshot) {
                     print("data snapshot ${snapshot.data}");
+
                     if (snapshot.hasData) {
                       print(snapshot.data.toString());
                       if (snapshot.data == "start") {
@@ -113,7 +115,7 @@ class _RidePickerPageState extends State<RidePickerPage> {
                         );
                       }
 
-                      print(snapshot.data.toString());
+//                      print(snapshot.data.toString());
                       List<PlaceItemRes> places = snapshot.data;
                       print("Jumlah Place :${places.length}");
                       return ListView.separated(
@@ -132,8 +134,7 @@ class _RidePickerPageState extends State<RidePickerPage> {
                                   locationPicker.setTo(places.elementAt(index));
                                 }
 
-                                widget.onSelected(places.elementAt(index),
-                                    widget._isFromAddress);
+                                widget.onSelected(places.elementAt(index),widget._isFromAddress);
 
                               },
                             );

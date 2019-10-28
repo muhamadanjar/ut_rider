@@ -326,7 +326,68 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final dataOrder = Provider.of<OrderPemesanan>(context);
+    final state = Provider.of<OrderViewModel>(context);
+    var info;
+    print(info);
+    if (state.fromAddress != null && state.toAddress != null) {
+      info =  Positioned(
+          left: 20,
+          right: 20,
+          bottom: 20,
+          height: 248,
+          child: Container(
+            height: (SizeConfig.blockHeight * 50),
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Color(0x88999999),
+                    offset: Offset(0, 5),
+                    blurRadius: 5.0,
+                  ),
+                ]
+            ),
+            child: Column(
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Kotak(name: 'A',),
+                    Kotak(name:'B'),
+                  ],
+                ),
+                Divider(),
+                Container(
+                  height: 50,
+                  child: Text(tripTotal.toString(), style: TextStyle(
+                      fontSize: 30.0,
+                      fontWeight: FontWeight.bold),),
+                ),
+                Divider(),
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                  child: ButtonTheme(
+                    height: 50.0,
+                    minWidth: SizeConfig.screenWidth,
+                    child: RaisedButton(
+                      color: Colors.blue[700],
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.0)),
+                      child: Text('Pesan',
+                          style: TextStyle(color: Colors.white)),
+                      onPressed: ()=>print('proses'),
+                    ),
+                  ),
+                ),
+
+
+              ],
+            ),
+          )
+      );
+    }else{
+      info = Container();
+    }
     final mapScreen = new Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
@@ -385,79 +446,12 @@ class _HomePageState extends State<HomePage> {
                     ),
                     Padding(
                       padding: EdgeInsets.only(top: 20, left: 20, right: 20),
-                      child: RidePicker(onPlaceSelected),
+                      child: RidePicker(),
                     ),
                   ],
                 ),
               ),
-              BaseWidget(
-                model:OrderViewModel(token: Provider.of<AuthBloc>(context).token),
-                onModelReady: (model){},
-                builder:(context,mOrder,child){
-                  print("address ${mOrder.fromAddress}");
-                  if (mOrder.fromAddress != null && dataOrder.toAddress != null) {
-                    return Positioned(
-                      left: 20,
-                      right: 20,
-                      bottom: 20,
-                      height: 248,
-                      child: Container(
-                        height: (SizeConfig.blockHeight * 50),
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Color(0x88999999),
-                                offset: Offset(0, 5),
-                                blurRadius: 5.0,
-                              ),
-                            ]
-                        ),
-                        child: Column(
-                          children: <Widget>[
-                            Row(
-                              children: <Widget>[
-                                Kotak(name: 'A',),
-                                Kotak(name:'Jarak'),
-                              ],
-                            ),
-                            Divider(),
-                            Container(
-                              height: 50,
-                              child: Text(tripTotal.toString(), style: TextStyle(
-                                fontSize: 30.0,
-                                fontWeight: FontWeight.bold),),
-                            ),
-                            Divider(),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-                              child: ButtonTheme(
-                                height: 50.0,
-                                minWidth: SizeConfig.screenWidth,
-                                child: RaisedButton(
-                                  color: Colors.blue[700],
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12.0)),
-                                  child: Text('Pesan',
-                                      style: TextStyle(color: Colors.white)),
-                                  onPressed: ()=>onHandleOrder(dataOrder),
-                                ),
-                              ),
-                            ),
-                            
-                            
-                          ],
-                        ),
-                      )
-                    );
-
-                  }else{
-                    return Container();
-                  }
-                }
-              ),
-                             
+              info,
             ],
           ),
         )

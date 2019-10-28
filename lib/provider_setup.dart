@@ -49,8 +49,8 @@ List<SingleChildCloneableWidget> uiConsumableProviders = [
   StreamProvider<List<Promo>>.value(
     value: ps.PromoService().promoController.stream,
   ),
-  ChangeNotifierProvider(
-    builder:(_)=>OrderPemesanan(),
+  ChangeNotifierProvider.value(
+    value: OrderPemesanan(),
   ),
   ChangeNotifierProvider(builder: (_) => PrefsNotifier()),
   Provider(
