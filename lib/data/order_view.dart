@@ -13,6 +13,7 @@ import 'package:rxdart/subjects.dart';
 
 class OrderViewModel extends BaseModel {
   double distance = 0;
+  double price = 0;
   PlaceItemRes fromAddress;
   PlaceItemRes toAddress;
   String token;
@@ -99,6 +100,14 @@ class OrderViewModel extends BaseModel {
     }).catchError(() {
       placeSubject.add("stop");
     });
+  }
+
+  void clearState(){
+    price = 0;
+    distance = 0;
+    fromAddress = new PlaceItemRes('-','-',0,0);
+    toAddress = new PlaceItemRes('-','-',0,0);
+    setBusy(false);
   }
 
 }

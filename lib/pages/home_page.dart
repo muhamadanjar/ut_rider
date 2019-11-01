@@ -99,6 +99,11 @@ class _HomePageState extends State<HomePage> {
   void onPlaceSelected(PlaceItemRes place, bool fromAddress) {
     var mkId = fromAddress ? "from_address" : "to_address";
     print("place selected : ${mkId}");
+    var state = Provider.of<OrderViewModel>(context);
+    if(fromAddress){
+      print(place);
+      state.setFrom(place);
+    }
     _addMarker(mkId, place);
     _moveCamera();
     _checkDrawPolyline();
@@ -352,14 +357,14 @@ class _HomePageState extends State<HomePage> {
               children: <Widget>[
                 Row(
                   children: <Widget>[
-                    Kotak(name: 'A',),
-                    Kotak(name:'B'),
+                    Kotak(name: state.distance.toString(),),
+                    Kotak(name: state.price.toString()),
                   ],
                 ),
                 Divider(),
                 Container(
                   height: 50,
-                  child: Text(tripTotal.toString(), style: TextStyle(
+                  child: Text(state.price.toString(), style: TextStyle(
                       fontSize: 30.0,
                       fontWeight: FontWeight.bold),),
                 ),
@@ -446,7 +451,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     Padding(
                       padding: EdgeInsets.only(top: 20, left: 20, right: 20),
-                      child: RidePicker(),
+                      child: RidePicker(onPlaceSelected,fromAddress:state.fromAddress,toAddress:state.toAddress ,),
                     ),
                   ],
                 ),

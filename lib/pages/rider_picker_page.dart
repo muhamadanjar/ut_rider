@@ -115,7 +115,6 @@ class _RidePickerPageState extends State<RidePickerPage> {
                         );
                       }
 
-//                      print(snapshot.data.toString());
                       List<PlaceItemRes> places = snapshot.data;
                       print("Jumlah Place :${places.length}");
                       return ListView.separated(
