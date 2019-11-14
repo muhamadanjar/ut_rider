@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:ut_order/components/base_widget.dart';
 import 'package:ut_order/models/auth.dart';
 import 'package:ut_order/pages/dashboard_page.dart';
-import 'package:ut_order/pages/splash_page.dart';
+
 
 import 'login_page.dart';
 class Index extends StatefulWidget {

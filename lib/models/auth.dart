@@ -192,11 +192,11 @@ class AuthBloc with ChangeNotifier {
 
   String get token {
     print("getting token and expire date $_expiryDate $_token");
-    if (_expiryDate != null && _expiryDate.isAfter(DateTime.now()) && _token != null) {
+//    if (_expiryDate != null && _expiryDate.isAfter(DateTime.now()) && _token != null) {
       return _token;
-    }
-    print("anda sudah expire di $_expiryDate");
-    return null;
+//    }
+//    print("anda sudah expire di $_expiryDate");
+//    return null;
   }
 
   String get userId {
@@ -234,6 +234,7 @@ class AuthBloc with ChangeNotifier {
           ),
         );
         _userSubject.add(true);
+        print(_token);
         _autoLogout();
         notifyListeners();
         final prefs = await SharedPreferences.getInstance();
@@ -245,6 +246,7 @@ class AuthBloc with ChangeNotifier {
         );
         print("userData $userData");
         prefs.setString('userData', userData);
+
       }else{
         print("register");
       }
@@ -342,7 +344,10 @@ class AuthBloc with ChangeNotifier {
         );
         print("data auth $_authenticatedUser");
         notifyListeners();
+        print(_token);
+
     }catch(e){
+      print("$e");
       // throw new Exception(response
     }
   }

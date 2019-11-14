@@ -43,10 +43,9 @@ class _DashboardPageState extends State<DashboardPage> {
   Widget build(BuildContext context) {
     _ctx = context;
     final drawer = Drawer(
-        child: BaseWidget(
-          model: AuthBloc(),
-          builder :(context,dp,_) => HomeMenu(name: dp.user.toString())
-        )
+        child: Consumer<AuthBloc>(
+            builder:(context,model,_)=> HomeMenu(name: model.user.toString() ))
+
     );
     return Scaffold(
       drawer: drawer,
@@ -60,11 +59,11 @@ class _DashboardPageState extends State<DashboardPage> {
           )
         ],
       ),
-      body:  BaseWidget(
+      body: BaseWidget(
         onModelReady: (AuthBloc model){
           model.getUser();
           print("checking token ${model.isAuth}");
-          print("df");
+          print("${model.user}");
         },
         model: AuthBloc(),
         builder:(context,model,_) => RefreshIndicator(

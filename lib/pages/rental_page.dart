@@ -64,7 +64,7 @@ class _RentalPageState extends State<RentalPage> {
     return Container(
         height: 240.0,
         child: StreamBuilder(
-            stream: appBloc.tipeSnapshotStream,
+            stream: appBloc.tipe,
             builder: (context, snapshot) {
               print(" has data ${snapshot.hasData}");
               return !snapshot.hasData

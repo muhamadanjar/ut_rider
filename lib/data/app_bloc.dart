@@ -4,14 +4,14 @@ import 'package:flutter/widgets.dart';
 import 'package:ut_order/models/promo.dart';
 import 'rest_ds.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:rxdart/subjects.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:http/http.dart' as http;
 import 'package:ut_order/utils/constans.dart';
 class AppBloc {
   RestDatasource api = new RestDatasource();
-  StreamController<List> tipeSnapshotController = StreamController<List>();
-  StreamSink<List> get tipeSnapshot => tipeSnapshotController.sink;
-  Stream<List> get tipeSnapshotStream => tipeSnapshotController.stream;
+  PublishSubject<List> tipeMobil = PublishSubject<List>();
+  Observable<List> get tipe => tipeMobil.stream;
+
 
   StreamController<List> packageSnapshotController = StreamController<List>();
   StreamSink<List> get packageSnapshot => packageSnapshotController.sink;
@@ -27,7 +27,7 @@ class AppBloc {
   AppBloc(){
     api.getTypeMobil().then((List res){
       print("Print data ${res}");
-      tipeSnapshot.add(res);
+      tipeMobil.add(res);
     });
 
     // api.getPackage(0).then((List res){
@@ -41,12 +41,6 @@ class AppBloc {
 
   }
 
-  void getType(){
-    api.getTypeMobil().then((List res){
-      tipeSnapshot.add(res);
-    });
-
-  }
 
   void getPackage(int idx){
     api.getPackage(idx).then((List res){
@@ -102,7 +96,7 @@ class AppBloc {
 
   void dispose() {
     print('disposed app bloc');
-    tipeSnapshotController.close();
+    tipeMobil.close();
     packageSnapshotController.close();
   }
 }

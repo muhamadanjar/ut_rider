@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:ut_order/components/base_widget.dart';
+import 'package:ut_order/data/app_bloc.dart';
 import 'package:ut_order/models/auth.dart';
 import '../utils/network_util.dart';
 import 'package:ut_order/components/network.dart';
@@ -19,6 +21,7 @@ import 'dart:math';
 import 'package:ut_order/models/order.dart';
 import 'package:ut_order/models/place_item_res.dart';
 import '../data/order_view.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 
 const kGoogleApiKey = google_web_api;
@@ -58,6 +61,7 @@ class _HomePageState extends State<HomePage> {
   Order order;
   double _tripDistance = 0;
   NetworkUtil _networkUtil = new NetworkUtil();
+  AppBloc _appBloc;
 
 
   // Values when toggling polyline color
@@ -100,10 +104,18 @@ class _HomePageState extends State<HomePage> {
     var mkId = fromAddress ? "from_address" : "to_address";
     print("place selected : ${mkId}");
     var state = Provider.of<OrderViewModel>(context);
+
     if(fromAddress){
-      print(place);
       state.setFrom(place);
+    }else{
+      state.setTo(place);
     }
+    if(state.fromAddress != null && state.toAddress != null){
+//      state.getDistanceTime();
+//      var harga = state.calculatePrice(10000, state.time, 0.14, 0.97, state.distance, 1);
+//      state.setHarga(harga);
+    }
+    
     _addMarker(mkId, place);
     _moveCamera();
     _checkDrawPolyline();
@@ -166,6 +178,7 @@ class _HomePageState extends State<HomePage> {
   void _checkDrawPolyline() async {
     final String polylineIdVal = 'polyline_id_distance';
     print("Draw Polyline");
+    var state = Provider.of<OrderViewModel>(context);
     polylines.remove(polylineIdVal);
     if (markers.length > 1) {
       var from;
@@ -185,7 +198,12 @@ class _HomePageState extends State<HomePage> {
       PlaceService.getStep(from.latitude, from.longitude, to.latitude, to.longitude).then((vl) {
         TripInfoRes infoRes = vl;
         _tripDistance = infoRes.distance * 0.001;
+        double price = state.calculatePrice(10000, infoRes.time, 1400, 9700, infoRes.distance, 1);
+        int priceConvert = price.toInt();
+        print("info harga ${price.toInt()}");
 
+        state.setJarak(_tripDistance.toInt());
+        state.setHarga(priceConvert);
         // var harga = kalkulasiHarga(int.parse(basicCar['per_miles']), _tripDistance.toInt(), int.parse(basicCar['per_min']));
         var harga = 100;
         List<StepsRes> rs = infoRes.steps;
@@ -331,9 +349,59 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final formatCurrency = new NumberFormat("#,##0.00", "en_US");
     final state = Provider.of<OrderViewModel>(context);
+    var distanceinM = state.distance;
     var info;
-    print(info);
+    final loading = Positioned(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          SpinKitPulse(color: Colors.black),
+        ],
+      ),
+    );
+    final wrapperBottom = Padding(
+      padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+      child: ButtonTheme(
+        height: 50.0,
+        minWidth: SizeConfig.screenWidth,
+        child: RaisedButton(
+          color: Colors.blue[700],
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12.0)),
+          child: Text('Pesan',
+              style: TextStyle(color: Colors.white)),
+          onPressed: distanceinM>=10 ? () async{
+            try{
+              print(Provider.of<AuthBloc>(context).token);
+              Order newOrder = Order(
+                  origin: state.fromAddress.address,
+                  destination: state.toAddress.address,
+                  originLat: state.fromAddress.lat,
+                  originLng: state.fromAddress.lng,
+                  destinationLat: state.toAddress.lat,
+                  destinationLng: state.toAddress.lng,
+                  harga: state.price,
+                  typeOrder: 1,
+                  duration: state.time,
+                  distance: state.distance,
+                  bookBy: 0
+              );
+              await state.postBooking(newOrder);
+
+            } catch(error){
+              print(error);
+              const errorMessage = 'Could not authenticate you. Please try again later.';
+              print(errorMessage);
+
+            }
+
+          }:null,
+        ),
+      ),
+    );
+
     if (state.fromAddress != null && state.toAddress != null) {
       info =  Positioned(
           left: 20,
@@ -357,33 +425,20 @@ class _HomePageState extends State<HomePage> {
               children: <Widget>[
                 Row(
                   children: <Widget>[
-                    Kotak(name: state.distance.toString(),),
-                    Kotak(name: state.price.toString()),
+                    Kotak(name: "${(state.distance)} Km",),
+                    Kotak(name: formatCurrency.format(state.price)),
                   ],
                 ),
                 Divider(),
                 Container(
                   height: 50,
-                  child: Text(state.price.toString(), style: TextStyle(
+                  child: Text("IDR ${formatCurrency.format(state.price)}", style: TextStyle(
                       fontSize: 30.0,
                       fontWeight: FontWeight.bold),),
                 ),
                 Divider(),
-                Padding(
-                  padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-                  child: ButtonTheme(
-                    height: 50.0,
-                    minWidth: SizeConfig.screenWidth,
-                    child: RaisedButton(
-                      color: Colors.blue[700],
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.0)),
-                      child: Text('Pesan',
-                          style: TextStyle(color: Colors.white)),
-                      onPressed: ()=>print('proses'),
-                    ),
-                  ),
-                ),
+                wrapperBottom,
+
 
 
               ],
@@ -393,6 +448,7 @@ class _HomePageState extends State<HomePage> {
     }else{
       info = Container();
     }
+    print(Provider.of<AuthBloc>(context).token);
     final mapScreen = new Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
@@ -401,9 +457,11 @@ class _HomePageState extends State<HomePage> {
           child: Stack(
             children: <Widget>[
               Container(
-                  child: BaseWidget(
+                  child: BaseWidget<OrderViewModel>(
                     model: OrderViewModel(token: Provider.of<AuthBloc>(context).token),
-                    onModelReady: (model){},
+                    onModelReady: (model){
+                      Provider.of<AuthBloc>(context).getUser();
+                    },
                     builder: (context,mOrder,child){
                       return GoogleMap(
                         markers: Set<Marker>.of(markers.values),
@@ -510,46 +568,6 @@ class Uuid {
   int _generateBits(int bitCount) => _random.nextInt(1 << bitCount);
 
   String _printDigits(int value, int count) => value.toRadixString(16).padLeft(count, '0');
-}
-class OrangeClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    Path path = Path();
-    path.lineTo(0.0, size.height);
-    path.lineTo(size.width / 2 + 85.0, size.height);
-
-    var firstControlPoint = Offset(size.width / 2 + 140.0, size.height - 105.0);
-    var firstEndPoint = Offset(size.width - 1.0, size.height);
-    path.quadraticBezierTo(firstControlPoint.dx, firstControlPoint.dy,firstEndPoint.dx, firstEndPoint.dy);
-
-    path.lineTo(size.width, 0.0);
-    path.close();
-
-    return path;
-  }
-
-  @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
-}
-class BlackClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    Path path = Path();
-    path.lineTo(0.0, size.height);
-    path.lineTo(size.width / 2 - 30.0, size.height);
-
-    var firstControlPoint =
-    Offset(size.width / 2 + 175.0, size.height / 2 - 30.0);
-    var firstEndPoint = Offset(size.width / 2, 0.0);
-    path.quadraticBezierTo(firstControlPoint.dx, firstControlPoint.dy,firstEndPoint.dx, firstEndPoint.dy);
-    path.lineTo(size.width / 2 + 75.0, size.height / 2 - 30.0);
-    path.lineTo(size.width / 2, 0.0);
-    path.close();
-    return path;
-  }
-
-  @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
 
 class Kotak extends StatelessWidget {

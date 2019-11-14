@@ -12,8 +12,9 @@ import 'package:google_maps_webservice/places.dart';
 import 'package:rxdart/subjects.dart';
 
 class OrderViewModel extends BaseModel {
-  double distance = 0;
-  double price = 0;
+  int distance = 0;
+  int time = 0;
+  int price = 0;
   PlaceItemRes fromAddress;
   PlaceItemRes toAddress;
   String token;
@@ -22,6 +23,7 @@ class OrderViewModel extends BaseModel {
   static const kGoogleApiKey = google_web_api;
   GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: kGoogleApiKey);
   PublishSubject placeSubject;
+  PublishSubject<String> bookingStatus;
 
   OrderViewModel({
     @required String token
@@ -29,13 +31,24 @@ class OrderViewModel extends BaseModel {
 
   setFrom(PlaceItemRes res){
     fromAddress = res;
-
     notifyListeners();
   }
 
   setTo(PlaceItemRes res){
     toAddress = res;
     notifyListeners();
+  }
+  setHarga(int storeHarga){
+    price = storeHarga;
+    notifyListeners();
+  }
+  setJarak(jarak){
+    distance = jarak;
+    notifyListeners();
+  }
+
+  int getDistanceInKm(){
+    return (distance * 0.001).toInt();
   }
   postPesanan() async{
     final url = "${apiURL}/bookings/reguler";
@@ -56,10 +69,16 @@ class OrderViewModel extends BaseModel {
     
   }
 
-  int kalkulasiHarga(base,tempuhKm,tarifKm){
-    var ta = base+(tempuhKm-(tempuhKm*0.01))*tarifKm;
-    var tm = 0;
-    return ta +tm;
+  calculatePrice(base,time,timeRate,distanceRate,distance,surge){
+    final distanceInKm = distance * 0.001;
+    final timeInMin = time * 0.0166667;
+    final pricePerKm = timeRate * timeInMin;
+    final pricePerMinute = distanceRate * distanceInKm;
+    final totalFare = (base + pricePerKm + pricePerMinute) * surge;
+//    var ta = base+(distanceInKm-(distanceInKm*0.01))*pricePerKm;
+//    var tm = 0;
+//    return ta +tm;
+    return totalFare;
   }
   void getNearbyPlaces(LatLng center) async {
 
@@ -108,6 +127,44 @@ class OrderViewModel extends BaseModel {
     fromAddress = new PlaceItemRes('-','-',0,0);
     toAddress = new PlaceItemRes('-','-',0,0);
     setBusy(false);
+  }
+
+  Future<Null> getDistanceTime() async{
+    var origin = "${fromAddress.lat.toString()},${fromAddress.lng.toString()}";
+    var dest = "${toAddress.lat.toString()},${toAddress.lng.toString()}";
+    var mode = 'driving';
+    var key = google_web_api;
+    var url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=$origin&destinations=$dest&mode=$mode&key=$key";
+    final response = await http.get(url,headers: {'Content-Type': 'application/json'},);
+    if (response.statusCode == 200) {
+      final responseData = json.decode(response.body);
+      print(responseData);
+    }
+  }
+
+  setBookBy(int userId){
+    _order.bookBy = userId;
+    setBusy(false);
+  }
+
+  postBooking(Order order) async{
+    final url = "$apiURL/reguler";
+    final bodyParams = order.toMapDatabase();
+    final response = await http.post(url,
+      body: json.encode(bodyParams),
+      headers: {'Content-Type': 'application/json','Authorization': 'Bearer $token'},
+    );
+
+    if (response.statusCode == 200) {
+      final responseData = json.decode(response.body);
+      if(responseData['status']){
+        bookingStatus.sink.add("pending");
+      }
+    }else{
+      print(response.body);
+      print(token);
+    }
+
   }
 
 }

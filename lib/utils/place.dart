@@ -60,9 +60,10 @@ class PlaceService {
       try {
         var json = _decoder.convert(res);
         int distance = json["routes"][0]["legs"][0]["distance"]["value"];
+        int time = json["routes"][0]["legs"][0]["duration"]["value"];
         List<StepsRes> steps = _parseSteps(json["routes"][0]["legs"][0]["steps"]);
 
-        tripInfoRes = new TripInfoRes(distance, steps);
+        tripInfoRes = new TripInfoRes(distance, time, steps);
 
       } catch (e) {
         throw new Exception(res);

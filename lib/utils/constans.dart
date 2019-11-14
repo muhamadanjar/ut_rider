@@ -15,7 +15,7 @@ const bool devMode = false;
 const String apiURL = devMode == true ? "http://192.168.100.45/api":"http://utama-trans.com/new/api";
 const double textScaleFactor = 1.0;
 const google_android_api = 'AIzaSyAKl4qWeBABIDPoxo_CHvWuIfgkKoEzS7c';
-  const google_web_api = 'AIzaSyAyGT-CSg1nb0YBLihgn8vk9zfbbkk-f1c';
+const google_web_api = 'AIzaSyAyGT-CSg1nb0YBLihgn8vk9zfbbkk-f1c';
 
 
 class RoutePaths {
