@@ -23,12 +23,23 @@ class OrderViewModel extends BaseModel {
   static const kGoogleApiKey = google_web_api;
   GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: kGoogleApiKey);
   PublishSubject placeSubject;
-  PublishSubject<String> bookingStatus;
+  BehaviorSubject<String> bookingStatus = new BehaviorSubject<String>();
 
-  OrderViewModel({
-    @required String token
-  }) : token = token;
+  
 
+//  OrderViewModel({
+//    @required String token
+//  }) : token = token;
+
+  OrderViewModel({token,}){
+    token = token;
+    bookingStatus.add("test");
+  }
+  void dispose() {
+    print('disposed app bloc');
+    bookingStatus.close();
+    super.dispose();
+  }
   setFrom(PlaceItemRes res){
     fromAddress = res;
     notifyListeners();
@@ -70,11 +81,13 @@ class OrderViewModel extends BaseModel {
   }
 
   calculatePrice(base,time,timeRate,distanceRate,distance,surge){
-    final distanceInKm = distance * 0.001;
+    final double distanceInKm = distance * 0.001;
+
     final timeInMin = time * 0.0166667;
     final pricePerKm = timeRate * timeInMin;
     final pricePerMinute = distanceRate * distanceInKm;
-    final totalFare = (base + pricePerKm + pricePerMinute) * surge;
+//    final totalFare = (base + pricePerKm + pricePerMinute) * surge;
+    final totalFare = (base * distanceInKm.roundToDouble());
 //    var ta = base+(distanceInKm-(distanceInKm*0.01))*pricePerKm;
 //    var tm = 0;
 //    return ta +tm;

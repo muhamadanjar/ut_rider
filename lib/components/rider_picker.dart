@@ -1,15 +1,19 @@
-import 'package:ut_order/data/order_view.dart';
 import 'package:ut_order/models/place_item_res.dart';
 import 'package:ut_order/pages/rider_picker_page.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-class RidePicker extends StatelessWidget{
+
+class RidePicker extends StatefulWidget{
   final Function(PlaceItemRes, bool) onSelected;
   PlaceItemRes fromAddress;
   PlaceItemRes toAddress;
   RidePicker(this.onSelected,{this.toAddress,this.fromAddress});
+
+  @override
+  _RidePickerState createState() => _RidePickerState();
+}
+
+class _RidePickerState extends State<RidePicker> {
   Widget build(BuildContext context) {
-    var state = Provider.of<OrderViewModel>(context);
     return Container(
       decoration: BoxDecoration(
           color: Colors.white,
@@ -24,31 +28,29 @@ class RidePicker extends StatelessWidget{
       ),
       child:Column(
         children: <Widget>[
-          TextPlaceSearch(typeCari: 'origin',addressName: fromAddress == null ? 'Lokasi Jemput':fromAddress.address,placeholder: 'Lokasi Jemput',
+          TextPlaceSearch(typeCari: 'origin',addressName: widget.fromAddress == null ? 'Lokasi Jemput':widget.fromAddress.address,placeholder: 'Lokasi Jemput',
             onPress: (){
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => RidePickerPage(
-                      fromAddress == null ? "" : fromAddress.name,
+                      widget.fromAddress == null ? "" : widget.fromAddress.name,
                           (place, isFrom) {
-                        onSelected(place, isFrom);
-                        fromAddress = place;
+                        widget.onSelected(place, isFrom);
+                        widget.fromAddress = place;
                       }, true)));
             },
           ),
-          TextPlaceSearch(typeCari: 'origin',addressName: toAddress == null ? 'Lokasi Tujuan':toAddress.address,placeholder: 'Lokasi Tujuan',
+          TextPlaceSearch(typeCari: 'origin',addressName: widget.toAddress == null ? 'Lokasi Tujuan':widget.toAddress.address,placeholder: 'Lokasi Tujuan',
             onPress: (){
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => RidePickerPage(
-                      fromAddress == null ? "" : fromAddress.name,
+                      widget.fromAddress == null ? "" : widget.fromAddress.name,
                           (place, isFrom) {
-                        onSelected(place, isFrom);
-                        fromAddress = place;
+                        widget.onSelected(place, isFrom);
+                        widget.fromAddress = place;
                       }, false)));
             },
           ),
         ],
-
-
       ),
     );
   }

@@ -62,6 +62,7 @@ class _HomePageState extends State<HomePage> {
   double _tripDistance = 0;
   NetworkUtil _networkUtil = new NetworkUtil();
   AppBloc _appBloc;
+  String stateUiHome;
 
 
   // Values when toggling polyline color
@@ -198,7 +199,9 @@ class _HomePageState extends State<HomePage> {
       PlaceService.getStep(from.latitude, from.longitude, to.latitude, to.longitude).then((vl) {
         TripInfoRes infoRes = vl;
         _tripDistance = infoRes.distance * 0.001;
-        double price = state.calculatePrice(10000, infoRes.time, 1400, 9700, infoRes.distance, 1);
+        var timerate = _tripDistance / infoRes.time;
+        var durationrate = 10;
+        double price = state.calculatePrice(10000, infoRes.time, timerate, durationrate, infoRes.distance, 1);
         int priceConvert = price.toInt();
         print("info harga ${price.toInt()}");
 
@@ -361,46 +364,56 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
     );
-    final wrapperBottom = Padding(
-      padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-      child: ButtonTheme(
-        height: 50.0,
-        minWidth: SizeConfig.screenWidth,
-        child: RaisedButton(
-          color: Colors.blue[700],
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12.0)),
-          child: Text('Pesan',
-              style: TextStyle(color: Colors.white)),
-          onPressed: distanceinM>=10 ? () async{
-            try{
-              print(Provider.of<AuthBloc>(context).token);
-              Order newOrder = Order(
-                  origin: state.fromAddress.address,
-                  destination: state.toAddress.address,
-                  originLat: state.fromAddress.lat,
-                  originLng: state.fromAddress.lng,
-                  destinationLat: state.toAddress.lat,
-                  destinationLng: state.toAddress.lng,
-                  harga: state.price,
-                  typeOrder: 1,
-                  duration: state.time,
-                  distance: state.distance,
-                  bookBy: 0
-              );
-              await state.postBooking(newOrder);
 
-            } catch(error){
-              print(error);
-              const errorMessage = 'Could not authenticate you. Please try again later.';
-              print(errorMessage);
+    var wrapperBottom;
+    state.bookingStatus.stream.listen((data){
+      print(data);
 
-            }
+      if(data == 'pending'){
+        wrapperBottom = SpinKitPulse(color: Colors.black);
+      }else{
+        wrapperBottom = Padding(
+          padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+          child: ButtonTheme(
+            height: 50.0,
+            minWidth: SizeConfig.screenWidth,
+            child: RaisedButton(
+              color: Colors.blue[700],
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.0)),
+              child: Text('Pesan',
+                  style: TextStyle(color: Colors.white)),
+              onPressed: distanceinM>=10 ? () async{
+                try{
+                  print(Provider.of<AuthBloc>(context).token);
+                  Order newOrder = Order(
+                      origin: state.fromAddress.address,
+                      destination: state.toAddress.address,
+                      originLat: state.fromAddress.lat,
+                      originLng: state.fromAddress.lng,
+                      destinationLat: state.toAddress.lat,
+                      destinationLng: state.toAddress.lng,
+                      harga: state.price,
+                      typeOrder: 1,
+                      duration: state.time,
+                      distance: state.distance,
+                      bookBy: 0
+                  );
+                  await state.postBooking(newOrder);
 
-          }:null,
-        ),
-      ),
-    );
+                } catch(error){
+                  print(error);
+                  const errorMessage = 'Could not authenticate you. Please try again later.';
+                  print(errorMessage);
+
+                }
+
+              }:null,
+            ),
+          ),
+        );
+      }
+    });
 
     if (state.fromAddress != null && state.toAddress != null) {
       info =  Positioned(
@@ -437,7 +450,15 @@ class _HomePageState extends State<HomePage> {
                       fontWeight: FontWeight.bold),),
                 ),
                 Divider(),
+
                 wrapperBottom,
+                // StreamBuilder(
+                //   stream: ,
+                //   builder: (context,AsyncSnapshot snapshot){
+                    
+                //     return loading;
+                //   },
+                // )
 
 
 
