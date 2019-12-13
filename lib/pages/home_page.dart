@@ -365,55 +365,47 @@ class _HomePageState extends State<HomePage> {
       ),
     );
 
-    var wrapperBottom;
-    state.bookingStatus.stream.listen((data){
-      print(data);
+    var wrapperBottom = Padding(
+        padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+        child: ButtonTheme(
+          height: 50.0,
+          minWidth: SizeConfig.screenWidth,
+          child: RaisedButton(
+            color: Colors.blue[700],
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.0)),
+            child: Text('Pesan',
+                style: TextStyle(color: Colors.white)),
+            onPressed: distanceinM>=10 ? () async{
+              try{
 
-      if(data == 'pending'){
-        wrapperBottom = SpinKitPulse(color: Colors.black);
-      }else{
-        wrapperBottom = Padding(
-          padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-          child: ButtonTheme(
-            height: 50.0,
-            minWidth: SizeConfig.screenWidth,
-            child: RaisedButton(
-              color: Colors.blue[700],
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.0)),
-              child: Text('Pesan',
-                  style: TextStyle(color: Colors.white)),
-              onPressed: distanceinM>=10 ? () async{
-                try{
-                  print(Provider.of<AuthBloc>(context).token);
-                  Order newOrder = Order(
-                      origin: state.fromAddress.address,
-                      destination: state.toAddress.address,
-                      originLat: state.fromAddress.lat,
-                      originLng: state.fromAddress.lng,
-                      destinationLat: state.toAddress.lat,
-                      destinationLng: state.toAddress.lng,
-                      harga: state.price,
-                      typeOrder: 1,
-                      duration: state.time,
-                      distance: state.distance,
-                      bookBy: 0
-                  );
-                  await state.postBooking(newOrder);
+                Order newOrder = Order(
+                    origin: state.fromAddress.address,
+                    destination: state.toAddress.address,
+                    originLat: state.fromAddress.lat,
+                    originLng: state.fromAddress.lng,
+                    destinationLat: state.toAddress.lat,
+                    destinationLng: state.toAddress.lng,
+                    harga: state.price,
+                    typeOrder: 1,
+                    duration: state.time,
+                    distance: state.distance,
+                    bookBy: 0
+                );
+                await state.postBooking(newOrder);
 
-                } catch(error){
-                  print(error);
-                  const errorMessage = 'Could not authenticate you. Please try again later.';
-                  print(errorMessage);
+              } catch(error){
+                print(error);
+                const errorMessage = 'Could not authenticate you. Please try again later.';
 
-                }
 
-              }:null,
-            ),
+              }
+
+            }:null,
           ),
-        );
-      }
-    });
+        ),
+    );
+
 
     if (state.fromAddress != null && state.toAddress != null) {
       info =  Positioned(

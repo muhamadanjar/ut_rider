@@ -27,14 +27,11 @@ class OrderViewModel extends BaseModel {
 
   
 
-//  OrderViewModel({
-//    @required String token
-//  }) : token = token;
+  OrderViewModel({
+    @required String token
+  }) : token = token;
 
-  OrderViewModel({token,}){
-    token = token;
-    bookingStatus.add("test");
-  }
+
   void dispose() {
     print('disposed app bloc');
     bookingStatus.close();
